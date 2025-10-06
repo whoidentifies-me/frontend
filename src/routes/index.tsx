@@ -13,6 +13,9 @@ export default function Home() {
         </a>{" "}
         to learn how to build Solid apps.
       </p>
+      <p>
+        <a href="#" class="text-green-400">Test</a>
+      </p>
       <p class="my-4">
         <span>Home</span>
         {" - "}
