@@ -29,4 +29,24 @@ Solid apps are built with _presets_, which optimise your project for deployment 
 
 By default, `npm run build` will generate a Node app that you can run with `npm start`. To use a different preset, add it to the `devDependencies` in `package.json` and specify in your `app.config.js`.
 
+## Code Quality
+
+```bash
+# Lint code
+npm run lint
+npm run lint:fix
+
+# Format code
+npm run format
+npm run format:check
+```
+
+## Pre-commit Hooks
+
+This project uses Husky + lint-staged for pre-commit hooks. On commit, it automatically:
+
+- Runs ESLint with auto-fix on staged JS/TS files
+- Runs Prettier on staged files
+- Only processes staged files for performance
+
 ## This project was created with the [Solid CLI](https://github.com/solidjs-community/solid-cli)
