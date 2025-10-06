@@ -1,2 +1,2 @@
 npx lint-staged
-npm run typecheck
+npm run typecheck # Might be removed in the future if too slow
