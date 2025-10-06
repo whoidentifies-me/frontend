@@ -3,7 +3,8 @@
   "type": "module",
   "scripts": {
     "dev": "vinxi dev",
-    "build": "tsc --noEmit --skipLibCheck && vinxi build",
+    "build": "vinxi build",
+    "typecheck": "tsc --noEmit --skipLibCheck",
     "start": "vinxi start",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
