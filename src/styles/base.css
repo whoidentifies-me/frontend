@@ -5,13 +5,12 @@
 */
 
 html {
-  font-size: (1rem, 1rem + 0.5vw, 2rem) / 1.4;
+  font-size: clamp(1rem, 1rem + 0.5vw, 2rem);
+  line-height: 1.4;
   font-family: system-ui, sans-serif;
   tab-size: 2;
   hanging-punctuation: first allow-end last;
-  word-break: break-word;
-  -moz-text-size-adjust: none;
-  -webkit-text-size-adjust: none;
+  overflow-wrap: anywhere;
   text-size-adjust: none;
 }
 
@@ -56,12 +55,12 @@ dd {
 }
 
 a {
-  color: oklch(0.68 0.17 228);
+  color: oklch(68% 0.17 228deg);
   text-underline-offset: 2px;
   text-decoration-skip-ink: auto;
 
   &:not(:is(:hover, :focus)) {
-    text-decoration-color: color-mix(in srgb, currentColor, transparent 50%);
+    text-decoration-color: color-mix(in srgb, currentcolor, transparent 50%);
   }
 }
 
@@ -166,7 +165,7 @@ pre {
 }
 
 svg {
-  fill: currentColor;
+  fill: currentcolor;
 }
 
 [aria-disabled="true" i],
