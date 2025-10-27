@@ -11,7 +11,9 @@ import type {
 export class ApiClient {
   private baseUrl: string;
 
-  constructor(baseUrl: string = import.meta.env.VITE_API_URL || "/") {
+  constructor(
+    baseUrl: string = import.meta.env.VITE_API_URL || "http://localhost:3000"
+  ) {
     this.baseUrl = baseUrl.replace(/\/$/, ""); // Remove trailing slash
   }
 
@@ -19,7 +21,7 @@ export class ApiClient {
     endpoint: string,
     params?: Record<string, any>
   ): Promise<T> {
-    const url = new URL(`${this.baseUrl}${endpoint}`, window.location.origin);
+    const url = new URL(`${endpoint}`, this.baseUrl);
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {

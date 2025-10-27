@@ -1,5 +1,8 @@
-@layer tokens, base, utilities;
+@layer base, tw-theme, tw-utilities, tokens, app;
 
 @import "./styles/tokens.css" layer(tokens);
 @import "./styles/base.css" layer(base);
-@import "tailwindcss/utilities.css" layer(utilities);
+@import "tailwindcss/theme.css" layer(tw-theme);
+@import "tailwindcss/utilities.css" layer(tw-utilities);
+@import "./styles/typography.css" layer(app);
+@import "./styles/layouts.css" layer(app);
