@@ -1,17 +1,26 @@
 import { Component } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 
-export const SearchBar: Component<{ value?: string }> = (params) => {
+interface SearchBarProps {
+  value?: string;
+  category?: "relying-parties" | "intended-uses";
+}
+
+export const SearchBar: Component<SearchBarProps> = (props) => {
   const navigate = useNavigate();
 
   const handleSubmit = (e: SubmitEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const query = formData.get("q") as string;
+
+    // Build target path based on category prop
+    const targetPath = props.category ? `/search/${props.category}` : "/search";
+
     if (query?.trim()) {
-      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+      navigate(`${targetPath}?q=${encodeURIComponent(query.trim())}`);
     } else {
-      navigate("/search");
+      navigate(targetPath);
     }
   };
 
@@ -24,7 +33,7 @@ export const SearchBar: Component<{ value?: string }> = (params) => {
             type="search"
             id="wim-search"
             name="q"
-            value={params.value || ""}
+            value={props.value || ""}
             placeholder="Type Insurance or Birthdate, ..."
           />
           <button type="submit" class="flex-shrink-0">
