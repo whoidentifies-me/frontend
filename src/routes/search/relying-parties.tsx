@@ -4,8 +4,9 @@ import { ErrorBoundary } from "solid-js";
 import apiClient from "~/api";
 import { RelyingParties } from "~/components/RelyingParties";
 import { SearchBar } from "~/components/SearchBar";
-import { Filters } from "~/components/Filters";
+import { Filters } from "~/components/filter/Filters";
 import { CategoryTabs } from "~/components/CategoryTabs";
+import { useSearchFilters } from "~/composables/useSearchFilters";
 
 const getRelyingParties = query(async (q?: string) => {
   return await apiClient.getRelyingParties({
@@ -14,7 +15,12 @@ const getRelyingParties = query(async (q?: string) => {
 }, "relying-parties");
 
 export default function SearchRelyingParties() {
-  const [searchParams] = useSearchParams<{ q: string }>();
+  const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
+  const { filters, handleFiltersChange } = useSearchFilters(
+    searchParams,
+    setSearchParams
+  );
+
   const relyingParties = createAsync(() => getRelyingParties(searchParams.q));
 
   const getTitle = () => {
@@ -28,7 +34,7 @@ export default function SearchRelyingParties() {
     <>
       <Title>{getTitle()}</Title>
       <SearchBar value={searchParams.q} category="relying-parties" />
-      <Filters />
+      <Filters filters={filters()} onFiltersChange={handleFiltersChange} />
       <CategoryTabs />
 
       <div class="mt-6">

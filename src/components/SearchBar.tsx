@@ -1,5 +1,5 @@
 import { Component } from "solid-js";
-import { useNavigate } from "@solidjs/router";
+import { useNavigate, useSearchParams, useLocation } from "@solidjs/router";
 
 interface SearchBarProps {
   value?: string;
@@ -8,25 +8,41 @@ interface SearchBarProps {
 
 export const SearchBar: Component<SearchBarProps> = (props) => {
   const navigate = useNavigate();
+  const [, setSearchParams] = useSearchParams();
+  const location = useLocation();
+
+  const action = () =>
+    props.category ? `/search/${props.category}` : "/search";
 
   const handleSubmit = (e: SubmitEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
-    const query = formData.get("q") as string;
+    let query = formData.get("q") as string;
+    query = query?.trim();
 
-    // Build target path based on category prop
-    const targetPath = props.category ? `/search/${props.category}` : "/search";
+    // Check if we're already on a search route
+    const isOnSearchRoute = location.pathname.startsWith("/search");
 
-    if (query?.trim()) {
-      navigate(`${targetPath}?q=${encodeURIComponent(query.trim())}`);
+    if (isOnSearchRoute) {
+      // Update search params to preserve filters
+      if (query?.trim()) {
+        setSearchParams({ q: query });
+      } else {
+        setSearchParams({ q: undefined });
+      }
     } else {
-      navigate(targetPath);
+      // Navigate to search route
+      if (query) {
+        navigate(`${action()}?q=${encodeURIComponent(query.trim())}`);
+      } else {
+        navigate(action());
+      }
     }
   };
 
   return (
     <search class="flex flex-col">
-      <form action="/search" method="get" onSubmit={handleSubmit}>
+      <form action={action()} method="get" onSubmit={handleSubmit}>
         <label for="wim-search">Search Relying Parties and Intended Uses</label>
         <div class="flex flex-row">
           <input

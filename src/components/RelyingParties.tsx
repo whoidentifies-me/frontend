@@ -7,7 +7,7 @@ export const RelyingParties: Component<{ items?: RelyingParty[] }> = (
 ) => {
   return (
     <div>
-      <For each={props.items || []}>
+      <For each={props.items || []} fallback="No Results">
         {(item) => <RelyingPartyItem data={item} />}
       </For>
     </div>

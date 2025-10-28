@@ -4,8 +4,9 @@ import { ErrorBoundary } from "solid-js";
 import apiClient from "~/api";
 import { IntendedUses } from "~/components/IntendedUses";
 import { SearchBar } from "~/components/SearchBar";
-import { Filters } from "~/components/Filters";
+import { Filters } from "~/components/filter/Filters";
 import { CategoryTabs } from "~/components/CategoryTabs";
+import { useSearchFilters } from "~/composables/useSearchFilters";
 
 const getIntendedUses = query(async (q?: string) => {
   return await apiClient.getIntendedUses({
@@ -14,7 +15,12 @@ const getIntendedUses = query(async (q?: string) => {
 }, "intended-uses");
 
 export default function SearchIntendedUses() {
-  const [searchParams] = useSearchParams<{ q: string }>();
+  const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
+  const { filters, handleFiltersChange } = useSearchFilters(
+    searchParams,
+    setSearchParams
+  );
+
   const intendedUses = createAsync(() => getIntendedUses(searchParams.q));
 
   const getTitle = () => {
@@ -28,7 +34,7 @@ export default function SearchIntendedUses() {
     <>
       <Title>{getTitle()}</Title>
       <SearchBar value={searchParams.q} category="intended-uses" />
-      <Filters />
+      <Filters filters={filters()} onFiltersChange={handleFiltersChange} />
       <CategoryTabs />
 
       <div class="mt-6">

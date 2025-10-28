@@ -117,15 +117,15 @@ export interface Claim {
 // Filter Types
 
 /**
- * Filters for querying relying parties.
+ * Base filter interface containing shared properties between relying parties and intended uses.
  * Supports wildcard patterns using SQL LIKE syntax:
  * - Exact match: "ACME"
  * - Starts with: "ACME%" (URL encode as "ACME%25")
  * - Ends with: "%Corp" (URL encode as "%25Corp")
  * - Contains: "%ACME%" (URL encode as "%25ACME%25")
  */
-export interface RelyingPartyFilters extends PaginationParams {
-  /** Full-text search across relying party fields */
+export interface BaseFilters extends PaginationParams {
+  /** Full-text search across fields */
   q?: string;
   /** Filter by trade name with wildcard support */
   trade_name?: string | string[];
@@ -141,10 +141,17 @@ export interface RelyingPartyFilters extends PaginationParams {
   is_intermediary?: boolean;
   /** Filter parties that use intermediaries */
   uses_intermediary?: boolean;
-  /** Filter by specific intermediary ID */
-  intermediary_id?: string;
   /** Filter by entitlement URI */
   entitlement?: string | string[];
+}
+
+/**
+ * Filters for querying relying parties.
+ * Extends BaseFilters with relying party specific fields.
+ */
+export interface RelyingPartyFilters extends BaseFilters {
+  /** Filter by specific intermediary ID */
+  intermediary_id?: string;
   /** Filter by specific identifier value */
   identifier?: string;
   /** Filter by identifier type (e.g., EUID) */
@@ -159,31 +166,13 @@ export interface RelyingPartyFilters extends PaginationParams {
 
 /**
  * Filters for querying intended uses.
- * Supports wildcard patterns using SQL LIKE syntax (see RelyingPartyFilters for details).
+ * Extends BaseFilters with intended use specific fields.
  */
-export interface IntendedUseFilters extends PaginationParams {
-  /** Full-text search across intended use purpose fields */
-  q?: string;
+export interface IntendedUseFilters extends BaseFilters {
   /** Filter by wallet relying party ID */
   wrp_id?: string;
-  /** Filter by relying party's country code */
-  country?: string | string[];
   /** Filter by required credential format */
   credential_format?: string | string[];
-  /** Filter by required claim path with wildcard support */
-  claim_path?: string | string[];
-  /** Filter by relying party's trade name with wildcard support */
-  trade_name?: string | string[];
-  /** Filter by intended use purpose with wildcard support */
-  purpose?: string | string[];
-  /** Filter by relying party's PSB status */
-  is_psb?: boolean;
-  /** Filter by relying party's intermediary status */
-  is_intermediary?: boolean;
-  /** Filter by whether relying party uses intermediaries */
-  uses_intermediary?: boolean;
-  /** Filter by relying party's entitlement URIs with wildcard support */
-  entitlement?: string | string[];
 }
 
 // Filtering Options

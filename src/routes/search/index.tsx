@@ -4,8 +4,9 @@ import apiClient from "~/api";
 import { IntendedUses } from "~/components/IntendedUses";
 import { RelyingParties } from "~/components/RelyingParties";
 import { SearchBar } from "~/components/SearchBar";
-import { Filters } from "~/components/Filters";
+import { Filters } from "~/components/filter/Filters";
 import { CategoryTabs } from "~/components/CategoryTabs";
+import { useSearchFilters } from "~/composables/useSearchFilters";
 
 const getRelyingParties = query(async (q?: string) => {
   return await apiClient.getRelyingParties({
@@ -20,14 +21,19 @@ const getIntendedUses = query(async (q?: string) => {
 }, "intended-uses");
 
 export default function SearchAll() {
-  const [searchParams] = useSearchParams<{ q: string }>();
+  const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
+  const { filters, handleFiltersChange } = useSearchFilters(
+    searchParams,
+    setSearchParams
+  );
+
   const relyingParties = createAsync(() => getRelyingParties(searchParams.q));
   const intendedUses = createAsync(() => getIntendedUses(searchParams.q));
 
   return (
     <>
       <SearchBar value={searchParams.q} />
-      <Filters />
+      <Filters filters={filters()} onFiltersChange={handleFiltersChange} />
       <CategoryTabs />
 
       <div class="mt-6">
