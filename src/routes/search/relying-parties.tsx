@@ -8,7 +8,9 @@ import { Filters } from "~/components/Filters";
 import { CategoryTabs } from "~/components/CategoryTabs";
 
 const getRelyingParties = query(async (q?: string) => {
-  return await apiClient.getRelyingParties({ q });
+  return await apiClient.getRelyingParties({
+    q: q?.trim() ? `%${q?.trim()}%` : undefined,
+  });
 }, "relying-parties");
 
 export default function SearchRelyingParties() {

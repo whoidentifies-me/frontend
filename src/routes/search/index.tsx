@@ -8,11 +8,15 @@ import { Filters } from "~/components/Filters";
 import { CategoryTabs } from "~/components/CategoryTabs";
 
 const getRelyingParties = query(async (q?: string) => {
-  return await apiClient.getRelyingParties({ q });
+  return await apiClient.getRelyingParties({
+    q: q?.trim() ? `%${q?.trim()}%` : undefined,
+  });
 }, "relying-parties");
 
 const getIntendedUses = query(async (q?: string) => {
-  return await apiClient.getIntendedUses({ q });
+  return await apiClient.getIntendedUses({
+    q: q?.trim() ? `%${q?.trim()}%` : undefined,
+  });
 }, "intended-uses");
 
 export default function SearchAll() {

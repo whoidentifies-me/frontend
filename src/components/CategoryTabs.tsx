@@ -2,13 +2,20 @@ import { Component } from "solid-js";
 import { A, useSearchParams } from "@solidjs/router";
 
 export const CategoryTabs: Component = () => {
-  const [searchParams] = useSearchParams<{ q: string }>();
+  const [searchParams] = useSearchParams();
 
   const buildUrl = (path: string) => {
-    const query = searchParams.q
-      ? `?q=${encodeURIComponent(searchParams.q)}`
-      : "";
-    return `${path}${query}`;
+    const params = new URLSearchParams();
+
+    // Preserve all current search parameters
+    Object.entries(searchParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        params.set(key, String(value));
+      }
+    });
+
+    const queryString = params.toString();
+    return queryString ? `${path}?${queryString}` : path;
   };
 
   const tabClass =

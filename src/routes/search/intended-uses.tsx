@@ -8,7 +8,9 @@ import { Filters } from "~/components/Filters";
 import { CategoryTabs } from "~/components/CategoryTabs";
 
 const getIntendedUses = query(async (q?: string) => {
-  return await apiClient.getIntendedUses({ q });
+  return await apiClient.getIntendedUses({
+    q: q?.trim() ? `%${q?.trim()}%` : undefined,
+  });
 }, "intended-uses");
 
 export default function SearchIntendedUses() {
