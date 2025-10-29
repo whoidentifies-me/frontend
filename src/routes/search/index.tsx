@@ -3,10 +3,8 @@ import { ErrorBoundary } from "solid-js";
 import apiClient from "~/api";
 import { IntendedUses } from "~/components/IntendedUses";
 import { RelyingParties } from "~/components/RelyingParties";
-import { SearchBar } from "~/components/SearchBar";
-import { Filters } from "~/components/filter/Filters";
 import { CategoryTabs } from "~/components/CategoryTabs";
-import { useSearchFilters } from "~/composables/useSearchFilters";
+import { SearchAndFilter } from "~/components/SearchAndFilter";
 
 const getRelyingParties = query(async (q?: string) => {
   return await apiClient.getRelyingParties({
@@ -21,19 +19,14 @@ const getIntendedUses = query(async (q?: string) => {
 }, "intended-uses");
 
 export default function SearchAll() {
-  const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
-  const { filters, handleFiltersChange } = useSearchFilters(
-    searchParams,
-    setSearchParams
-  );
+  const [searchParams] = useSearchParams<{ q: string }>();
 
   const relyingParties = createAsync(() => getRelyingParties(searchParams.q));
   const intendedUses = createAsync(() => getIntendedUses(searchParams.q));
 
   return (
     <>
-      <SearchBar value={searchParams.q} />
-      <Filters filters={filters()} onFiltersChange={handleFiltersChange} />
+      <SearchAndFilter></SearchAndFilter>
       <CategoryTabs />
 
       <div class="mt-6">

@@ -194,13 +194,16 @@ export interface FilteringOptions {
 }
 
 export interface FilterValue {
+  id: number;
+  field_name: string;
   value: string;
-  count: number;
+  usage_count: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface FilterValuesResponse {
-  field: string;
-  values: FilterValue[];
+  data: FilterValue[];
   next_cursor?: string;
   has_more: boolean;
 }

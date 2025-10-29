@@ -2,6 +2,7 @@ import { Component } from "solid-js";
 
 interface BooleanFilterProps {
   label: string;
+  name: string;
   value?: boolean;
   onChange: (val?: boolean) => void;
   trueLabel?: string;
@@ -32,10 +33,17 @@ export const BooleanFilter: Component<BooleanFilterProps> = (props) => {
     }
   };
 
+  const id = () => `bool-select-${props.name}`;
+
   return (
     <div class="flex flex-col items-stretch justify-end text-start">
-      <label>{props.label}</label>
-      <select value={currentValue()} onChange={handleChange}>
+      <label for={id()}>{props.label}</label>
+      <select
+        id={id()}
+        name={props.name}
+        value={currentValue()}
+        onChange={handleChange}
+      >
         <option value="all" selected={currentValue() === "all"}>
           {allLabel()}
         </option>

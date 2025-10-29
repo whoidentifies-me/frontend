@@ -3,10 +3,8 @@ import { createAsync, query, useSearchParams } from "@solidjs/router";
 import { ErrorBoundary } from "solid-js";
 import apiClient from "~/api";
 import { RelyingParties } from "~/components/RelyingParties";
-import { SearchBar } from "~/components/SearchBar";
-import { Filters } from "~/components/filter/Filters";
 import { CategoryTabs } from "~/components/CategoryTabs";
-import { useSearchFilters } from "~/composables/useSearchFilters";
+import { SearchAndFilter } from "~/components/SearchAndFilter";
 
 const getRelyingParties = query(async (q?: string) => {
   return await apiClient.getRelyingParties({
@@ -15,11 +13,7 @@ const getRelyingParties = query(async (q?: string) => {
 }, "relying-parties");
 
 export default function SearchRelyingParties() {
-  const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
-  const { filters, handleFiltersChange } = useSearchFilters(
-    searchParams,
-    setSearchParams
-  );
+  const [searchParams] = useSearchParams<{ q: string }>();
 
   const relyingParties = createAsync(() => getRelyingParties(searchParams.q));
 
@@ -33,8 +27,7 @@ export default function SearchRelyingParties() {
   return (
     <>
       <Title>{getTitle()}</Title>
-      <SearchBar value={searchParams.q} category="relying-parties" />
-      <Filters filters={filters()} onFiltersChange={handleFiltersChange} />
+      <SearchAndFilter searchCategory="relying-parties"></SearchAndFilter>
       <CategoryTabs />
 
       <div class="mt-6">

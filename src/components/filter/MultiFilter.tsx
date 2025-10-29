@@ -1,6 +1,6 @@
-import { Component, createMemo, createSignal } from "solid-js";
-import { Select } from "@thisbeyond/solid-select";
-import "@thisbeyond/solid-select/style.css";
+import { Component, createSignal, For, Show } from "solid-js";
+import { Combobox } from "@kobalte/core/combobox";
+import { TbCheck, TbSelector, TbX } from "solid-icons/tb";
 
 interface MultiFilterOption {
   value: string;
@@ -9,33 +9,87 @@ interface MultiFilterOption {
 
 interface MultiFilterProps {
   label: string;
-  options: MultiFilterOption[];
-  values?: string[];
+  name: string;
+  options?: MultiFilterOption[];
+  values?: string | string[];
   placeholder?: string;
   onChange?: (val: string[]) => void;
 }
 
 export const MultiFilter: Component<MultiFilterProps> = (props) => {
-  const [seleced, setSelected] = createSignal<string[]>([]);
-  const options = createMemo(() => {
-    const s = seleced();
-    return props.options.filter((o) => s.indexOf(o.value) === -1);
-  });
-  const onChange = (values: MultiFilterOption[]) => {
-    setSelected(values.map((o) => o.value));
-    console.log(values);
+  const onChange = (value: any[]) => {
+    if (props.onChange) {
+      props.onChange(value.map((v) => v.value));
+    }
+  };
+  const options = () => props.options || [];
+  const value = (): MultiFilterOption[] => {
+    if (!props.values) {
+      return [];
+    }
+    const input = Array.isArray(props.values) ? props.values : [props.values];
+    return input
+      .map((val) => props.options?.find((opt) => opt.value === val))
+      .filter((opt) => !!opt);
   };
   return (
-    <div>
-      <label for="wim-multi-select">{props.label}</label>
-      <Select
-        multiple
-        id="wim-multi-select"
-        placeholder={props.placeholder || props.label}
-        onChange={onChange}
-        options={options}
-        format={(opt: MultiFilterOption) => opt.label}
-      ></Select>
-    </div>
+    <Combobox
+      multiple
+      options={options()}
+      placeholder={props.placeholder}
+      onChange={(v) => onChange(v)}
+      optionValue={(v) => v.value}
+      optionLabel={(v) => v.value}
+      optionTextValue={(v) => v.label}
+      value={value() as any} // any required as it seems there is some strange type inference going on
+      name={props.name}
+      triggerMode="input"
+      itemComponent={(props) => (
+        <Combobox.Item item={props.item} class="combobox-item">
+          <Combobox.ItemLabel>{props.item.rawValue.label}</Combobox.ItemLabel>
+          <Combobox.ItemIndicator class="combobox-item-indicator">
+            <TbCheck />
+          </Combobox.ItemIndicator>
+        </Combobox.Item>
+      )}
+    >
+      <Combobox.Control class="combobox-control" aria-label={props.label}>
+        {(state) => (
+          <>
+            <div>
+              <For each={state?.selectedOptions() || []}>
+                {(option) => (
+                  <span onPointerDown={(e) => e.stopPropagation()}>
+                    {(option as MultiFilterOption).label}
+                    <button onClick={() => state.remove(option)}>
+                      <TbX />
+                    </button>
+                  </span>
+                )}
+              </For>
+              <Combobox.Input class="combobox-input" />
+            </div>
+            <Show when={state?.selectedOptions()?.length}>
+              <button
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={state.clear}
+              >
+                <TbX />
+              </button>
+            </Show>
+            <Combobox.Trigger class="combobox-trigger">
+              <Combobox.Icon class="combobox-icon">
+                <TbSelector />
+              </Combobox.Icon>
+            </Combobox.Trigger>
+          </>
+        )}
+      </Combobox.Control>
+      <Combobox.Portal>
+        <Combobox.Content class="combobox-content">
+          <Combobox.Listbox class="combobox-listbox" />
+        </Combobox.Content>
+      </Combobox.Portal>
+    </Combobox>
   );
 };

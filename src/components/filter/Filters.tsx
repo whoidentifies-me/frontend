@@ -1,17 +1,29 @@
 import { Component } from "solid-js";
 import type { BaseFilters } from "~/api/types";
 import { BooleanFilter } from "./BooleanFilter";
-import { MultiFilter } from "./MultiFilter2";
+import { MultiFilter } from "./MultiFilter";
+import { createAsync, query } from "@solidjs/router";
+import apiClient from "~/api";
 
 interface FiltersProps {
   filters: BaseFilters;
   onFiltersChange?: (filters: Partial<BaseFilters>) => void;
 }
 
+const countriesQuery = query(
+  async () => await apiClient.getFilterValues("country", { limit: 1000 }),
+  "countries"
+);
+
 export const Filters: Component<FiltersProps> = (props) => {
-  const handleFilterChange = (key: keyof BaseFilters) => (value?: boolean) => {
+  const handleFilterChange = (key: keyof BaseFilters) => (value?: unknown) => {
     if (props.onFiltersChange) props.onFiltersChange({ [key]: value });
   };
+
+  const countreis = createAsync(() => countriesQuery());
+
+  const countryOptions = () =>
+    countreis()?.data?.map((v) => ({ label: v.value, value: v.value }));
 
   return (
     <div class="border-solid my-4 p-2">
@@ -23,6 +35,7 @@ export const Filters: Component<FiltersProps> = (props) => {
       >
         <BooleanFilter
           label="Is Public Sector Body"
+          name="is_psb"
           value={props.filters.is_psb}
           onChange={handleFilterChange("is_psb")}
           trueLabel="Is PSB"
@@ -31,6 +44,7 @@ export const Filters: Component<FiltersProps> = (props) => {
         />
         <BooleanFilter
           label="Is Intermediary"
+          name="is_intermediary"
           value={props.filters.is_intermediary}
           onChange={handleFilterChange("is_intermediary")}
           trueLabel="Is Intermediary"
@@ -39,6 +53,7 @@ export const Filters: Component<FiltersProps> = (props) => {
         />
         <BooleanFilter
           label="Uses Intermediaries"
+          name="uses_intermediary"
           value={props.filters.uses_intermediary}
           onChange={handleFilterChange("uses_intermediary")}
           trueLabel="Uses Intermediaries"
@@ -47,10 +62,10 @@ export const Filters: Component<FiltersProps> = (props) => {
         />
         <MultiFilter
           label="Country"
-          options={[
-            { label: "Austria", value: "AT" },
-            { label: "Germany", value: "DE" },
-          ]}
+          name="country"
+          values={props.filters.country}
+          onChange={handleFilterChange("country")}
+          options={countryOptions()}
         ></MultiFilter>
       </div>
     </div>

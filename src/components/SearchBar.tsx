@@ -1,9 +1,11 @@
 import { Component } from "solid-js";
 import { useNavigate, useSearchParams, useLocation } from "@solidjs/router";
+import { TbFilter } from "solid-icons/tb";
 
 interface SearchBarProps {
   value?: string;
   category?: "relying-parties" | "intended-uses";
+  onFilterClick?: () => void;
 }
 
 export const SearchBar: Component<SearchBarProps> = (props) => {
@@ -39,6 +41,12 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
       }
     }
   };
+  const onFiltersClick = (e: Event) => {
+    if (props.onFilterClick) {
+      props.onFilterClick();
+    }
+    e.preventDefault();
+  };
 
   return (
     <search class="flex flex-col">
@@ -54,6 +62,9 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
           />
           <button type="submit" class="flex-shrink-0">
             Search
+          </button>
+          <button class="ml-1 flex-shrink-0" onClick={onFiltersClick}>
+            <TbFilter />
           </button>
         </div>
       </form>
