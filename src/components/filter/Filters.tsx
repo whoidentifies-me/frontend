@@ -1,6 +1,7 @@
 import { Component } from "solid-js";
 import type { BaseFilters } from "~/api/types";
 import { BooleanFilter } from "./BooleanFilter";
+import { MultiFilter } from "./MultiFilter2";
 
 interface FiltersProps {
   filters: BaseFilters;
@@ -44,6 +45,13 @@ export const Filters: Component<FiltersProps> = (props) => {
           falseLabel="Does Not Use Intermediaries"
           allLabel="All"
         />
+        <MultiFilter
+          label="Country"
+          options={[
+            { label: "Austria", value: "AT" },
+            { label: "Germany", value: "DE" },
+          ]}
+        ></MultiFilter>
       </div>
     </div>
   );

@@ -36,9 +36,15 @@ export const BooleanFilter: Component<BooleanFilterProps> = (props) => {
     <div class="flex flex-col items-stretch justify-end text-start">
       <label>{props.label}</label>
       <select value={currentValue()} onChange={handleChange}>
-        <option value="all">{allLabel()}</option>
-        <option value="true">{trueLabel()}</option>
-        <option value="false">{falseLabel()}</option>
+        <option value="all" selected={currentValue() === "all"}>
+          {allLabel()}
+        </option>
+        <option value="true" selected={currentValue() === "true"}>
+          {trueLabel()}
+        </option>
+        <option value="false" selected={currentValue() === "false"}>
+          {falseLabel()}
+        </option>
       </select>
     </div>
   );
