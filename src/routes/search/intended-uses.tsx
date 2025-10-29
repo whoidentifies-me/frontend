@@ -1,21 +1,21 @@
 import { Title } from "@solidjs/meta";
 import { createAsync, query, useSearchParams } from "@solidjs/router";
 import { ErrorBoundary } from "solid-js";
-import apiClient from "~/api";
+import apiClient, { BaseFilters } from "~/api";
 import { IntendedUses } from "~/components/IntendedUses";
 import { CategoryTabs } from "~/components/CategoryTabs";
 import { SearchAndFilter } from "~/components/SearchAndFilter";
+import { useSearchFilters } from "~/composables/useSearchFilters";
 
-const getIntendedUses = query(async (q?: string) => {
-  return await apiClient.getIntendedUses({
-    q: q?.trim() ? `%${q?.trim()}%` : undefined,
-  });
+const getIntendedUses = query(async (filters: BaseFilters) => {
+  return await apiClient.getIntendedUses(filters);
 }, "intended-uses");
 
 export default function SearchIntendedUses() {
-  const [searchParams] = useSearchParams<{ q: string }>();
+  const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
+  const { filters } = useSearchFilters(searchParams, setSearchParams);
 
-  const intendedUses = createAsync(() => getIntendedUses(searchParams.q));
+  const intendedUses = createAsync(() => getIntendedUses(filters()));
 
   const getTitle = () => {
     if (searchParams.q) {

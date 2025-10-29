@@ -4,6 +4,7 @@ import { BooleanFilter } from "./BooleanFilter";
 import { MultiFilter } from "./MultiFilter";
 import { createAsync, query } from "@solidjs/router";
 import apiClient from "~/api";
+import { createStore } from "solid-js/store";
 
 interface FiltersProps {
   filters: BaseFilters;
@@ -26,7 +27,8 @@ export const Filters: Component<FiltersProps> = (props) => {
     countreis()?.data?.map((v) => ({ label: v.value, value: v.value }));
 
   return (
-    <div class="border-solid my-4 p-2">
+    <fieldset class="border-solid my-4 p-2">
+      <legend>Filters</legend>
       <div
         class="grid gap-8"
         style={{
@@ -68,6 +70,6 @@ export const Filters: Component<FiltersProps> = (props) => {
           options={countryOptions()}
         ></MultiFilter>
       </div>
-    </div>
+    </fieldset>
   );
 };

@@ -1,21 +1,21 @@
 import { Title } from "@solidjs/meta";
 import { createAsync, query, useSearchParams } from "@solidjs/router";
 import { ErrorBoundary } from "solid-js";
-import apiClient from "~/api";
+import apiClient, { BaseFilters } from "~/api";
 import { RelyingParties } from "~/components/RelyingParties";
 import { CategoryTabs } from "~/components/CategoryTabs";
 import { SearchAndFilter } from "~/components/SearchAndFilter";
+import { useSearchFilters } from "~/composables/useSearchFilters";
 
-const getRelyingParties = query(async (q?: string) => {
-  return await apiClient.getRelyingParties({
-    q: q?.trim() ? `%${q?.trim()}%` : undefined,
-  });
+const getRelyingParties = query(async (filters: BaseFilters) => {
+  return await apiClient.getRelyingParties(filters);
 }, "relying-parties");
 
 export default function SearchRelyingParties() {
-  const [searchParams] = useSearchParams<{ q: string }>();
+  const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
+  const { filters } = useSearchFilters(searchParams, setSearchParams);
 
-  const relyingParties = createAsync(() => getRelyingParties(searchParams.q));
+  const relyingParties = createAsync(() => getRelyingParties(filters()));
 
   const getTitle = () => {
     if (searchParams.q) {

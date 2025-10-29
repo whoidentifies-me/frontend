@@ -87,12 +87,15 @@
     0 4px 6px -1px rgb(0 0 0 / 10%),
     0 2px 4px -2px rgb(0 0 0 / 10%);
   transform-origin: var(--kb-combobox-content-transform-origin);
-  animation: content-hide 250ms ease-in forwards;
+
+  /* animation: content-hide 250ms ease-in forwards; */
 }
 
+/*
 .combobox-content[data-expanded] {
   animation: content-show 250ms ease-out;
 }
+*/
 
 .combobox-listbox {
   overflow-y: auto;

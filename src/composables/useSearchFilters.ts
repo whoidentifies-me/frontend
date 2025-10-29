@@ -12,12 +12,22 @@ const booleanValue = (value: string | string[] | undefined) => {
   return value === "true" ? true : value === "false" ? false : undefined;
 };
 
+const singleValue = (
+  value: string | string[] | undefined
+): string | undefined => {
+  if (Array.isArray(value)) {
+    return value.length ? value[0] : undefined;
+  }
+  return value;
+};
+
 export function useSearchFilters(
-  searchParams: Record<string, string | string[]>,
+  searchParams: Record<string, string | string[] | undefined>,
   setSearchParams: (params: Record<string, string | string[]>) => void
 ) {
   const filters = createMemo((): BaseFilters => {
     return {
+      q: singleValue(searchParams.q),
       trade_name: searchParams.trade_name,
       purpose: searchParams.purpose,
       claim_path: searchParams.claim_path,

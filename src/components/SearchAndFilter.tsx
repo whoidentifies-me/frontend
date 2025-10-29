@@ -11,27 +11,38 @@ export const SearchAndFilter: Component<{
   const [filterCollapsed, setFilterCollapsed] = createSignal<boolean>(
     !!params.collapseFilters
   );
-  const [searchParams, setSearchParams] = useSearchParams<{ q?: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { filters, handleFiltersChange } = useSearchFilters(
     searchParams,
     setSearchParams
   );
+  const searchValue = (): string | undefined => {
+    return Array.isArray(searchParams.q) ? searchParams.q[0] : searchParams.q;
+  };
   const toggleFilterCollapsed = () => {
     setFilterCollapsed((state) => !state);
   };
+  const onSearchSubmit = (value: string | undefined) => {
+    setSearchParams({
+      q: value ? `%value%` : undefined,
+    });
+  };
   return (
-    <div>
-      <SearchBar
-        value={searchParams.q}
-        category={params.searchCategory}
-        onFilterClick={toggleFilterCollapsed}
-      ></SearchBar>
-      <Show when={!filterCollapsed()}>
-        <Filters
-          filters={filters()}
-          onFiltersChange={handleFiltersChange}
-        ></Filters>
-      </Show>
-    </div>
+    <search>
+      <form role="search">
+        <SearchBar
+          value={searchValue()}
+          category={params.searchCategory}
+          onFilterClick={toggleFilterCollapsed}
+          onSearchSubmit={onSearchSubmit}
+        ></SearchBar>
+        <Show when={!filterCollapsed()}>
+          <Filters
+            filters={filters()}
+            onFiltersChange={handleFiltersChange}
+          ></Filters>
+        </Show>
+      </form>
+    </search>
   );
 };

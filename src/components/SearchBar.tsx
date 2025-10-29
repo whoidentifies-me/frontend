@@ -6,6 +6,7 @@ interface SearchBarProps {
   value?: string;
   category?: "relying-parties" | "intended-uses";
   onFilterClick?: () => void;
+  onSearchSubmit?: (value?: string) => void;
 }
 
 export const SearchBar: Component<SearchBarProps> = (props) => {
@@ -13,6 +14,7 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
   const [, setSearchParams] = useSearchParams();
   const location = useLocation();
 
+  /*
   const action = () =>
     props.category ? `/search/${props.category}` : "/search";
 
@@ -41,33 +43,42 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
       }
     }
   };
+  */
+
+  const id = "wim-search-bar";
+  let searchEl: HTMLInputElement | undefined;
   const onFiltersClick = (e: Event) => {
+    e.preventDefault();
     if (props.onFilterClick) {
       props.onFilterClick();
     }
+  };
+  const onSearchSubmit = (e: Event) => {
     e.preventDefault();
+    if (props.onSearchSubmit) {
+      props.onSearchSubmit(searchEl?.value);
+    }
   };
 
   return (
     <search class="flex flex-col">
-      <form action={action()} method="get" onSubmit={handleSubmit}>
-        <label for="wim-search">Search Relying Parties and Intended Uses</label>
-        <div class="flex flex-row">
-          <input
-            type="search"
-            id="wim-search"
-            name="q"
-            value={props.value || ""}
-            placeholder="Type Insurance or Birthdate, ..."
-          />
-          <button type="submit" class="flex-shrink-0">
-            Search
-          </button>
-          <button class="ml-1 flex-shrink-0" onClick={onFiltersClick}>
-            <TbFilter />
-          </button>
-        </div>
-      </form>
+      <label for={id}>Search Relying Parties and Intended Uses</label>
+      <div class="flex flex-row">
+        <input
+          ref={searchEl}
+          type="search"
+          id={id}
+          name="q"
+          value={props.value || ""}
+          placeholder="Type your search term ..."
+        />
+        <button type="submit" class="flex-shrink-0" onClick={onSearchSubmit}>
+          Search
+        </button>
+        <button class="ml-1 flex-shrink-0" onClick={onFiltersClick}>
+          <TbFilter />
+        </button>
+      </div>
     </search>
   );
 };

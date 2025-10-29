@@ -43,7 +43,7 @@ export const MultiFilter: Component<MultiFilterProps> = (props) => {
       optionTextValue={(v) => v.label}
       value={value() as any} // any required as it seems there is some strange type inference going on
       name={props.name}
-      triggerMode="input"
+      triggerMode="focus"
       itemComponent={(props) => (
         <Combobox.Item item={props.item} class="combobox-item">
           <Combobox.ItemLabel>{props.item.rawValue.label}</Combobox.ItemLabel>
