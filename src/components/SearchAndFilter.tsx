@@ -24,12 +24,12 @@ export const SearchAndFilter: Component<{
   };
   const onSearchSubmit = (value: string | undefined) => {
     setSearchParams({
-      q: value ? `%value%` : undefined,
+      q: value,
     });
   };
   return (
     <search>
-      <form role="search">
+      <form role="search" onSubmit={(e) => e.preventDefault()}>
         <SearchBar
           value={searchValue()}
           category={params.searchCategory}

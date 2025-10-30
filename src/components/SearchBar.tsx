@@ -1,5 +1,4 @@
 import { Component } from "solid-js";
-import { useNavigate, useSearchParams, useLocation } from "@solidjs/router";
 import { TbFilter } from "solid-icons/tb";
 
 interface SearchBarProps {
@@ -10,10 +9,6 @@ interface SearchBarProps {
 }
 
 export const SearchBar: Component<SearchBarProps> = (props) => {
-  const navigate = useNavigate();
-  const [, setSearchParams] = useSearchParams();
-  const location = useLocation();
-
   /*
   const action = () =>
     props.category ? `/search/${props.category}` : "/search";
@@ -61,7 +56,7 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
   };
 
   return (
-    <search class="flex flex-col">
+    <div class="flex flex-col">
       <label for={id}>Search Relying Parties and Intended Uses</label>
       <div class="flex flex-row">
         <input
@@ -79,6 +74,6 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
           <TbFilter />
         </button>
       </div>
-    </search>
+    </div>
   );
 };

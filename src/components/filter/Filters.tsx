@@ -1,10 +1,10 @@
-import { Component } from "solid-js";
+import { Component, createSignal } from "solid-js";
 import type { BaseFilters } from "~/api/types";
 import { BooleanFilter } from "./BooleanFilter";
 import { MultiFilter } from "./MultiFilter";
 import { createAsync, query } from "@solidjs/router";
 import apiClient from "~/api";
-import { createStore } from "solid-js/store";
+import { MultiFilterAsync, MultiFilterOption } from "./MultiFilterAsync";
 
 interface FiltersProps {
   filters: BaseFilters;
@@ -22,6 +22,22 @@ export const Filters: Component<FiltersProps> = (props) => {
   };
 
   const countreis = createAsync(() => countriesQuery());
+
+  const [wrpOptions, setWRPoptions] = createSignal<MultiFilterOption[]>();
+  const onUpdateWRPinput = async (input?: string) => {
+    const result = await apiClient.getRelyingParties({
+      trade_name: input?.length ? `%${input}%` : undefined,
+    });
+    const opts = result?.data?.map(
+      (o): MultiFilterOption => ({
+        label: o.trade_name,
+        value: o.trade_name,
+        type: "exact",
+      })
+    );
+    setWRPoptions(opts || []);
+  };
+  onUpdateWRPinput();
 
   const countryOptions = () =>
     countreis()?.data?.map((v) => ({ label: v.value, value: v.value }));
@@ -65,10 +81,20 @@ export const Filters: Component<FiltersProps> = (props) => {
         <MultiFilter
           label="Country"
           name="country"
+          placeholder="Country"
           values={props.filters.country}
           onChange={handleFilterChange("country")}
           options={countryOptions()}
         ></MultiFilter>
+        <MultiFilterAsync
+          label="Relying Party"
+          name="wrp_id"
+          placeholder="Company"
+          options={wrpOptions()}
+          values={props.filters.trade_name}
+          onInputChange={onUpdateWRPinput}
+          onChange={handleFilterChange("trade_name")}
+        ></MultiFilterAsync>
       </div>
     </fieldset>
   );
