@@ -1,5 +1,6 @@
 import { Component } from "solid-js";
 import { TbFilter } from "solid-icons/tb";
+import { useTranslate } from "~/i18n/dict";
 
 interface SearchBarProps {
   value?: string;
@@ -9,6 +10,7 @@ interface SearchBarProps {
 }
 
 export const SearchBar: Component<SearchBarProps> = (props) => {
+  const t = useTranslate();
   /*
   const action = () =>
     props.category ? `/search/${props.category}` : "/search";
@@ -57,7 +59,7 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
 
   return (
     <div class="flex flex-col">
-      <label for={id}>Search Relying Parties and Intended Uses</label>
+      <label for={id}>{t.filters.labels.q()}</label>
       <div class="flex flex-row">
         <input
           ref={searchEl}
@@ -65,7 +67,7 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
           id={id}
           name="q"
           value={props.value || ""}
-          placeholder="Type your search term ..."
+          placeholder=""
         />
         <button type="submit" class="flex-shrink-0" onClick={onSearchSubmit}>
           Search

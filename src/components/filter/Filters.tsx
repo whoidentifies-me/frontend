@@ -5,6 +5,8 @@ import { MultiFilter } from "./MultiFilter";
 import { createAsync, query } from "@solidjs/router";
 import apiClient from "~/api";
 import { MultiFilterAsync, MultiFilterOption } from "./MultiFilterAsync";
+import { useI18n, useTranslate } from "~/i18n/dict";
+import { CountryCode } from "~/i18n/en";
 
 interface FiltersProps {
   filters: BaseFilters;
@@ -17,6 +19,8 @@ const countriesQuery = query(
 );
 
 export const Filters: Component<FiltersProps> = (props) => {
+  const t = useTranslate();
+
   const handleFilterChange = (key: keyof BaseFilters) => (value?: unknown) => {
     if (props.onFiltersChange) props.onFiltersChange({ [key]: value });
   };
@@ -40,7 +44,12 @@ export const Filters: Component<FiltersProps> = (props) => {
   onUpdateWRPinput();
 
   const countryOptions = () =>
-    countreis()?.data?.map((v) => ({ label: v.value, value: v.value }));
+    countreis()
+      ?.data?.map((v) => ({
+        label: t.countries[v.value as CountryCode]?.() || v.value,
+        value: v.value,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
 
   return (
     <fieldset class="border-solid my-4 p-2">
@@ -51,50 +60,77 @@ export const Filters: Component<FiltersProps> = (props) => {
           "grid-template-columns": "repeat(auto-fit, minmax(250px, 1fr))",
         }}
       >
-        <BooleanFilter
-          label="Is Public Sector Body"
-          name="is_psb"
-          value={props.filters.is_psb}
-          onChange={handleFilterChange("is_psb")}
-          trueLabel="Is PSB"
-          falseLabel="Is Not PSB"
-          allLabel="All"
-        />
-        <BooleanFilter
-          label="Is Intermediary"
-          name="is_intermediary"
-          value={props.filters.is_intermediary}
-          onChange={handleFilterChange("is_intermediary")}
-          trueLabel="Is Intermediary"
-          falseLabel="Is Not Intermediary"
-          allLabel="All"
-        />
-        <BooleanFilter
-          label="Uses Intermediaries"
-          name="uses_intermediary"
-          value={props.filters.uses_intermediary}
-          onChange={handleFilterChange("uses_intermediary")}
-          trueLabel="Uses Intermediaries"
-          falseLabel="Does Not Use Intermediaries"
-          allLabel="All"
-        />
+        <MultiFilterAsync
+          label={t.filters.labels.claim_path()!}
+          name="claim_path"
+          placeholder={t.filters.placeholders.claim_path()}
+          options={[]}
+          values={props.filters.claim_path}
+          onInputChange={() => {}}
+          onChange={handleFilterChange("claim_path")}
+        ></MultiFilterAsync>
+        <MultiFilterAsync
+          label={t.filters.labels.purpose()!}
+          name="purpose"
+          placeholder={t.filters.placeholders.purpose()}
+          options={[]}
+          values={props.filters.purpose}
+          onInputChange={() => {}}
+          onChange={handleFilterChange("purpose")}
+        ></MultiFilterAsync>
         <MultiFilter
-          label="Country"
+          label={t.filters.labels.country()!}
           name="country"
-          placeholder="Country"
+          placeholder={t.filters.placeholders.country()}
           values={props.filters.country}
           onChange={handleFilterChange("country")}
           options={countryOptions()}
         ></MultiFilter>
         <MultiFilterAsync
-          label="Relying Party"
+          label={t.filters.labels.trade_name()!}
           name="wrp_id"
-          placeholder="Company"
+          placeholder={t.filters.placeholders.trade_name()}
           options={wrpOptions()}
           values={props.filters.trade_name}
           onInputChange={onUpdateWRPinput}
           onChange={handleFilterChange("trade_name")}
         ></MultiFilterAsync>
+        <BooleanFilter
+          label={t.filters.labels.is_psb()!}
+          name="is_psb"
+          value={props.filters.is_psb}
+          onChange={handleFilterChange("is_psb")}
+          trueLabel={t.filters.values.is_psb.true()}
+          falseLabel={t.filters.values.is_psb.false()}
+          allLabel={t.filters.values.is_psb.all()}
+        />
+        <MultiFilterAsync
+          label={t.filters.labels.entitlement()!}
+          name="entitlement"
+          placeholder={t.filters.placeholders.entitlement()}
+          options={[]}
+          values={props.filters.entitlement}
+          onInputChange={() => {}}
+          onChange={handleFilterChange("entitlement")}
+        ></MultiFilterAsync>
+        <BooleanFilter
+          label={t.filters.labels.is_intermediary()!}
+          name="is_intermediary"
+          value={props.filters.is_intermediary}
+          onChange={handleFilterChange("is_intermediary")}
+          trueLabel={t.filters.values.is_intermediary.true()}
+          falseLabel={t.filters.values.is_intermediary.false()}
+          allLabel={t.filters.values.is_intermediary.all()}
+        />
+        <BooleanFilter
+          label={t.filters.labels.uses_intermediary()!}
+          name="uses_intermediary"
+          value={props.filters.uses_intermediary}
+          onChange={handleFilterChange("uses_intermediary")}
+          trueLabel={t.filters.values.uses_intermediary.true()}
+          falseLabel={t.filters.values.uses_intermediary.false()}
+          allLabel={t.filters.values.uses_intermediary.all()}
+        />
       </div>
     </fieldset>
   );
