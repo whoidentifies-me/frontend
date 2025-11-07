@@ -13,7 +13,7 @@ const getIntendedUses = query(async (filters: BaseFilters) => {
 
 export default function SearchIntendedUses() {
   const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
-  const { filters } = useSearchFilters(searchParams, setSearchParams);
+  const { filters } = useSearchFilters("intended-uses");
 
   const intendedUses = createAsync(() => getIntendedUses(filters()));
 

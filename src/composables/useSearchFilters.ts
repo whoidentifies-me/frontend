@@ -1,5 +1,7 @@
+import { useLocation, useNavigate, useSearchParams } from "@solidjs/router";
 import { createMemo } from "solid-js";
 import type { BaseFilters } from "~/api/types";
+import { buildUrlWithFilters } from "~/utils/url";
 
 const booleanValue = (value: string | string[] | undefined) => {
   if (Array.isArray(value)) {
@@ -22,9 +24,18 @@ const singleValue = (
 };
 
 export function useSearchFilters(
-  searchParams: Record<string, string | string[] | undefined>,
-  setSearchParams: (params: Record<string, string | string[]>) => void
+  searchCategory?: "intended-uses" | "relying-parties"
 ) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const formAction = () =>
+    searchCategory ? `/search/${searchCategory}` : "/search";
+  const shouldNavigate = () => {
+    return !location.pathname.startsWith("/search");
+  };
+
   const filters = createMemo((): BaseFilters => {
     return {
       q: singleValue(searchParams.q),
@@ -40,29 +51,36 @@ export function useSearchFilters(
   });
 
   const handleFiltersChange = (newFilters: Partial<BaseFilters>) => {
-    const stringParams: Record<string, string | string[]> = {};
+    const stringParams: Record<string, string | string[] | undefined> = {};
 
     Object.entries(newFilters).forEach(([key, value]) => {
-      if (value !== undefined) {
-        if (typeof value === "boolean") {
-          stringParams[key] = String(value);
-        } else if (Array.isArray(value)) {
-          stringParams[key] = value.map((v) => String(v));
-        } else {
-          stringParams[key] = String(value);
-        }
+      if (typeof value === "boolean") {
+        stringParams[key] = String(value);
+      } else if (Array.isArray(value)) {
+        stringParams[key] = value.map((v) => String(v));
+      } else if (value === undefined || value === null) {
+        stringParams[key] = undefined;
+      } else {
+        stringParams[key] = String(value);
       }
     });
+    console.log(stringParams);
 
     // For undefined values, we need to pass them separately
     const undefinedKeys = Object.entries(newFilters)
       .filter(([, value]) => value === undefined)
       .reduce((acc, [key]) => ({ ...acc, [key]: undefined }), {});
 
-    setSearchParams({ ...stringParams, ...undefinedKeys });
+    if (shouldNavigate()) {
+      const url = buildUrlWithFilters(formAction(), stringParams);
+      navigate(url);
+    } else {
+      setSearchParams(stringParams);
+    }
   };
 
   return {
+    formAction,
     filters,
     handleFiltersChange,
   };

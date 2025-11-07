@@ -43,6 +43,61 @@ export const Filters: Component<FiltersProps> = (props) => {
   };
   onUpdateWRPinput();
 
+  const [claimOptions, setClaimOptions] = createSignal<MultiFilterOption[]>();
+  const onUpdateClaimInput = async (input?: string) => {
+    const result = await apiClient.getFilterValues("claim_path", {
+      q: input?.length ? `%${input}%` : undefined,
+    });
+    const opts = result?.data?.map(
+      (o): MultiFilterOption => ({
+        label: o.value,
+        value: o.value,
+        type: "exact",
+      })
+    );
+    setClaimOptions(opts);
+  };
+  onUpdateClaimInput();
+
+  const [purposeOptions, setPurposeOptions] =
+    createSignal<MultiFilterOption[]>();
+  const onUpdatePurposeInput = async (input?: string) => {
+    const result = await apiClient.getIntendedUses({
+      purpose: input?.length ? `%${input}%` : undefined,
+    });
+    const purposes =
+      result?.data?.flatMap((o) => o.purposes.map((p) => p.content)) || [];
+    const uniquePurposes = [...new Set(purposes)];
+    const opts = uniquePurposes.map(
+      (purpose): MultiFilterOption => ({
+        label: purpose,
+        value: purpose,
+        type: "exact",
+      })
+    );
+    setPurposeOptions(opts);
+  };
+  onUpdatePurposeInput();
+
+  const [entitlementOptions, setEntitlementOptions] =
+    createSignal<MultiFilterOption[]>();
+  const onUpdateEntitlementInput = async (input?: string) => {
+    const result = await apiClient.getRelyingParties({
+      entitlement: input?.length ? `%${input}%` : undefined,
+    });
+    const entitlements = result?.data?.flatMap((o) => o.entitlements) || [];
+    const uniqueEntitlements = [...new Set(entitlements)];
+    const opts = uniqueEntitlements.map(
+      (entitlement): MultiFilterOption => ({
+        label: entitlement,
+        value: entitlement,
+        type: "exact",
+      })
+    );
+    setEntitlementOptions(opts);
+  };
+  onUpdateEntitlementInput();
+
   const countryOptions = () =>
     countreis()
       ?.data?.map((v) => ({
@@ -64,18 +119,18 @@ export const Filters: Component<FiltersProps> = (props) => {
           label={t.filters.labels.claim_path()!}
           name="claim_path"
           placeholder={t.filters.placeholders.claim_path()}
-          options={[]}
+          options={claimOptions()}
           values={props.filters.claim_path}
-          onInputChange={() => {}}
+          onInputChange={onUpdateClaimInput}
           onChange={handleFilterChange("claim_path")}
         ></MultiFilterAsync>
         <MultiFilterAsync
           label={t.filters.labels.purpose()!}
           name="purpose"
           placeholder={t.filters.placeholders.purpose()}
-          options={[]}
+          options={purposeOptions()}
           values={props.filters.purpose}
-          onInputChange={() => {}}
+          onInputChange={onUpdatePurposeInput}
           onChange={handleFilterChange("purpose")}
         ></MultiFilterAsync>
         <MultiFilter
@@ -108,9 +163,9 @@ export const Filters: Component<FiltersProps> = (props) => {
           label={t.filters.labels.entitlement()!}
           name="entitlement"
           placeholder={t.filters.placeholders.entitlement()}
-          options={[]}
+          options={entitlementOptions()}
           values={props.filters.entitlement}
-          onInputChange={() => {}}
+          onInputChange={onUpdateEntitlementInput}
           onChange={handleFilterChange("entitlement")}
         ></MultiFilterAsync>
         <BooleanFilter

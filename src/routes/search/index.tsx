@@ -8,16 +8,23 @@ import { SearchAndFilter } from "~/components/SearchAndFilter";
 import { useSearchFilters } from "~/composables/useSearchFilters";
 
 const getRelyingParties = query(async (filters: BaseFilters) => {
-  return await apiClient.getRelyingParties({ ...filters, limit: 10 });
+  return await apiClient.getRelyingParties({
+    ...filters,
+    q: filters.q ? `%${filters.q}%` : undefined,
+    limit: 10,
+  });
 }, "relying-parties");
 
 const getIntendedUses = query(async (filters: BaseFilters) => {
-  return await apiClient.getIntendedUses({ ...filters, limit: 10 });
+  return await apiClient.getIntendedUses({
+    ...filters,
+    q: filters.q ? `%${filters.q}%` : undefined,
+    limit: 10,
+  });
 }, "intended-uses");
 
 export default function SearchAll() {
-  const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
-  const { filters } = useSearchFilters(searchParams, setSearchParams);
+  const { filters } = useSearchFilters();
 
   const relyingParties = createAsync(() => getRelyingParties(filters()));
   const intendedUses = createAsync(() => getIntendedUses(filters()));
@@ -28,14 +35,22 @@ export default function SearchAll() {
       <CategoryTabs />
 
       <div class="mt-6">
-        <h3>Relying Parties</h3>
+        <h3>Companies</h3>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
-          <RelyingParties items={relyingParties()?.data} />
+          <RelyingParties
+            items={relyingParties()?.data}
+            hasMore={relyingParties()?.has_more}
+          />
         </ErrorBoundary>
 
-        <h3>Intended Uses</h3>
+        <div class="h-10"></div>
+
+        <h3>Requested Information items</h3>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
-          <IntendedUses items={intendedUses()?.data} />
+          <IntendedUses
+            items={intendedUses()?.data}
+            hasMore={intendedUses()?.has_more}
+          />
         </ErrorBoundary>
       </div>
     </>

@@ -18,7 +18,7 @@ export const BooleanFilter: Component<BooleanFilterProps> = (props) => {
   const currentValue = () => {
     if (props.value === true) return "true";
     if (props.value === false) return "false";
-    return "all";
+    return "";
   };
 
   const handleChange = (e: Event) => {
@@ -44,7 +44,7 @@ export const BooleanFilter: Component<BooleanFilterProps> = (props) => {
         value={currentValue()}
         onChange={handleChange}
       >
-        <option value="all" selected={currentValue() === "all"}>
+        <option value="" selected={currentValue() === ""}>
           {allLabel()}
         </option>
         <option value="true" selected={currentValue() === "true"}>

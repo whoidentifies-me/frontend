@@ -13,7 +13,7 @@ const getRelyingParties = query(async (filters: BaseFilters) => {
 
 export default function SearchRelyingParties() {
   const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
-  const { filters } = useSearchFilters(searchParams, setSearchParams);
+  const { filters } = useSearchFilters("relying-parties");
 
   const relyingParties = createAsync(() => getRelyingParties(filters()));
 

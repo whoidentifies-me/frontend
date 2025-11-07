@@ -1,22 +1,10 @@
 import { Component } from "solid-js";
 import { A, useSearchParams } from "@solidjs/router";
+import { buildUrlWithFilters } from "~/utils/url";
+import { useSearchFilters } from "~/composables/useSearchFilters";
 
 export const CategoryTabs: Component = () => {
-  const [searchParams] = useSearchParams();
-
-  const buildUrl = (path: string) => {
-    const params = new URLSearchParams();
-
-    // Preserve all current search parameters
-    Object.entries(searchParams).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
-        params.set(key, String(value));
-      }
-    });
-
-    const queryString = params.toString();
-    return queryString ? `${path}?${queryString}` : path;
-  };
+  const { filters } = useSearchFilters();
 
   const tabClass =
     "px-4 py-2 font-medium text-sm border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-blue-100 rounded-t-md transition-colors";
@@ -25,27 +13,30 @@ export const CategoryTabs: Component = () => {
   return (
     <nav class="flex space-x-1 border-b border-gray-200 mt-4" role="tablist">
       <A
-        href={buildUrl("/search")}
+        href={buildUrlWithFilters("/search", filters())}
         class={tabClass}
         activeClass={activeTabClass}
         role="tab"
         end
+        noScroll
       >
         All Results
       </A>
       <A
-        href={buildUrl("/search/relying-parties")}
+        href={buildUrlWithFilters("/search/relying-parties", filters())}
         class={tabClass}
         activeClass={activeTabClass}
         role="tab"
+        noScroll
       >
         Relying Parties
       </A>
       <A
-        href={buildUrl("/search/intended-uses")}
+        href={buildUrlWithFilters("/search/intended-uses", filters())}
         class={tabClass}
         activeClass={activeTabClass}
         role="tab"
+        noScroll
       >
         Intended Uses
       </A>
