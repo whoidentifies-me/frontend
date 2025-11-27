@@ -17,10 +17,13 @@
   "dependencies": {
     "@fontsource-variable/manrope": "^5.2.8",
     "@fontsource/anton": "^5.2.7",
+    "@kobalte/core": "^0.13.11",
+    "@solid-primitives/i18n": "^2.2.1",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.15.0",
     "@solidjs/start": "^1.1.0",
     "open-props": "^1.7.16",
+    "solid-icons": "^1.1.0",
     "solid-js": "^1.9.5",
     "typescript": "^5.9.3",
     "vinxi": "^0.5.7"
@@ -29,6 +32,7 @@
     "@eslint/js": "^9.37.0",
     "@tailwindcss/vite": "^4.0.7",
     "autoprefixer": "^10.4.21",
+    "baseline-browser-mapping": "^2.8.31",
     "browserslist-config-baseline": "^0.5.0",
     "eslint": "^9.37.0",
     "eslint-plugin-compat": "^6.0.2",

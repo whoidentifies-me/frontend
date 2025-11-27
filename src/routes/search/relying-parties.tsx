@@ -1,21 +1,34 @@
 import { Title } from "@solidjs/meta";
 import { createAsync, query, useSearchParams } from "@solidjs/router";
-import { ErrorBoundary } from "solid-js";
-import apiClient from "~/api";
-import { RelyingParties } from "~/components/RelyingParties";
-import { SearchBar } from "~/components/SearchBar";
-import { Filters } from "~/components/Filters";
+import {
+  createEffect,
+  createMemo,
+  createResource,
+  createSignal,
+  ErrorBoundary,
+  For,
+} from "solid-js";
+import apiClient, { ApiResponse, BaseFilters, RelyingParty } from "~/api";
 import { CategoryTabs } from "~/components/CategoryTabs";
+import { SearchAndFilter } from "~/components/SearchAndFilter";
+import { useSearchFilters } from "~/composables/useSearchFilters";
+import { InfiniteList } from "~/components/InfiniteList";
+import { RelyingPartyItem } from "~/components/RelyingPartyItem";
+import { createInfiniteScroll } from "~/utils/createInfiniteScroll";
 
-const getRelyingParties = query(async (q?: string) => {
-  return await apiClient.getRelyingParties({
-    q: q?.trim() ? `%${q?.trim()}%` : undefined,
-  });
+const getRelyingParties = query(async (filters: BaseFilters) => {
+  return await apiClient.getRelyingParties(filters);
 }, "relying-parties");
 
 export default function SearchRelyingParties() {
-  const [searchParams] = useSearchParams<{ q: string }>();
-  const relyingParties = createAsync(() => getRelyingParties(searchParams.q));
+  const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
+  const { filters } = useSearchFilters("relying-parties");
+  const relyingPartiesInitial = createAsync(() => getRelyingParties(filters()));
+
+  const relyingPartiesInfinite = createInfiniteScroll({
+    initialResult: relyingPartiesInitial,
+    fetcher: (cursor) => getRelyingParties({ ...filters(), cursor }),
+  });
 
   const getTitle = () => {
     if (searchParams.q) {
@@ -27,14 +40,21 @@ export default function SearchRelyingParties() {
   return (
     <>
       <Title>{getTitle()}</Title>
-      <SearchBar value={searchParams.q} category="relying-parties" />
-      <Filters />
+      <SearchAndFilter searchCategory="relying-parties"></SearchAndFilter>
       <CategoryTabs />
 
       <div class="mt-6">
         <h3>Relying Parties</h3>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
-          <RelyingParties items={relyingParties()?.data} />
+          <InfiniteList
+            onLoadMore={relyingPartiesInfinite.loadMore}
+            hasMore={relyingPartiesInfinite.hasMore()}
+            isLoading={relyingPartiesInfinite.loading()}
+          >
+            <For each={relyingPartiesInfinite.items()} fallback="No Results">
+              {(item) => <RelyingPartyItem data={item} />}
+            </For>
+          </InfiniteList>
         </ErrorBoundary>
       </div>
     </>

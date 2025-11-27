@@ -1,46 +1,51 @@
 import { Component } from "solid-js";
-import { useNavigate } from "@solidjs/router";
+import { TbFilter } from "solid-icons/tb";
+import { useTranslate } from "~/i18n/dict";
 
 interface SearchBarProps {
   value?: string;
   category?: "relying-parties" | "intended-uses";
+  onFilterClick?: () => void;
+  onSearchSubmit?: (value?: string) => void;
 }
 
 export const SearchBar: Component<SearchBarProps> = (props) => {
-  const navigate = useNavigate();
+  const t = useTranslate();
 
-  const handleSubmit = (e: SubmitEvent) => {
+  const id = "wim-search-bar";
+  let searchEl: HTMLInputElement | undefined;
+  const onFiltersClick = (e: Event) => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const query = formData.get("q") as string;
-
-    // Build target path based on category prop
-    const targetPath = props.category ? `/search/${props.category}` : "/search";
-
-    if (query?.trim()) {
-      navigate(`${targetPath}?q=${encodeURIComponent(query.trim())}`);
-    } else {
-      navigate(targetPath);
+    if (props.onFilterClick) {
+      props.onFilterClick();
+    }
+  };
+  const onSearchSubmit = (e: Event) => {
+    e.preventDefault();
+    if (props.onSearchSubmit) {
+      props.onSearchSubmit(searchEl?.value?.trim());
     }
   };
 
   return (
-    <search class="flex flex-col">
-      <form action="/search" method="get" onSubmit={handleSubmit}>
-        <label for="wim-search">Search Relying Parties and Intended Uses</label>
-        <div class="flex flex-row">
-          <input
-            type="search"
-            id="wim-search"
-            name="q"
-            value={props.value || ""}
-            placeholder="Type Insurance or Birthdate, ..."
-          />
-          <button type="submit" class="flex-shrink-0">
-            Search
-          </button>
-        </div>
-      </form>
-    </search>
+    <div class="flex flex-col">
+      <label for={id}>{t.filters.labels.q()}</label>
+      <div class="flex flex-row">
+        <input
+          ref={searchEl}
+          type="search"
+          id={id}
+          name="q"
+          value={props.value || ""}
+          placeholder=""
+        />
+        <button type="submit" class="flex-shrink-0" onClick={onSearchSubmit}>
+          Search
+        </button>
+        <button class="ml-1 flex-shrink-0" onClick={onFiltersClick}>
+          <TbFilter />
+        </button>
+      </div>
+    </div>
   );
 };

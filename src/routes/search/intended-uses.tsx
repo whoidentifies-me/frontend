@@ -1,21 +1,27 @@
 import { Title } from "@solidjs/meta";
 import { createAsync, query, useSearchParams } from "@solidjs/router";
-import { ErrorBoundary } from "solid-js";
-import apiClient from "~/api";
-import { IntendedUses } from "~/components/IntendedUses";
-import { SearchBar } from "~/components/SearchBar";
-import { Filters } from "~/components/Filters";
+import { ErrorBoundary, For } from "solid-js";
+import apiClient, { BaseFilters } from "~/api";
 import { CategoryTabs } from "~/components/CategoryTabs";
+import { SearchAndFilter } from "~/components/SearchAndFilter";
+import { useSearchFilters } from "~/composables/useSearchFilters";
+import { createInfiniteScroll } from "~/utils/createInfiniteScroll";
+import { InfiniteList } from "~/components/InfiniteList";
+import { IntendedUseItem } from "~/components/IntendedUseItem";
 
-const getIntendedUses = query(async (q?: string) => {
-  return await apiClient.getIntendedUses({
-    q: q?.trim() ? `%${q?.trim()}%` : undefined,
-  });
+const getIntendedUses = query(async (filters: BaseFilters) => {
+  return await apiClient.getIntendedUses(filters);
 }, "intended-uses");
 
 export default function SearchIntendedUses() {
-  const [searchParams] = useSearchParams<{ q: string }>();
-  const intendedUses = createAsync(() => getIntendedUses(searchParams.q));
+  const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
+  const { filters } = useSearchFilters("intended-uses");
+
+  const intendedUsesInitial = createAsync(() => getIntendedUses(filters()));
+  const intendedUsesInfinite = createInfiniteScroll({
+    initialResult: intendedUsesInitial,
+    fetcher: (cursor) => getIntendedUses({ ...filters(), cursor }),
+  });
 
   const getTitle = () => {
     if (searchParams.q) {
@@ -27,14 +33,21 @@ export default function SearchIntendedUses() {
   return (
     <>
       <Title>{getTitle()}</Title>
-      <SearchBar value={searchParams.q} category="intended-uses" />
-      <Filters />
+      <SearchAndFilter searchCategory="intended-uses"></SearchAndFilter>
       <CategoryTabs />
 
       <div class="mt-6">
         <h3>Intended Uses</h3>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
-          <IntendedUses items={intendedUses()?.data} />
+          <InfiniteList
+            isLoading={intendedUsesInfinite.loading()}
+            hasMore={intendedUsesInfinite.hasMore()}
+            onLoadMore={intendedUsesInfinite.loadMore}
+          >
+            <For each={intendedUsesInfinite.items()} fallback="No Results">
+              {(item) => <IntendedUseItem data={item} />}
+            </For>
+          </InfiniteList>
         </ErrorBoundary>
       </div>
     </>
