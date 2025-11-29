@@ -7,6 +7,8 @@ import apiClient from "~/api";
 import { MultiFilterAsync, MultiFilterOption } from "./MultiFilterAsync";
 import { useI18n, useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
+import { MultiSelectOption } from "vinxi/dist/types/runtime/sh";
+import { toArray } from "~/utils/array";
 
 interface FiltersProps {
   filters: BaseFilters;
@@ -22,7 +24,7 @@ export const Filters: Component<FiltersProps> = (props) => {
   const t = useTranslate();
 
   const handleFilterChange = (key: keyof BaseFilters) => (value?: unknown) => {
-    if (props.onFiltersChange) props.onFiltersChange({ [key]: value });
+    props.onFiltersChange?.({ [key]: value });
   };
 
   const countreis = createAsync(() => countriesQuery());
@@ -120,18 +122,20 @@ export const Filters: Component<FiltersProps> = (props) => {
           name="claim_path"
           placeholder={t.filters.placeholders.claim_path()}
           options={claimOptions()}
-          values={props.filters.claim_path}
+          values={toArray(props.filters.claim_path)}
           onInputChange={onUpdateClaimInput}
           onChange={handleFilterChange("claim_path")}
+          allowSubstr={true}
         ></MultiFilterAsync>
         <MultiFilterAsync
           label={t.filters.labels.purpose()!}
           name="purpose"
           placeholder={t.filters.placeholders.purpose()}
           options={purposeOptions()}
-          values={props.filters.purpose}
+          values={toArray(props.filters.purpose)}
           onInputChange={onUpdatePurposeInput}
           onChange={handleFilterChange("purpose")}
+          allowSubstr={true}
         ></MultiFilterAsync>
         <MultiFilter
           label={t.filters.labels.country()!}
@@ -146,9 +150,10 @@ export const Filters: Component<FiltersProps> = (props) => {
           name="wrp_id"
           placeholder={t.filters.placeholders.trade_name()}
           options={wrpOptions()}
-          values={props.filters.trade_name}
+          values={toArray(props.filters.trade_name)}
           onInputChange={onUpdateWRPinput}
           onChange={handleFilterChange("trade_name")}
+          allowSubstr={true}
         ></MultiFilterAsync>
         <BooleanFilter
           label={t.filters.labels.is_psb()!}
@@ -164,9 +169,10 @@ export const Filters: Component<FiltersProps> = (props) => {
           name="entitlement"
           placeholder={t.filters.placeholders.entitlement()}
           options={entitlementOptions()}
-          values={props.filters.entitlement}
+          values={toArray(props.filters.entitlement)}
           onInputChange={onUpdateEntitlementInput}
           onChange={handleFilterChange("entitlement")}
+          allowSubstr={true}
         ></MultiFilterAsync>
         <BooleanFilter
           label={t.filters.labels.is_intermediary()!}

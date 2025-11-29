@@ -1,7 +1,9 @@
-import { Component, Show } from "solid-js";
-import { Combobox } from "@kobalte/core/combobox";
+import { Component, createMemo, createSignal, Show } from "solid-js";
+import { Combobox, ComboboxTriggerMode, Label } from "@kobalte/core/combobox";
 import { TbCheck, TbX } from "solid-icons/tb";
 import { Search } from "@kobalte/core/search";
+import { isSourceFile } from "typescript";
+import { removeResponseHeader } from "vinxi/http";
 
 export interface MultiFilterOption {
   value: string;
@@ -9,51 +11,149 @@ export interface MultiFilterOption {
   type: "exact" | "substr";
 }
 
+function toOption(value: string): MultiFilterOption {
+  if (value.startsWith("%") && value.endsWith("%")) {
+    return {
+      label: value.substring(1, value.length - 1),
+      value,
+      type: "substr",
+    };
+  }
+  return {
+    label: value,
+    value,
+    type: "exact",
+  };
+}
+
 interface MultiFilterProps {
   label: string;
   name: string;
   options?: MultiFilterOption[];
-  values?: string | string[];
+  values?: string[];
   placeholder?: string;
+  allowSubstr?: boolean;
   onChange?: (val: string[]) => void;
   onInputChange?: (val: string) => void;
 }
 
 export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
-  const onChange = (value: any[]) => {
-    console.log("change", value);
-    if (props.onChange) {
-      props.onChange(value.map((v) => v.value));
+  const [input, setInput] = createSignal<string | undefined>(undefined);
+  const [isOpen, setIsOpen] = createSignal(false);
+
+  const selectedValuesSet = createMemo(() => new Set(props.values));
+  const optionValuesSet = createMemo(
+    () => new Set(props.options?.map((o) => o.value))
+  );
+  const selectedOptions = createMemo<MultiFilterOption[]>(
+    () => props.values?.map((v) => toOption(v)) || []
+  );
+
+  // snapshot only updates when modal is closed
+  const selectedOptionsSnapshot = createMemo<MultiFilterOption[]>((prev) =>
+    !isOpen() ? selectedOptions() : prev || []
+  );
+  const selectedOptionsSnapshotValuesSet = createMemo(
+    () => new Set(selectedOptionsSnapshot().map((o) => o.value))
+  );
+
+  const options = createMemo<MultiFilterOption[]>(() => {
+    const options: MultiFilterOption[] = [];
+
+    if (!input()) {
+      options.push(
+        ...selectedOptionsSnapshot(),
+        ...(props.options?.filter(
+          (o) => !selectedOptionsSnapshotValuesSet().has(o.value)
+        ) || [])
+      );
+    } else {
+      if (props.allowSubstr) {
+        options.push(toOption(`%${input()}%`));
+      }
+      if (props.options) {
+        options.push(...props.options);
+      }
     }
-  };
-  const options = () => props.options || [];
-  const value = (): MultiFilterOption[] => {
-    if (!props.values) {
-      return [];
-    }
-    const input = Array.isArray(props.values) ? props.values : [props.values];
-    return input
-      .map((val) => props.options?.find((opt) => opt.value === val))
-      .filter((opt) => !!opt);
-  };
+
+    return options;
+  });
+
+  const value = createMemo((): MultiFilterOption[] => {
+    return (
+      props.values
+        ?.map((val) => options().find((opt) => opt.value === val))
+        .filter((opt) => !!opt) || []
+    );
+  });
+
   const onInputChange = (v: string) => {
-    console.log("input", v);
-    if (props.onInputChange) {
-      props.onInputChange(v);
-    }
+    setInput(v);
+    props.onInputChange?.(v);
   };
+
+  const onChange = (values: MultiFilterOption[]) => {
+    let selected = selectedOptions();
+
+    // Add newly selected values
+    for (const item of values) {
+      if (!selectedValuesSet().has(item.value)) {
+        selected.push(item);
+      }
+    }
+
+    // remove unselected
+    const oldSelectedValuesSet =
+      optionValuesSet().intersection(selectedValuesSet());
+    const newSelectedValuesSet = new Set(values.map((v) => v.value));
+    const removedValuesSet =
+      oldSelectedValuesSet.difference(newSelectedValuesSet);
+
+    const selectedSubstringValuesSet = new Set(
+      options()
+        .filter((o) => selectedValuesSet().has(o.value) && o.type === "substr")
+        .map((o) => o.value)
+    );
+    const removedSubstringValue =
+      selectedSubstringValuesSet.difference(newSelectedValuesSet);
+
+    const removeSet = removedValuesSet.union(removedSubstringValue);
+    if (removeSet.size) {
+      selected = selected.filter((o) => !removeSet.has(o.value));
+    }
+
+    console.log(
+      "updated selected",
+      selectedOptions(),
+      oldSelectedValuesSet,
+      removeSet
+    );
+
+    props.onChange?.(selected.map((v) => v.value));
+  };
+
+  const onClear = () => {
+    props.onChange?.([]);
+  };
+
+  const onOpenChange = (isOpen: boolean, triggerMode?: ComboboxTriggerMode) => {
+    setIsOpen(isOpen);
+  };
+
   const id = () => `async-select-${props.name}`;
+
   return (
     <div class="flex flex-col items-stretch justify-end text-start">
       <label for={id()}>{props.label}</label>
       <Search
         triggerMode="focus"
         options={options()}
-        optionValue={(o) => o.value}
+        optionValue={(v) => v.value}
         optionLabel={(o) => o.label}
         optionTextValue={(o) => o.label}
         onInputChange={onInputChange}
         onChange={(v) => onChange(v)}
+        onOpenChange={onOpenChange}
         name={props.name}
         value={value() as any}
         placeholder={props.placeholder}
@@ -63,12 +163,32 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
         closeOnSelection={false}
         itemComponent={(props) => {
           return (
-            <Search.Item class="search-item" item={props.item}>
-              <Search.ItemLabel>{props.item.rawValue.label}</Search.ItemLabel>
-              <Combobox.ItemIndicator class="combobox-item-indicator">
-                <TbCheck />
-              </Combobox.ItemIndicator>
-            </Search.Item>
+            <>
+              <Show when={props.item.rawValue.type === "exact"}>
+                <Search.Item
+                  onSelect={console.log}
+                  class="search-item"
+                  item={props.item}
+                >
+                  <Search.ItemLabel>
+                    {props.item.rawValue.label}
+                  </Search.ItemLabel>
+                  <Combobox.ItemIndicator class="combobox-item-indicator">
+                    <TbCheck />
+                  </Combobox.ItemIndicator>
+                </Search.Item>
+              </Show>
+              <Show when={props.item.rawValue.type === "substr"}>
+                <Search.Item class="search-item" item={props.item}>
+                  <Search.ItemLabel>
+                    Contains: "{props.item.rawValue.label}"
+                  </Search.ItemLabel>
+                  <Combobox.ItemIndicator class="combobox-item-indicator">
+                    <TbCheck />
+                  </Combobox.ItemIndicator>
+                </Search.Item>
+              </Show>
+            </>
           );
         }}
       >
@@ -77,11 +197,11 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
             <>
               <Search.Input class="search-input" id={id()}></Search.Input>
               <div class="flex flex-row items-center">
-                <Show when={state?.selectedOptions()?.length}>
-                  <span class="mx-2">{state?.selectedOptions()?.length}</span>
+                <Show when={selectedValuesSet().size}>
+                  <span class="mx-2">{selectedValuesSet().size}</span>
                   <button
                     onPointerDown={(e) => e.stopPropagation()}
-                    onClick={state.clear}
+                    onClick={onClear}
                   >
                     <TbX />
                   </button>
