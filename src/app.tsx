@@ -7,6 +7,7 @@ import { MetaProvider, Link, Meta } from "@solidjs/meta";
 import "@fontsource-variable/manrope";
 import "@fontsource/anton";
 import { I18nProvider } from "~/i18n/dict";
+import { Footer } from "./sections/Footer";
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
             <>
               <Header />
               <Suspense>{props.children}</Suspense>
+              <Footer />
             </>
           )}
         >
