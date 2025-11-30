@@ -1,12 +1,9 @@
 /* Import OpenProps modules */
-@import "open-props/sizes";
-@import "open-props/fonts";
 @import "open-props/shadows";
-@import "open-props/borders";
 
 :root {
   /* Custom colors */
-  --primary: #3b82f6;
+  --primary: #c44f05;
   --secondary: #64748b;
   --danger: #ef4444;
   --success: #10b981;
@@ -22,4 +19,7 @@
   --gray-700: #334155;
   --gray-800: #1e293b;
   --gray-900: #0f172a;
+  --card-light-bg-color: #eaf3ef;
+  --card-bg-color: #ccc5b9;
+  --card-outline-boder-color: #8aa99c;
 }

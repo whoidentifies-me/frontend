@@ -164,10 +164,6 @@ pre {
   padding: 1.5rem;
 }
 
-svg {
-  fill: currentcolor;
-}
-
 [aria-disabled="true" i],
 [disabled] {
   cursor: not-allowed;

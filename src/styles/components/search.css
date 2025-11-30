@@ -212,3 +212,33 @@
   font-size: 16px;
   line-height: 1;
 }
+
+/* Filter collapse animation */
+.filter-collapse-container {
+  display: grid;
+  transition: grid-template-rows 300ms ease;
+  overflow: hidden;
+}
+
+.filter-collapse-container[data-expanded="true"] {
+  grid-template-rows: 1fr;
+}
+
+.filter-collapse-container[data-expanded="false"] {
+  grid-template-rows: 0fr;
+}
+
+.filter-collapse-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filter-collapse-container {
+    transition: none;
+  }
+
+  .filter-collapse-container[data-expanded="false"] {
+    display: none;
+  }
+}

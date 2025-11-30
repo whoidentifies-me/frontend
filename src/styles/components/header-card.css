@@ -1,0 +1,13 @@
+.header-card {
+  border-radius: 2rem;
+  padding: 3.5rem;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.header-card-with-overlay {
+  background-image:
+    linear-gradient(rgb(255 255 255 / 60%), rgb(255 255 255 / 60%)),
+    var(--bg-image);
+}

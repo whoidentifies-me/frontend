@@ -1,4 +1,10 @@
 export const en = {
+  page: {
+    title: "who identifies me?",
+    subtitle:
+      "Discover how identity data flows through the EU’s digital ecosystem",
+    logoAlt: `"Who Identifies Me" logo with a question mark formed from orange fingerprint patterns and dark gray text.`,
+  },
   countries: {
     AT: "Austria",
     BE: "Belgium",
@@ -41,6 +47,7 @@ export const en = {
       entitlement: "Permissions",
     },
     placeholders: {
+      q: "Search for Relying Party or Use Cases",
       trade_name: "Enter company name...",
       purpose: "Select purpose...",
       claim_path: "Enter requested information URI...",

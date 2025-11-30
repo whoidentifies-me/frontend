@@ -15,6 +15,7 @@ export default function App() {
       <Show when={import.meta.env.VITE_MODE === "stage"}>
         <Meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
       </Show>
+
       <I18nProvider initialLocale="en">
         <Router
           root={(props) => (
