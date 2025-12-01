@@ -58,6 +58,7 @@ a {
   text-underline-offset: 2px;
   text-decoration-skip-ink: auto;
   font-weight: 500;
+  color: inherit;
 
   &:not(:is(:hover, :focus)) {
     text-decoration-color: color-mix(in srgb, currentcolor, transparent 50%);
