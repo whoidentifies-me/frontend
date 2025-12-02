@@ -62,9 +62,9 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
 
     if (!input()) {
       options.push(
-        ...selectedOptionsSnapshot(),
+        ...(selectedOptionsSnapshot() || []),
         ...(props.options?.filter(
-          (o) => !selectedOptionsSnapshotValuesSet().has(o.value)
+          (o) => !selectedOptionsSnapshotValuesSet()?.has(o.value)
         ) || [])
       );
     } else {

@@ -3,7 +3,7 @@ import { useTranslate } from "~/i18n/dict";
 export interface NavigationItem {
   href: string;
   anchor?: string;
-  label: () => string;
+  label: () => string | undefined;
 }
 
 export const createNavigationItems = (): NavigationItem[] => {
@@ -25,8 +25,8 @@ export const createNavigationItems = (): NavigationItem[] => {
       label: () => t.navigation.newsletter(),
     },
     {
-      href: "/#faqs",
-      anchor: "#faqs",
+      href: "/#faq",
+      anchor: "#faq",
       label: () => t.navigation.faqs(),
     },
   ];

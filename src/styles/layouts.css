@@ -2,3 +2,7 @@
   max-width: 55rem;
   margin-inline: auto;
 }
+
+.wim-section {
+  padding-block: 4rem;
+}

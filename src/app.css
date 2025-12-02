@@ -7,39 +7,4 @@
 @import "./styles/components/index.css" layer(components);
 @import "./styles/typography.css" layer(app);
 @import "./styles/layouts.css" layer(app);
-
-@plugin "daisyui" {
-  themes: light --default;
-}
-
-@plugin "daisyui/theme" {
-  name: "light";
-  default: true;
-  prefersdark: false;
-  color-scheme: "light";
-
-  --color-primary: #c44f05;
-  --color-primary-content: #fff;
-  --color-base-100: oklch(100% 0 0deg);
-  --color-base-200: oklch(96% 0 0deg);
-  --color-base-300: oklch(92% 0 0deg);
-  --color-base-content: oklch(20% 0 0deg);
-  --radius-box: 1rem;
-  --radius-field: 2rem;
-  --border: 1px;
-  --depth: 0;
-  --noise: 0;
-  --color-neutral: oklch(35.519% 0.032 262.988deg);
-  --color-neutral-content: oklch(98.462% 0.001 247.838deg);
-  --color-info: oklch(72.06% 0.191 231.6deg);
-  --color-info-content: oklch(0% 0 0deg);
-  --color-success: oklch(64.8% 0.15 160deg);
-  --color-success-content: oklch(0% 0 0deg);
-  --color-warning: oklch(84.71% 0.199 83.87deg);
-  --color-warning-content: oklch(0% 0 0deg);
-  --color-error: oklch(71.76% 0.221 22.18deg);
-  --color-error-content: oklch(0% 0 0deg);
-  --radius-selector: 0rem;
-  --size-selector: 0.25rem;
-  --size-field: 0.25rem;
-}
+@import "./styles/daisyui.css";
