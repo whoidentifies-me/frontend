@@ -1,0 +1,39 @@
+@plugin "daisyui" {
+  themes: wim --default;
+}
+
+@plugin "daisyui/theme" {
+  name: "wim";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light";
+
+  --color-primary: #c44f05;
+  --color-primary-content: #fff;
+  --color-secondary: #ccc5b9;
+  --color-secondary-content: #212121;
+  --color-accent: #403d39;
+  --color-accent-content: #fff;
+  --color-base-100: #fff;
+  --color-base-200: #eaf3ef;
+  --color-base-300: #ccc5b9;
+  --color-base-content: #212121;
+  --color-neutral: oklch(43% 0 0deg);
+  --color-neutral-content: oklch(98% 0 0deg);
+  --color-info: oklch(71% 0.143 215.221deg);
+  --color-info-content: oklch(98% 0.019 200.873deg);
+  --color-success: oklch(72% 0.219 149.579deg);
+  --color-success-content: oklch(98% 0.018 155.826deg);
+  --color-warning: oklch(70% 0.213 47.604deg);
+  --color-warning-content: oklch(98% 0.016 73.684deg);
+  --color-error: oklch(63% 0.237 25.331deg);
+  --color-error-content: oklch(97% 0.013 17.38deg);
+  --radius-box: 1rem;
+  --radius-field: 2rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+  --radius-selector: 0rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+}

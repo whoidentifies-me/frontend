@@ -1,10 +1,8 @@
-import { Component, createSignal, Show } from "solid-js";
+import { Component, createSignal } from "solid-js";
 import { SearchBar } from "./SearchBar";
 import { Filters } from "./filter/Filters";
 import { ActiveFilters } from "./filter/ActiveFilters";
-import { useSearchParams, useLocation, useNavigate } from "@solidjs/router";
 import { useSearchFilters } from "~/composables/useSearchFilters";
-import { buildUrlWithFilters } from "~/utils/url";
 import type { BaseFilters } from "~/api/types";
 
 export const SearchAndFilter: Component<{
@@ -39,7 +37,7 @@ export const SearchAndFilter: Component<{
     }
   };
   return (
-    <search>
+    <search class="rounded-2xl p-6 bg-white border-black/20 border">
       <form
         role="search"
         action={formAction()}
@@ -51,13 +49,24 @@ export const SearchAndFilter: Component<{
           category={params.searchCategory}
           onFilterClick={toggleFilterCollapsed}
           onSearchSubmit={(q) => handleFiltersChange({ q })}
+          aria-expanded={!filterCollapsed()}
+          aria-controls="search-filters"
         ></SearchBar>
-        <Show when={!filterCollapsed()}>
-          <Filters
-            filters={filters()}
-            onFiltersChange={handleFiltersChange}
-          ></Filters>
-        </Show>
+        <div
+          class="filter-collapse-container"
+          data-expanded={!filterCollapsed()}
+          id="search-filters"
+          role="region"
+          aria-label="Search filters"
+          inert={filterCollapsed()}
+        >
+          <div class="filter-collapse-inner">
+            <Filters
+              filters={filters()}
+              onFiltersChange={handleFiltersChange}
+            ></Filters>
+          </div>
+        </div>
         <ActiveFilters
           filters={filters()}
           onRemoveFilter={handleRemoveFilter}

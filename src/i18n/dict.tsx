@@ -9,7 +9,7 @@ type Dict = typeof defaultDict;
 type Locale = "en";
 
 // Pre-flatten at module load time (happens once per process)
-const flattenedDicts: Record<Locale, ReturnType<typeof flatten>> = {
+const flattenedDicts: Record<Locale, ReturnType<typeof flatten<Dict>>> = {
   en: flatten(en),
 };
 

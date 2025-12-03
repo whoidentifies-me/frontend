@@ -9,6 +9,21 @@ h4,
 h5,
 h6,
 .wim-font-title {
-  font-family: Anton, sans-serif;
+  font-family: Montserrat, sans-serif;
   font-weight: 400;
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 3.5rem;
+}
+
+.subtitle {
+  font-family: "Open Sans", sans-serif;
+  font-size: 1.125rem;
+  color: #212121;
+}
+
+.text-primary {
+  color: var(--primary);
 }

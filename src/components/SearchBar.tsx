@@ -1,5 +1,5 @@
+import { TbFilter, TbInputSearch, TbSearch } from "solid-icons/tb";
 import { Component } from "solid-js";
-import { TbFilter } from "solid-icons/tb";
 import { useTranslate } from "~/i18n/dict";
 
 interface SearchBarProps {
@@ -7,6 +7,8 @@ interface SearchBarProps {
   category?: "relying-parties" | "intended-uses";
   onFilterClick?: () => void;
   onSearchSubmit?: (value?: string) => void;
+  "aria-expanded"?: boolean;
+  "aria-controls"?: string;
 }
 
 export const SearchBar: Component<SearchBarProps> = (props) => {
@@ -28,24 +30,38 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
   };
 
   return (
-    <div class="flex flex-col">
-      <label for={id}>{t.filters.labels.q()}</label>
-      <div class="flex flex-row">
+    <div class="flex flex-row gap-2">
+      <label class="input flex-grow me-1.5 text-lg" for={id}>
+        <span class="sr-only">{t.filters.labels.q()}</span>
+        <TbSearch />
         <input
+          class="mx-0 grow"
           ref={searchEl}
           type="search"
           id={id}
           name="q"
           value={props.value || ""}
-          placeholder=""
+          placeholder={t.filters.placeholders.q()}
         />
-        <button type="submit" class="flex-shrink-0" onClick={onSearchSubmit}>
-          Search
-        </button>
-        <button class="ml-1 flex-shrink-0" onClick={onFiltersClick}>
-          <TbFilter />
-        </button>
-      </div>
+      </label>
+
+      <button
+        class="flex-shrink-0 btn btn-circle btn-primary"
+        onClick={onFiltersClick}
+        aria-expanded={props["aria-expanded"]}
+        aria-controls={props["aria-controls"]}
+        aria-label={`${props["aria-expanded"] ? "Hide" : "Show"} search filters`}
+      >
+        <TbFilter />
+      </button>
+
+      <button
+        type="submit"
+        class="btn btn-primary flex-shrink-0"
+        onClick={onSearchSubmit}
+      >
+        Search
+      </button>
     </div>
   );
 };
