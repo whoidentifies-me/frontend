@@ -3,7 +3,9 @@
   "type": "module",
   "scripts": {
     "dev": "vinxi dev",
+    "dev:spa": "vinxi dev --config app.config.spa.ts",
     "build": "vinxi build",
+    "build:spa": "vinxi build --config app.config.spa.ts",
     "typecheck": "tsc --noEmit --skipLibCheck",
     "start": "vinxi start",
     "lint": "eslint src/",

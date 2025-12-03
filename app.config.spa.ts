@@ -3,5 +3,11 @@ import { baseConfig } from "./app.config.base";
 
 export default defineConfig({
   ...baseConfig,
-  ssr: true,
+  ssr: false,
+  server: {
+    static: true,
+    prerender: {
+      crawlLinks: true,
+    },
+  },
 });
