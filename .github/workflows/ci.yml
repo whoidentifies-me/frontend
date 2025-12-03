@@ -52,11 +52,11 @@ jobs:
         VITE_API_URL: https://api.stage.whoidentifies.me
 
     - name: Deploy to Dev Environment
-      # if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/main'
       uses: easingthemes/ssh-deploy@v5.1.0
       with:
         SSH_PRIVATE_KEY: ${{ secrets.DEV_DEPLOYMENT_SSH_KEY }}
-        REMOTE_HOST: app-stage.whoidentifies.me
+        REMOTE_HOST: dev.whoidentifies.me
         REMOTE_USER: wim-dev-deploy
         SOURCE: .output/public/
         TARGET: ~/
