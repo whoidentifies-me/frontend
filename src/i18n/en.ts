@@ -12,6 +12,11 @@ export const en = {
     logoAlt: `"Who Identifies Me" logo with a question mark formed from orange fingerprint patterns and dark gray text.`,
   },
   home: {
+    explore: {
+      title: "Explore",
+      description:
+        "Lorem ipsum dolor sit amet consectetur. Faucibus rutrum est natoque at fringilla tristique venenatis etiam turpis. Arcu massa rhoncus duis pellentesque vel tincidunt viverra tempus. Amet volutpat nulla gravida morbi turpis tortor. Fermentum erat etiam massa nunc augue amet felis dictum. Massa pellentesque mauris a consectetur nullam malesuada dolor et. Vel leo viverra facilisi elit integer. Ullamcorper sociis vel libero enim nunc ipsum vitae.",
+    },
     newsletter: {
       title: "Newsletter",
       description:

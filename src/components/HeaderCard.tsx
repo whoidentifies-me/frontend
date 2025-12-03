@@ -35,7 +35,7 @@ export const HeaderCard: ParentComponent<HeaderCardProps> = (props) => {
         </div>
         <div class=""></div>
       </div>
-      <div class="px-14 -mt-28">{props.children}</div>
+      <div class="px-14 -mt-28 -mb-15">{props.children}</div>
     </div>
   );
 };
