@@ -44,3 +44,20 @@ jobs:
         name: build-output
         path: .output/
         retention-days: 7
+
+    # Deploy SPA build (no SSR) to static file host as dev server
+    - name: Build SPA
+      run: npm run build:spa
+      env:
+        VITE_API_URL: https://api.stage.whoidentifies.me
+
+    - name: Deploy to Dev Environment
+      # if: github.ref == 'refs/heads/main'
+      uses: easingthemes/ssh-deploy@v5
+      with:
+        SSH_PRIVATE_KEY: ${{ secrets.DEV_DEPLOYMENT_SSH_KEY }}
+        REMOTE_HOST: app-stage.whoidentifies.me
+        REMOTE_USER: wim-dev-deploy
+        SOURCE: .output/public/
+        TARGET: ~/
+        ARGS: -avz --delete
