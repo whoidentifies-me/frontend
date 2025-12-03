@@ -1,0 +1,11 @@
+.wim-attributes span:not(:last-child)::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: currentcolor;
+  border-radius: 50%;
+  margin-inline: 0.5em;
+  vertical-align: middle;
+  transform: translateY(-0.065em);
+}

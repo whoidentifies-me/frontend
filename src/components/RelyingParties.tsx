@@ -11,7 +11,7 @@ export const RelyingParties: Component<{
 }> = (props) => {
   const { filters } = useSearchFilters();
   return (
-    <div>
+    <div class="space-y-4">
       <For each={props.items || []} fallback="No Results">
         {(item) => <RelyingPartyItem data={item} />}
       </For>

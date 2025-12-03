@@ -25,6 +25,7 @@ export const Explore: Component = () => {
             <p class="mb-0">{t.home.explore.description()}</p>
           </>
         }
+        rightColumnClass="flex flex-col gap-3 justify-center"
         rightContent={
           <For each={exploreItems()?.data || []}>
             {(item) => <RelyingPartyItem data={item}></RelyingPartyItem>}

@@ -11,7 +11,7 @@ export const IntendedUses: Component<{
 }> = (props) => {
   const { filters } = useSearchFilters();
   return (
-    <div class="">
+    <div class="space-y-4">
       <For each={props.items || []} fallback="No Results">
         {(item) => <IntendedUseItem data={item} />}
       </For>
