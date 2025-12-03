@@ -47,6 +47,7 @@ export default function SearchRelyingParties() {
         <h3>Relying Parties</h3>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
           <InfiniteList
+            class="space-y-4"
             onLoadMore={relyingPartiesInfinite.loadMore}
             hasMore={relyingPartiesInfinite.hasMore()}
             isLoading={relyingPartiesInfinite.loading()}

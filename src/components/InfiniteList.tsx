@@ -6,15 +6,18 @@ import {
   ParentComponent,
   Show,
 } from "solid-js";
+import { useTranslate } from "~/i18n/dict";
 
 interface InfiniteListParams {
   onLoadMore?: () => Promise<void> | void;
+  class?: string;
   isLoading?: boolean;
   hasMore?: boolean;
   rootMargin?: string; // triggers before reaching the end of the list
 }
 
 export const InfiniteList: ParentComponent<InfiniteListParams> = (props) => {
+  const t = useTranslate();
   let triggerElRef: HTMLDivElement | undefined;
   let observer: IntersectionObserver | undefined;
 
@@ -59,19 +62,21 @@ export const InfiniteList: ParentComponent<InfiniteListParams> = (props) => {
   };
 
   return (
-    <div>
+    <div class={`${props.class}`}>
       {props.children}
       <div style={{ height: "1px", width: "100%" }} ref={triggerElRef}></div>
       <Show when={props.hasMore && !props.isLoading}>
-        <div class="flex flex-row justify-center">
-          <button onClick={onLoadMoreClick}>Load more</button>
+        <div class="flex flex-row justify-center my-4">
+          <button class="btn btn-primary" onClick={onLoadMoreClick}>
+            {t.components.generic.loadMore()}
+          </button>
         </div>
       </Show>
       <Show when={!props.hasMore}>
-        <div>You reached the end of the List</div>
+        <div class="text-center my-4">You reached the end of the List</div>
       </Show>
       <Show when={props.isLoading}>
-        <div>Loading more...</div>
+        <div class="text-center my-4">Loading more...</div>
       </Show>
     </div>
   );

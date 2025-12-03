@@ -125,6 +125,8 @@ export const en = {
     },
     generic: {
       details: "Details",
+      viewMore: "View more",
+      loadMore: "Load more",
     },
   },
 };
