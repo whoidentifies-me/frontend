@@ -14,10 +14,12 @@ const getIntendedUses = query(async (filters: BaseFilters) => {
 }, "intended-uses");
 
 export default function SearchIntendedUses() {
-  const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
+  const [searchParams] = useSearchParams<{ q: string }>();
   const { filters } = useSearchFilters("intended-uses");
 
-  const intendedUsesInitial = createAsync(() => getIntendedUses(filters()));
+  const intendedUsesInitial = createAsync(() =>
+    getIntendedUses({ ...filters() })
+  );
   const intendedUsesInfinite = createInfiniteScroll({
     initialResult: intendedUsesInitial,
     fetcher: (cursor) => getIntendedUses({ ...filters(), cursor }),
@@ -40,6 +42,7 @@ export default function SearchIntendedUses() {
         <h3>Intended Uses</h3>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
           <InfiniteList
+            class="space-y-4"
             isLoading={intendedUsesInfinite.loading()}
             hasMore={intendedUsesInfinite.hasMore()}
             onLoadMore={intendedUsesInfinite.loadMore}

@@ -67,9 +67,6 @@ export function useSearchFilters(
     console.log(stringParams);
 
     // For undefined values, we need to pass them separately
-    const undefinedKeys = Object.entries(newFilters)
-      .filter(([, value]) => value === undefined)
-      .reduce((acc, [key]) => ({ ...acc, [key]: undefined }), {});
 
     if (shouldNavigate()) {
       const url = buildUrlWithFilters(formAction(), stringParams);

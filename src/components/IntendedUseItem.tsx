@@ -1,23 +1,72 @@
-import { A } from "@solidjs/router";
-import { Component } from "solid-js";
+import { Component, createMemo } from "solid-js";
 import { IntendedUse } from "~/api";
+import { defaultLocale, useI18n } from "~/i18n/dict";
+import { ItemCard } from "./ItemCard";
+import { CountryCode } from "~/i18n/en";
 
 export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
-  const getPurpose = () => {
-    return (
-      props.data?.purposes.find((p) => p.lang === "en")?.content ??
-      props.data?.purposes.find(() => true)?.content
+  const { locale, t } = useI18n();
+
+  const purpose = createMemo((): string => {
+    const purposes = props.data.purposes
+      .slice()
+      .sort(
+        (a, b) => (a.purpose_index || Infinity) - (b.purpose_index || Infinity)
+      );
+
+    let purposeText = purposes.find(
+      (p) => p.lang.toLowerCase() === locale().toLowerCase()
     );
+    if (purposeText) {
+      return purposeText.content;
+    }
+    purposeText = purposes.find(
+      (p) => p.lang.toLowerCase() === defaultLocale.toLowerCase()
+    );
+    if (purposeText) {
+      return purposeText.content;
+    }
+    if (purposes?.length) {
+      return purposes.at(0)?.content || "";
+    }
+    return "";
+  });
+
+  const country = () =>
+    props.data.relying_party?.legal_entity.country
+      ? t.countries[
+          props.data.relying_party.legal_entity.country as CountryCode
+        ]?.()
+      : undefined;
+
+  const publicSecorBody = () => {
+    if (props.data.relying_party?.is_psb === true) {
+      return t.relyingParties.public();
+    } else if (props.data.relying_party?.is_psb === false) {
+      return t.relyingParties.nonPublic();
+    }
+    return undefined;
   };
-  const getURL = () =>
-    props?.data?.id
+
+  const attributes = createMemo((): string[] => {
+    return [
+      props.data.relying_party?.trade_name,
+      publicSecorBody(),
+      country(),
+    ].filter((a) => !!a) as string[];
+  });
+
+  const href = () =>
+    props.data?.id
       ? `/rp/${props.data.wrp_id}#intended_use_${props.data.id.substring(0, 8)}`
       : "";
+
   return (
-    <div class="border-solid my-2">
-      {getPurpose()}
-      <br />
-      <A href={getURL()}>More ...</A>
-    </div>
+    <ItemCard
+      id={props.data.id}
+      title={purpose()}
+      attributes={attributes()}
+      href={href()}
+    />
   );
 };

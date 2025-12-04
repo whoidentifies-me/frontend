@@ -1,14 +1,7 @@
 import { Title } from "@solidjs/meta";
 import { createAsync, query, useSearchParams } from "@solidjs/router";
-import {
-  createEffect,
-  createMemo,
-  createResource,
-  createSignal,
-  ErrorBoundary,
-  For,
-} from "solid-js";
-import apiClient, { ApiResponse, BaseFilters, RelyingParty } from "~/api";
+import { ErrorBoundary, For } from "solid-js";
+import apiClient, { BaseFilters } from "~/api";
 import { CategoryTabs } from "~/components/CategoryTabs";
 import { SearchAndFilter } from "~/components/SearchAndFilter";
 import { useSearchFilters } from "~/composables/useSearchFilters";
@@ -21,7 +14,7 @@ const getRelyingParties = query(async (filters: BaseFilters) => {
 }, "relying-parties");
 
 export default function SearchRelyingParties() {
-  const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
+  const [searchParams] = useSearchParams<{ q: string }>();
   const { filters } = useSearchFilters("relying-parties");
   const relyingPartiesInitial = createAsync(() => getRelyingParties(filters()));
 
@@ -47,6 +40,7 @@ export default function SearchRelyingParties() {
         <h3>Relying Parties</h3>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
           <InfiniteList
+            class="space-y-4"
             onLoadMore={relyingPartiesInfinite.loadMore}
             hasMore={relyingPartiesInfinite.hasMore()}
             isLoading={relyingPartiesInfinite.loading()}

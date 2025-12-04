@@ -1,4 +1,4 @@
-import { createAsync, query, useSearchParams } from "@solidjs/router";
+import { createAsync, query } from "@solidjs/router";
 import { ErrorBoundary } from "solid-js";
 import apiClient, { BaseFilters } from "~/api";
 import { IntendedUses } from "~/components/IntendedUses";
@@ -11,7 +11,6 @@ const getRelyingParties = query(async (filters: BaseFilters) => {
   return await apiClient.getRelyingParties({
     ...filters,
     q: filters.q ? `%${filters.q}%` : undefined,
-    limit: 10,
   });
 }, "relying-parties");
 
@@ -19,15 +18,19 @@ const getIntendedUses = query(async (filters: BaseFilters) => {
   return await apiClient.getIntendedUses({
     ...filters,
     q: filters.q ? `%${filters.q}%` : undefined,
-    limit: 10,
   });
 }, "intended-uses");
 
 export default function SearchAll() {
+  const limit = 5;
   const { filters } = useSearchFilters();
 
-  const relyingParties = createAsync(() => getRelyingParties(filters()));
-  const intendedUses = createAsync(() => getIntendedUses(filters()));
+  const relyingParties = createAsync(() =>
+    getRelyingParties({ ...filters(), limit })
+  );
+  const intendedUses = createAsync(() =>
+    getIntendedUses({ ...filters(), limit })
+  );
 
   return (
     <>

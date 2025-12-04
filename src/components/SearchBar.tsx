@@ -1,4 +1,4 @@
-import { TbFilter, TbInputSearch, TbSearch } from "solid-icons/tb";
+import { TbFilter, TbSearch } from "solid-icons/tb";
 import { Component } from "solid-js";
 import { useTranslate } from "~/i18n/dict";
 

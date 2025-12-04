@@ -5,9 +5,8 @@ import { MultiFilter } from "./MultiFilter";
 import { createAsync, query } from "@solidjs/router";
 import apiClient from "~/api";
 import { MultiFilterAsync, MultiFilterOption } from "./MultiFilterAsync";
-import { useI18n, useTranslate } from "~/i18n/dict";
+import { useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
-import { MultiSelectOption } from "vinxi/dist/types/runtime/sh";
 import { toArray } from "~/utils/array";
 
 interface FiltersProps {
@@ -109,8 +108,8 @@ export const Filters: Component<FiltersProps> = (props) => {
       .sort((a, b) => a.label.localeCompare(b.label));
 
   return (
-    <fieldset class="border-solid my-4 p-2">
-      <legend>Filters</legend>
+    <fieldset class="fieldset border-solid my-4 p-2">
+      <legend class="fieldset-legend">Filters</legend>
       <div
         class="grid gap-8"
         style={{

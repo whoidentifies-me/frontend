@@ -8,9 +8,9 @@
     "build:spa": "vinxi build --config app.config.spa.ts",
     "typecheck": "tsc --noEmit --skipLibCheck",
     "start": "vinxi start",
-    "lint": "eslint src/",
+    "lint": "eslint src/ --max-warnings 0",
     "lint:fix": "eslint src/ --fix",
-    "lint:css": "stylelint \"src/**/*.css\"",
+    "lint:css": "stylelint \"src/**/*.css\" --max-warnings 0",
     "lint:css:fix": "stylelint \"src/**/*.css\" --fix",
     "format": "prettier --write src/",
     "format:check": "prettier --check src/",
@@ -56,11 +56,11 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
-      "eslint --fix",
+      "eslint --fix --max-warnings 0",
       "prettier --write"
     ],
     "*.css": [
-      "stylelint --fix",
+      "stylelint --fix --max-warnings 0",
       "prettier --write"
     ],
     "*.{md,json}": [

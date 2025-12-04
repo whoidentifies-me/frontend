@@ -25,7 +25,7 @@ export const en = {
     faq: {
       title: "Frequently Asked Questions",
       description:
-        "Here you’ll find answers to the most common questions about our project. We’ve collected the key information in one place to make things easy for you. If you’re still unsure about something, feel free to reach out — we’re happy to help.",
+        "Here you’ll find answers to the most common questions about our project. We’ve collected the key information in one place to make things easy for you.If you’re still unsure about something, feel free to reach out — we’re happy to help.",
       items: [
         {
           title: "Lorem ipsum dolor sit amet?",
@@ -45,6 +45,10 @@ export const en = {
         },
       ],
     },
+  },
+  relyingParties: {
+    public: "Public Sector",
+    nonPublic: "Company",
   },
   countries: {
     AT: "Austria",
@@ -119,7 +123,12 @@ export const en = {
       placeholder: "Enter your Email",
       subscribeBtn: "Subscribe",
     },
+    generic: {
+      details: "Details",
+      viewMore: "View more",
+      loadMore: "Load more",
+    },
   },
-} as const;
+};
 
 export type CountryCode = keyof typeof en.countries;
