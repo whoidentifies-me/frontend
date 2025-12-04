@@ -1,9 +1,7 @@
 import { Component, createMemo, createSignal, Show } from "solid-js";
-import { Combobox, ComboboxTriggerMode, Label } from "@kobalte/core/combobox";
+import { Combobox } from "@kobalte/core/combobox";
 import { TbCheck, TbX } from "solid-icons/tb";
 import { Search } from "@kobalte/core/search";
-import { isSourceFile } from "typescript";
-import { removeResponseHeader } from "vinxi/http";
 
 export interface MultiFilterOption {
   value: string;
@@ -136,7 +134,7 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
     props.onChange?.([]);
   };
 
-  const onOpenChange = (isOpen: boolean, triggerMode?: ComboboxTriggerMode) => {
+  const onOpenChange = (isOpen: boolean) => {
     setIsOpen(isOpen);
   };
 
@@ -193,7 +191,7 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
         }}
       >
         <Search.Control class="search-control" aria-label={props.label}>
-          {(state) => (
+          {() => (
             <>
               <Search.Input class="search-input" id={id()}></Search.Input>
               <div class="flex flex-row items-center">

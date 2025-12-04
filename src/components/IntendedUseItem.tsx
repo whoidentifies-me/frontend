@@ -1,6 +1,6 @@
 import { Component, createMemo } from "solid-js";
 import { IntendedUse } from "~/api";
-import { defaultLocale, useI18n, useTranslate } from "~/i18n/dict";
+import { defaultLocale, useI18n } from "~/i18n/dict";
 import { ItemCard } from "./ItemCard";
 import { CountryCode } from "~/i18n/en";
 

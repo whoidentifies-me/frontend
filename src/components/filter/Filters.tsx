@@ -5,9 +5,8 @@ import { MultiFilter } from "./MultiFilter";
 import { createAsync, query } from "@solidjs/router";
 import apiClient from "~/api";
 import { MultiFilterAsync, MultiFilterOption } from "./MultiFilterAsync";
-import { useI18n, useTranslate } from "~/i18n/dict";
+import { useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
-import { MultiSelectOption } from "vinxi/dist/types/runtime/sh";
 import { toArray } from "~/utils/array";
 
 interface FiltersProps {

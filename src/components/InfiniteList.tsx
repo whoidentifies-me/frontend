@@ -1,11 +1,4 @@
-import {
-  Component,
-  ErrorBoundary,
-  onCleanup,
-  onMount,
-  ParentComponent,
-  Show,
-} from "solid-js";
+import { onCleanup, onMount, ParentComponent, Show } from "solid-js";
 import { useTranslate } from "~/i18n/dict";
 
 interface InfiniteListParams {

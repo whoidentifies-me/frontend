@@ -1,6 +1,6 @@
 import { Component, createMemo } from "solid-js";
 import { RelyingParty } from "~/api";
-import { defaultLocale, useI18n, useTranslate } from "~/i18n/dict";
+import { defaultLocale, useI18n } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
 import { ItemCard } from "./ItemCard";
 

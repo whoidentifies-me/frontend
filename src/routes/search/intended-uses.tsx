@@ -14,7 +14,7 @@ const getIntendedUses = query(async (filters: BaseFilters) => {
 }, "intended-uses");
 
 export default function SearchIntendedUses() {
-  const [searchParams, setSearchParams] = useSearchParams<{ q: string }>();
+  const [searchParams] = useSearchParams<{ q: string }>();
   const { filters } = useSearchFilters("intended-uses");
 
   const intendedUsesInitial = createAsync(() =>

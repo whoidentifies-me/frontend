@@ -1,4 +1,4 @@
-import { createAsync, query, useSearchParams } from "@solidjs/router";
+import { createAsync, query } from "@solidjs/router";
 import { ErrorBoundary } from "solid-js";
 import apiClient, { BaseFilters } from "~/api";
 import { IntendedUses } from "~/components/IntendedUses";
