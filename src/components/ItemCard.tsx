@@ -1,5 +1,5 @@
 import { A } from "@solidjs/router";
-import { Component, Show } from "solid-js";
+import { Component, For, Show } from "solid-js";
 import { useTranslate } from "~/i18n/dict";
 
 export interface ItemCardProps {
@@ -19,22 +19,25 @@ export const ItemCard: Component<ItemCardProps> = (props) => {
       class="wim-card wim-card-outline-accent flex flex-row items-center"
       aria-labelledby={titleId()}
     >
-      <div class="flex flex-col flex-grow">
-        <span id={titleId()} class="wim-font-title">
+      <div class="flex flex-col flex-grow min-w-0">
+        <span id={titleId()} class="wim-font-title line-clamp-1">
           {props.title}
         </span>
         <Show when={props.attributes.length > 0}>
-          <p class="wim-attributes my-0 text-accent/80">
-            {props.attributes.map((attr, index) => (
-              <span>{attr}</span>
-            ))}
+          <p class="wim-attributes my-0 text-accent/80 line-clamp-1">
+            <For each={props.attributes}>
+              {(item) => <span class="">{item}</span>}
+            </For>
           </p>
         </Show>
         <Show when={props.description}>
           <p class="mt-2 mb-0 line-clamp-2">{props.description || ""}</p>
         </Show>
       </div>
-      <A class="btn btn-primary btn-outline no-underline" href={props.href}>
+      <A
+        class="btn btn-primary btn-outline no-underline shrink-0"
+        href={props.href}
+      >
         {t.components.generic.details()}
       </A>
     </article>

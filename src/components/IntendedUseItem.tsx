@@ -2,6 +2,7 @@ import { Component, createMemo } from "solid-js";
 import { IntendedUse } from "~/api";
 import { defaultLocale, useI18n, useTranslate } from "~/i18n/dict";
 import { ItemCard } from "./ItemCard";
+import { CountryCode } from "~/i18n/en";
 
 export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
   const { locale, t } = useI18n();
@@ -31,10 +32,28 @@ export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
     return "";
   });
 
+  const country = () =>
+    props.data.relying_party?.legal_entity.country
+      ? t.countries[
+          props.data.relying_party.legal_entity.country as CountryCode
+        ]?.()
+      : undefined;
+
+  const publicSecorBody = () => {
+    if (props.data.relying_party?.is_psb === true) {
+      return t.relyingParties.public();
+    } else if (props.data.relying_party?.is_psb === false) {
+      return t.relyingParties.nonPublic();
+    }
+    return undefined;
+  };
+
   const attributes = createMemo((): string[] => {
-    return [props.data.relying_party?.trade_name].filter(
-      (a) => !!a
-    ) as string[];
+    return [
+      props.data.relying_party?.trade_name,
+      publicSecorBody(),
+      country(),
+    ].filter((a) => !!a) as string[];
   });
 
   const href = () =>
@@ -47,7 +66,6 @@ export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
       id={props.data.id}
       title={purpose()}
       attributes={attributes()}
-      description={purpose().length > 60 ? undefined : purpose() || undefined}
       href={href()}
     />
   );

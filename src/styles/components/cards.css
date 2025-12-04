@@ -5,6 +5,7 @@
 .wim-card {
   border-radius: 1rem;
   padding: 1rem;
+  overflow: hidden;
 }
 
 .wim-card.wim-card-outline-accent {
