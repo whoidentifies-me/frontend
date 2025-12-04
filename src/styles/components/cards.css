@@ -1,11 +1,12 @@
-.wim-card-lg {
-  border-radius: 2rem;
-}
-
 .wim-card {
   border-radius: 1rem;
   padding: 1rem;
   overflow: hidden;
+}
+
+.wim-card.wim-card-lg {
+  border-radius: 2rem;
+  padding: 2rem;
 }
 
 .wim-card.wim-card-outline-accent {

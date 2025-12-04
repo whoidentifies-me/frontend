@@ -8,6 +8,8 @@ type Dict = typeof defaultDict;
 
 type Locale = "en";
 
+export type Translator = ReturnType<typeof chainedTranslator<Dict, string>>;
+
 export const defaultLocale: Locale = "en";
 
 // Pre-flatten at module load time (happens once per process)

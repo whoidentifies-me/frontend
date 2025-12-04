@@ -3,6 +3,7 @@ import { ErrorBoundary, For } from "solid-js";
 import apiClient from "~/api";
 import { IntendedUseDetails } from "~/components/IntendedUseDetails";
 import { RelyingPartyDetails } from "~/components/RelyingPartyDetails";
+import { RelyingPartyHeader } from "~/components/RelyingPartyHeader";
 
 const getRelyingParty = query(async (id: string) => {
   return await apiClient.getRelyingParty(id);
@@ -19,17 +20,20 @@ export default function RelyingParty() {
   );
 
   return (
-    <div class="wim-container">
-      <h2>Relying Party</h2>
-      <ErrorBoundary fallback={<div>Something went wrong!</div>}>
-        <RelyingPartyDetails data={relyingParty()} />
-      </ErrorBoundary>
-      <h2 class="mt-8">Intended Uses</h2>
-      <ErrorBoundary fallback={<div>Something went wrong!</div>}>
-        <For each={intendedUses()?.data}>
-          {(item) => <IntendedUseDetails data={item} />}
-        </For>
-      </ErrorBoundary>
-    </div>
+    <>
+      <RelyingPartyHeader data={relyingParty()}></RelyingPartyHeader>
+      <div class="wim-container">
+        <h2>Relying Party</h2>
+        <ErrorBoundary fallback={<div>Something went wrong!</div>}>
+          <RelyingPartyDetails data={relyingParty()} />
+        </ErrorBoundary>
+        <h2 class="mt-8">Intended Uses</h2>
+        <ErrorBoundary fallback={<div>Something went wrong!</div>}>
+          <For each={intendedUses()?.data}>
+            {(item) => <IntendedUseDetails data={item} />}
+          </For>
+        </ErrorBoundary>
+      </div>
+    </>
   );
 }

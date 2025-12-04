@@ -117,6 +117,10 @@ export const en = {
       },
     },
   },
+  relyingPartyDetails: {
+    backToResults: "Back to results",
+    website: "Website",
+  },
   components: {
     newsletter: {
       label: "Enter your Email",
