@@ -99,15 +99,15 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
       <div class="flex flex-wrap gap-2 my-4">
         <For each={activeBadges()}>
           {(badge) => (
-            <div class="inline-flex items-center gap-2 px-3 py-1 border border-solid border-gray-300 text-sm">
-              <span>{badge.label}</span>
+            <div class="inline-flex items-center gap-2 p-2 pe-4 border border-primary rounded-full text-sm">
               <button
                 onClick={() => handleRemove(badge)}
-                class="flex items-center justify-center w-4 h-4"
+                class="flex items-center justify-center btn btn-ghost btn-circle btn-primary btn-sm -m-1"
                 aria-label={`Remove filter: ${badge.label}`}
               >
-                <TbX size={12} />
+                <TbX size="1.125rem" />
               </button>
+              <span>{badge.label}</span>
             </div>
           )}
         </For>

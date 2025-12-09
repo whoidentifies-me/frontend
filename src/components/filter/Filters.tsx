@@ -108,8 +108,8 @@ export const Filters: Component<FiltersProps> = (props) => {
       .sort((a, b) => a.label.localeCompare(b.label));
 
   return (
-    <fieldset class="fieldset border-solid my-4 p-2">
-      <legend class="fieldset-legend">Filters</legend>
+    <fieldset class="my-4 mx-0 py-0 px-1 border-none">
+      <legend class="sr-only">Filters</legend>
       <div
         class="grid gap-8"
         style={{

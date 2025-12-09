@@ -1,47 +1,3 @@
-.search-control {
-  display: inline-flex;
-  justify-content: space-between;
-  width: 100%;
-  border-radius: 0;
-  font-size: 1em;
-  line-height: 1;
-  outline: none;
-  background-color: white;
-  border: 1px solid hsl(240deg 6% 90%);
-  color: hsl(240deg 4% 16%);
-  transition:
-    border-color 250ms,
-    color 250ms;
-}
-
-.search-control[data-invalid] {
-  border-color: hsl(0deg 72% 51%);
-  color: hsl(0deg 72% 51%);
-}
-
-.search-control-multi {
-  width: 100%;
-  min-width: 240px;
-  max-width: 300px;
-}
-
-.search-input {
-  appearance: none;
-  display: inline-flex;
-  width: 100%;
-  min-height: 40px;
-  padding-left: 16px;
-  font-size: 1em;
-  background: transparent;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  outline: none;
-}
-
-.search-input::placeholder {
-  color: hsl(240deg 4% 46%);
-}
-
 .search-indicator {
   appearance: none;
   display: inline-flex;
@@ -95,28 +51,17 @@
 
 .search-content {
   background-color: white;
-  border-radius: 0;
+  border-radius: 12px;
   border: 1px solid hsl(240deg 6% 90%);
   box-shadow:
     0 4px 6px -1px rgb(0 0 0 / 10%),
     0 2px 4px -2px rgb(0 0 0 / 10%);
-
-  /* transform-origin: var(--kb-search-content-transform-origin);
-  animation: contentHide 250ms ease-in forwards; */
-
-  /* width: var(--kb-popper-anchor-width); */
 }
-
-/*
-.search__content[data-expanded] {
-  animation: contentShow 250ms ease-out;
-}
-*/
 
 .search-listbox {
   overflow-y: auto;
   max-height: 360px;
-  padding: 8px;
+  padding-block: 8px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -143,6 +88,7 @@
   gap: 4px;
   justify-content: space-between;
   padding-block: 8px;
+  padding-inline: 12px;
 }
 
 .search-item[data-disabled] {
@@ -154,8 +100,7 @@
 .search-item[data-highlighted] {
   outline: none;
   box-sizing: border-box;
-  background-color: hsl(240deg 5% 96%);
-  box-shadow: inset 0 0 0 2px hsl(200deg 98% 39%);
+  background-color: color-mix(in srgb, var(--color-primary) 20%, white 80%);
 }
 
 .search-section {
@@ -217,7 +162,7 @@
 .filter-collapse-container {
   display: grid;
   transition: grid-template-rows 300ms ease;
-  overflow: hidden;
+  overflow-y: hidden;
 }
 
 .filter-collapse-container[data-expanded="true"] {
@@ -229,7 +174,7 @@
 }
 
 .filter-collapse-inner {
-  overflow: hidden;
+  overflow-y: hidden;
   min-height: 0;
 }
 

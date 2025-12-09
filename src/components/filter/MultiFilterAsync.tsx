@@ -142,7 +142,9 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
 
   return (
     <div class="flex flex-col items-stretch justify-end text-start">
-      <label for={id()}>{props.label}</label>
+      <label for={id()} class="text-sm font-semibold mb-2">
+        {props.label}
+      </label>
       <Search
         triggerMode="focus"
         options={options()}
@@ -190,12 +192,12 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
           );
         }}
       >
-        <Search.Control class="search-control" aria-label={props.label}>
+        <Search.Control class="" aria-label={props.label}>
           {() => (
             <>
-              <Search.Input class="search-input" id={id()}></Search.Input>
+              <Search.Input class="select" id={id()}></Search.Input>
               <div class="flex flex-row items-center">
-                <Show when={selectedValuesSet().size}>
+                <Show when={selectedValuesSet().size && false}>
                   <span class="mx-2">{selectedValuesSet().size}</span>
                   <button
                     onPointerDown={(e) => e.stopPropagation()}
