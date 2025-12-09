@@ -1,4 +1,4 @@
-import { createAsync, query } from "@solidjs/router";
+import { A, createAsync, query } from "@solidjs/router";
 import { Component, For } from "solid-js";
 import apiClient from "~/api";
 import { TwoColumnLayout } from "~/components/layout/TwoColumnLayout";
@@ -27,9 +27,16 @@ export const Explore: Component = () => {
         }
         rightColumnClass="flex flex-col gap-3 justify-center"
         rightContent={
-          <For each={exploreItems()?.data || []}>
-            {(item) => <RelyingPartyItem data={item}></RelyingPartyItem>}
-          </For>
+          <>
+            <For each={exploreItems()?.data || []}>
+              {(item) => <RelyingPartyItem data={item}></RelyingPartyItem>}
+            </For>
+            <div class="flex flex-row justify-center">
+              <A href="/search#results" class="btn btn-primary no-underline">
+                {t.components.generic.viewMore()}
+              </A>
+            </div>
+          </>
         }
       ></TwoColumnLayout>
     </section>

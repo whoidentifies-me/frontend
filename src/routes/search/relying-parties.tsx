@@ -36,7 +36,7 @@ export default function SearchRelyingParties() {
       <SearchAndFilter searchCategory="relying-parties"></SearchAndFilter>
       <CategoryTabs />
 
-      <div class="mt-6">
+      <div id="results" class="mt-6">
         <h3>Relying Parties</h3>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
           <InfiniteList

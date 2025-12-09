@@ -38,7 +38,7 @@ export default function SearchIntendedUses() {
       <SearchAndFilter searchCategory="intended-uses"></SearchAndFilter>
       <CategoryTabs />
 
-      <div class="mt-6">
+      <div id="results" class="mt-6">
         <h3>Intended Uses</h3>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
           <InfiniteList
