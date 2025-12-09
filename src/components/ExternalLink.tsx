@@ -1,12 +1,24 @@
-import { Component, JSX } from "solid-js";
+import { Component, JSX, Show } from "solid-js";
 import { TbExternalLink } from "solid-icons/tb";
 
-export const ExternalLink: Component<
-  JSX.AnchorHTMLAttributes<HTMLAnchorElement>
-> = (props) => {
+interface ExternalLinkProps
+  extends JSX.AnchorHTMLAttributes<HTMLAnchorElement> {
+  showIcon?: boolean;
+}
+
+export const ExternalLink: Component<ExternalLinkProps> = (props) => {
+  const { showIcon = true, ...anchorProps } = props;
+
   return (
-    <a {...props} target="_blank" rel="noopener noreferrer" class={props.class}>
-      <TbExternalLink class="me-1 inline align-middle -translate-y-0.5" />
+    <a
+      {...anchorProps}
+      target="_blank"
+      rel="noopener noreferrer"
+      class={props.class}
+    >
+      <Show when={showIcon}>
+        <TbExternalLink class="me-1 inline align-middle -translate-y-0.5" />
+      </Show>
       {props.children}
     </a>
   );

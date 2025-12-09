@@ -1,15 +1,20 @@
-.wim-card-lg {
-  border-radius: 2rem;
-}
-
 .wim-card {
   border-radius: 1rem;
   padding: 1rem;
   overflow: hidden;
 }
 
-.wim-card.wim-card-outline-accent {
+.wim-card.wim-card-lg {
+  border-radius: 2rem;
+  padding: 2rem;
+}
+
+.wim-card-outline-accent {
   border-style: solid;
   border-width: 1px;
   border-color: var(--color-accent);
+}
+
+.wim-card-outline {
+  border-color: var(--border-300);
 }

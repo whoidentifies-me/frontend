@@ -8,6 +8,8 @@ type Dict = typeof defaultDict;
 
 type Locale = "en";
 
+export type Translator = ReturnType<typeof chainedTranslator<Dict, string>>;
+
 export const defaultLocale: Locale = "en";
 
 // Pre-flatten at module load time (happens once per process)
@@ -18,7 +20,7 @@ const flattenedDicts: Record<Locale, ReturnType<typeof flatten<Dict>>> = {
 const I18nContext = createContext<{
   locale: () => Locale;
   setLocale: (locale: Locale) => void;
-  t: ReturnType<typeof chainedTranslator<Dict, string>>;
+  t: Translator;
 }>();
 
 export function I18nProvider(props: { children: any; initialLocale?: Locale }) {
