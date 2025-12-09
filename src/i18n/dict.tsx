@@ -20,7 +20,7 @@ const flattenedDicts: Record<Locale, ReturnType<typeof flatten<Dict>>> = {
 const I18nContext = createContext<{
   locale: () => Locale;
   setLocale: (locale: Locale) => void;
-  t: ReturnType<typeof chainedTranslator<Dict, string>>;
+  t: Translator;
 }>();
 
 export function I18nProvider(props: { children: any; initialLocale?: Locale }) {

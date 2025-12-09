@@ -22,7 +22,3 @@ h1 {
   font-size: 1.125rem;
   color: #212121;
 }
-
-.text-primary {
-  color: var(--primary);
-}

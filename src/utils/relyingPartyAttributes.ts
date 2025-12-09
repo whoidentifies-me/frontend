@@ -1,4 +1,4 @@
-import { RelyingParty, ServiceDescription } from "~/api";
+import { LocalizedText, RelyingParty, ServiceDescription } from "~/api";
 import { CountryCode } from "~/i18n/en";
 import { defaultLocale, Translator } from "~/i18n/dict";
 
@@ -35,32 +35,63 @@ export function getFirstDescription(
   descriptions: ServiceDescription[] | undefined,
   locale: string
 ): string | undefined {
-  if (!descriptions?.length) {
-    return undefined;
-  }
+  return getAllDescriptions(descriptions, locale)?.[0];
+}
 
-  const sortedDescriptions = descriptions
+export function getAllDescriptions(
+  descriptions: ServiceDescription[] | undefined,
+  locale: string
+): string[] {
+  if (!descriptions?.length) return [];
+
+  const seen = new Set<number>();
+
+  return descriptions
     .slice()
-    .sort(
-      (a, b) => (a.service_index ?? Infinity) - (b.service_index ?? Infinity)
-    );
+    .sort((a, b) => {
+      const indexDiff = a.service_index - b.service_index;
+      if (indexDiff !== 0) return indexDiff;
 
-  // Try current locale
-  let description = sortedDescriptions.find(
-    (d) => d.lang.toLowerCase() === locale.toLowerCase()
-  );
-  if (description) {
-    return description.content;
-  }
+      // Same service_index: prioritize by locale
+      if (a.lang.toLowerCase() === locale.toLowerCase()) return -1;
+      if (b.lang.toLowerCase() === locale.toLowerCase()) return 1;
+      if (a.lang.toLowerCase() === defaultLocale.toLowerCase()) return -1;
+      if (b.lang.toLowerCase() === defaultLocale.toLowerCase()) return 1;
+      return 0;
+    })
+    .filter((desc) => {
+      if (seen.has(desc.service_index)) return false;
+      seen.add(desc.service_index);
+      return true;
+    })
+    .map((desc) => desc.content);
+}
 
-  // Try default locale
-  description = sortedDescriptions.find(
-    (d) => d.lang.toLowerCase() === defaultLocale.toLowerCase()
-  );
-  if (description) {
-    return description.content;
-  }
+export function getLocalizeText(
+  descriptions: LocalizedText[] | undefined,
+  locale: string
+): string[] {
+  if (!descriptions?.length) return [];
 
-  // Fallback to first available
-  return sortedDescriptions.at(0)?.content;
+  const seen = new Set<number>();
+
+  return descriptions
+    .slice()
+    .sort((a, b) => {
+      const indexDiff = a.purpose_index - b.purpose_index;
+      if (indexDiff !== 0) return indexDiff;
+
+      // Same service_index: prioritize by locale
+      if (a.lang.toLowerCase() === locale.toLowerCase()) return -1;
+      if (b.lang.toLowerCase() === locale.toLowerCase()) return 1;
+      if (a.lang.toLowerCase() === defaultLocale.toLowerCase()) return -1;
+      if (b.lang.toLowerCase() === defaultLocale.toLowerCase()) return 1;
+      return 0;
+    })
+    .filter((desc) => {
+      if (seen.has(desc.purpose_index)) return false;
+      seen.add(desc.purpose_index);
+      return true;
+    })
+    .map((desc) => desc.content);
 }

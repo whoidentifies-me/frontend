@@ -2,13 +2,14 @@ import { ParentComponent } from "solid-js";
 
 interface CollapseProperties {
   title?: string;
+  class?: string;
+  appearance?: "base" | "lg";
 }
 
 export const Collapse: ParentComponent<CollapseProperties> = (props) => {
   return (
     <details
-      class="collapse border shadow-md collapse-plus bg-secondary text-secondary-content"
-      style={{ "border-color": "var(--border-300)" }}
+      class={`wim-card-outline collapse border shadow-md collapse-plus bg-secondary text-secondary-content ${props.appearance === "lg" ? "rounded-4xl" : ""} ${props.class}`}
     >
       <summary class="collapse-title">{props.title}</summary>
       <div class="collapse-content">{props.children}</div>

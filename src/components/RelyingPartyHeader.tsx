@@ -42,7 +42,7 @@ export const RelyingPartyHeader: Component<RelyingPartyHeaderProps> = (
       </p>
 
       <div class="row-start-2 col-start-1 my-2 ms-4">
-        <h2 class="mb-2">{props.data?.trade_name}</h2>
+        <h1 class="mb-2 !text-4xl">{props.data?.trade_name}</h1>
         <Show when={attributes().length > 0}>
           <div class="wim-attributes font-semibold">
             <For each={attributes()}>
