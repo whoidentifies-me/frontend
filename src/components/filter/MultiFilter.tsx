@@ -1,6 +1,6 @@
 import { Component, Show } from "solid-js";
 import { Combobox } from "@kobalte/core/combobox";
-import { TbCheck, TbSelector, TbX } from "solid-icons/tb";
+import { TbCheck, TbX } from "solid-icons/tb";
 
 interface MultiFilterOption {
   value: string;
@@ -35,8 +35,11 @@ export const MultiFilter: Component<MultiFilterProps> = (props) => {
   };
   return (
     <div class="flex flex-col items-stretch justify-end text-start">
-      <label for={id()}>{props.label}</label>
+      <label for={id()} class="font-semibold text-sm mb-2">
+        {props.label}
+      </label>
       <Combobox
+        class=""
         multiple
         options={options()}
         placeholder={props.placeholder}
@@ -56,7 +59,7 @@ export const MultiFilter: Component<MultiFilterProps> = (props) => {
           </Combobox.Item>
         )}
       >
-        <Combobox.Control class="combobox-control" aria-label={props.label}>
+        <Combobox.Control class="" aria-label={props.label}>
           {(state) => (
             <>
               {/* <For each={state?.selectedOptions() || []}>
@@ -69,9 +72,9 @@ export const MultiFilter: Component<MultiFilterProps> = (props) => {
                   </span>
                 )}
               </For> */}
-              <Combobox.Input id={id()} class="combobox-input" />
+              <Combobox.Input id={id()} class="select" />
               <div class="flex flex-row items-center">
-                <Show when={state?.selectedOptions()?.length}>
+                <Show when={state?.selectedOptions()?.length && false}>
                   <span class="mx-2">{state?.selectedOptions()?.length}</span>
                   <button
                     onPointerDown={(e) => e.stopPropagation()}
@@ -81,11 +84,13 @@ export const MultiFilter: Component<MultiFilterProps> = (props) => {
                   </button>
                 </Show>
               </div>
+              {/*
               <Combobox.Trigger class="combobox-trigger">
                 <Combobox.Icon class="combobox-icon">
                   <TbSelector />
                 </Combobox.Icon>
               </Combobox.Trigger>
+              */}
             </>
           )}
         </Combobox.Control>

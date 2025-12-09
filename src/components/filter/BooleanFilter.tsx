@@ -37,8 +37,11 @@ export const BooleanFilter: Component<BooleanFilterProps> = (props) => {
 
   return (
     <div class="flex flex-col items-stretch justify-end text-start">
-      <label for={id()}>{props.label}</label>
+      <label for={id()} class="font-semibold text-sm mb-2">
+        {props.label}
+      </label>
       <select
+        class="select"
         id={id()}
         name={props.name}
         value={currentValue()}
