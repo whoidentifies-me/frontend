@@ -72,7 +72,7 @@ export const MultiFilter: Component<MultiFilterProps> = (props) => {
                   </span>
                 )}
               </For> */}
-              <Combobox.Input id={id()} class="select" />
+              <Combobox.Input id={id()} class="select w-full" />
               <div class="flex flex-row items-center">
                 <Show when={state?.selectedOptions()?.length && false}>
                   <span class="mx-2">{state?.selectedOptions()?.length}</span>

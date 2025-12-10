@@ -41,7 +41,7 @@ export const BooleanFilter: Component<BooleanFilterProps> = (props) => {
         {props.label}
       </label>
       <select
-        class="select"
+        class="select w-full"
         id={id()}
         name={props.name}
         value={currentValue()}

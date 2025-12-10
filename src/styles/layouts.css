@@ -1,6 +1,18 @@
 .wim-container {
-  max-width: 55rem;
+  max-width: 54rem;
   margin-inline: auto;
+}
+
+@media (--lg-n-below) {
+  .wim-container {
+    margin-inline: 2rem;
+  }
+}
+
+@media (--md-n-below) {
+  .wim-container {
+    margin-inline: 1rem;
+  }
 }
 
 .wim-section {
