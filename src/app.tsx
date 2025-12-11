@@ -4,8 +4,8 @@ import { Suspense, Show } from "solid-js";
 import Header from "~/components/Header";
 import "./app.css";
 import { MetaProvider, Link, Meta } from "@solidjs/meta";
-import "@fontsource-variable/manrope";
-import "@fontsource/anton";
+import "@fontsource-variable/open-sans";
+import "@fontsource-variable/montserrat";
 import { I18nProvider } from "~/i18n/dict";
 import { Footer } from "./sections/Footer";
 

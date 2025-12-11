@@ -8,12 +8,15 @@ import { useSearchFilters } from "~/composables/useSearchFilters";
 import { InfiniteList } from "~/components/InfiniteList";
 import { RelyingPartyItem } from "~/components/RelyingPartyItem";
 import { createInfiniteScroll } from "~/utils/createInfiniteScroll";
+import { useTranslate } from "~/i18n/dict";
+import { Hero } from "~/components/Hero";
 
 const getRelyingParties = query(async (filters: BaseFilters) => {
   return await apiClient.getRelyingParties(filters);
 }, "relying-parties");
 
 export default function SearchRelyingParties() {
+  const t = useTranslate();
   const [searchParams] = useSearchParams<{ q: string }>();
   const { filters } = useSearchFilters("relying-parties");
   const relyingPartiesInitial = createAsync(() => getRelyingParties(filters()));
@@ -33,11 +36,15 @@ export default function SearchRelyingParties() {
   return (
     <>
       <Title>{getTitle()}</Title>
-      <SearchAndFilter searchCategory="relying-parties"></SearchAndFilter>
+
+      <Hero>
+        <SearchAndFilter searchCategory="relying-parties"></SearchAndFilter>
+      </Hero>
+
       <CategoryTabs />
 
       <div id="results" class="mt-6">
-        <h3>Relying Parties</h3>
+        <h2>{t.searchResults.relyingParties()}</h2>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
           <InfiniteList
             class="space-y-4"
