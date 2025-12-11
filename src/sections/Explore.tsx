@@ -32,7 +32,7 @@ export const Explore: Component = () => {
               {(item) => <RelyingPartyItem data={item}></RelyingPartyItem>}
             </For>
             <div class="flex flex-row justify-center">
-              <A href="/search#results" class="btn btn-primary no-underline">
+              <A href="/search" class="btn btn-primary no-underline">
                 {t.components.generic.viewMore()}
               </A>
             </div>

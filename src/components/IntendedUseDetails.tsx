@@ -29,7 +29,7 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
 
   return (
     <>
-      <section id={getID()} class="wim-container">
+      <section id={getID()} class="">
         <details class="wim-card-outline collapse border shadow-md collapse-plus bg-secondary text-secondary-content !rounded-4xl px-4 py-2">
           <summary class="collapse-title">
             <h3 class="my-0">{props.title}</h3>
@@ -37,7 +37,7 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
           <div class="collapse-content">
             <For each={purposes()}>{(item) => <p class="">{item}</p>}</For>
 
-            <ul class="mt-6 list-none grid grid-cols-3">
+            <ul class="mt-6 list-none grid gap-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
               <For each={credentials()}>
                 {(item) => (
                   <li class="flex flex-col gap-2">

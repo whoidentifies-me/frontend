@@ -30,12 +30,15 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
   };
 
   return (
-    <div class="flex flex-row gap-2">
-      <label class="input flex-grow me-1.5 text-lg" for={id}>
+    <div class="grid grid-cols-2 md:grid-cols-[1fr_auto_auto] gap-2">
+      <label
+        class="col-start-1 col-span-2 md:col-span-1 w-full input text-lg"
+        for={id}
+      >
         <span class="sr-only">{t.filters.labels.q()}</span>
         <TbSearch />
         <input
-          class="mx-0 grow"
+          class="mx-0 grow overflow-ellipsis"
           ref={searchEl}
           type="search"
           id={id}
@@ -46,21 +49,21 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
       </label>
 
       <button
-        class="flex-shrink-0 btn btn-circle btn-primary"
+        type="submit"
+        class="col-start-2 row-start-2 md:col-start-3 md:row-start-1 justify-self-end btn btn-primary"
+        onClick={onSearchSubmit}
+      >
+        {t.components.searchAndFilter.search()}
+      </button>
+
+      <button
+        class="col-start-1 row-start-2 md:col-start-2 md:row-start-1 btn btn-circle btn-primary md:ml-1.5"
         onClick={onFiltersClick}
         aria-expanded={props["aria-expanded"]}
         aria-controls={props["aria-controls"]}
         aria-label={`${props["aria-expanded"] ? "Hide" : "Show"} search filters`}
       >
         <TbFilter />
-      </button>
-
-      <button
-        type="submit"
-        class="btn btn-primary flex-shrink-0"
-        onClick={onSearchSubmit}
-      >
-        Search
       </button>
     </div>
   );

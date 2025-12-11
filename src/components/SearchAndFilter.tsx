@@ -37,7 +37,7 @@ export const SearchAndFilter: Component<{
     }
   };
   return (
-    <search class="rounded-2xl p-6 bg-white border-black/20 border">
+    <search class="rounded-2xl md:p-6 sm:p-4 p-2 py-4  bg-white border-black/20 border">
       <form
         role="search"
         action={formAction()}

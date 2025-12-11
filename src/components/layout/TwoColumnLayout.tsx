@@ -18,7 +18,7 @@ export const TwoColumnLayout: Component<TwoColumnLayoutProps> = (props) => {
   };
 
   return (
-    <div class={`grid gap-12 ${gridCols()} ${props.class || ""}`}>
+    <div class={`grid lg:gap-12 gap-6 ${gridCols()} ${props.class || ""}`}>
       <div class={props.leftColumnClass || ""}>{props.leftContent}</div>
       <div class={props.rightColumnClass || ""}>{props.rightContent}</div>
     </div>

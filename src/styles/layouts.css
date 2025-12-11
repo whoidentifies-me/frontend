@@ -1,8 +1,26 @@
 .wim-container {
-  max-width: 55rem;
-  margin-inline: auto;
+  max-width: 54rem;
+  margin-inline: 1rem;
+}
+
+@media (width >= 48rem) {
+  .wim-container {
+    margin-inline: 2rem;
+  }
+}
+
+@media (width >= 64rem) {
+  .wim-container {
+    margin-inline: auto;
+  }
 }
 
 .wim-section {
-  padding-block: 4rem;
+  padding-block: 2.5rem;
+}
+
+@media (width >= 48rem) {
+  .wim-section {
+    padding-block: 4rem;
+  }
 }

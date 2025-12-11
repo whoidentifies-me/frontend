@@ -195,7 +195,7 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
         <Search.Control class="" aria-label={props.label}>
           {() => (
             <>
-              <Search.Input class="select" id={id()}></Search.Input>
+              <Search.Input class="select w-full" id={id()}></Search.Input>
               <div class="flex flex-row items-center">
                 <Show when={selectedValuesSet().size && false}>
                   <span class="mx-2">{selectedValuesSet().size}</span>

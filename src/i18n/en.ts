@@ -46,6 +46,11 @@ export const en = {
       ],
     },
   },
+  searchResults: {
+    all: "All",
+    relyingParties: "Companies",
+    intendedUses: "Use Cases",
+  },
   relyingParties: {
     public: "Public Sector",
     nonPublic: "Company",
@@ -145,6 +150,9 @@ export const en = {
       details: "Details",
       viewMore: "View more",
       loadMore: "Load more",
+    },
+    searchAndFilter: {
+      search: "Search",
     },
   },
 };
