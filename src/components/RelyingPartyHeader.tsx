@@ -30,7 +30,7 @@ export const RelyingPartyHeader: Component<RelyingPartyHeaderProps> = (
   };
 
   return (
-    <div class="wim-container py-2! bx-8! wim-card wim-card-lg bg-primary text-primary-content grid gap-x-4 gap-y-2 grid-rows-[1fr_auto_1fr] grid-cols-[1fr_auto]">
+    <div class="wim-container pb-6 pt-2! md:py-2! bx-8! wim-card wim-card-lg bg-primary text-primary-content grid gap-x-4 gap-y-2 md:grid-rows-[1fr_auto_1fr] md:grid-cols-[1fr_auto] grid-rows-[1fr_auto] grid-cols-1">
       <p class="m-0 row-start-1">
         <button
           class="btn btn-link btn-primary text-primary-content no-underline"
@@ -42,7 +42,9 @@ export const RelyingPartyHeader: Component<RelyingPartyHeaderProps> = (
       </p>
 
       <div class="row-start-2 col-start-1 my-2 ms-4">
-        <h1 class="mb-2 !text-4xl">{props.data?.trade_name}</h1>
+        <h1 class="mb-2 !md:text-3xl text-2xl line-clamp-2">
+          {props.data?.trade_name}
+        </h1>
         <Show when={attributes().length > 0}>
           <div class="wim-attributes font-semibold">
             <For each={attributes()}>
@@ -51,12 +53,14 @@ export const RelyingPartyHeader: Component<RelyingPartyHeaderProps> = (
           </div>
         </Show>
         <Show when={description()}>
-          <p class="mt-2 mb-0 text-sm opacity-90">{description()}</p>
+          <p class="mt-2 mb-0 text-sm opacity-90 line-clamp-2">
+            {description()}
+          </p>
         </Show>
       </div>
 
       <Show when={props.data?.legal_entity.info_uri?.length}>
-        <div class="col-start-2 row-start-2 flex flex-col justify-center">
+        <div class="md:col-start-2 md:row-start-2 row-start-3 flex flex-col justify-center">
           <ExternalLink
             showIcon={false}
             class="btn btn-outline text-primary-content border-primary-content hover:bg-primary-content hover:text-primary focus:bg-primary-content focus:text-primary no-underline"

@@ -16,7 +16,7 @@ export const ItemCard: Component<ItemCardProps> = (props) => {
 
   return (
     <article
-      class="wim-card wim-card-outline-accent flex flex-row items-center"
+      class="wim-card wim-card-outline-accent flex sm:flex-row flex-col gap-2 items-center"
       aria-labelledby={titleId()}
     >
       <div class="flex flex-col flex-grow min-w-0">

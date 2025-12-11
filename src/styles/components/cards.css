@@ -18,3 +18,9 @@
 .wim-card-outline {
   border-color: var(--border-300);
 }
+
+@media (--md-n-below) {
+  .wim-card.wim-card-lg {
+    padding: 1.5rem;
+  }
+}
