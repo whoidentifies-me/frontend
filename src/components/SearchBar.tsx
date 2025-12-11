@@ -57,7 +57,7 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
       </button>
 
       <button
-        class="col-start-1 row-start-2 md:col-start-2 md:row-start-1 btn btn-circle btn-primary"
+        class="col-start-1 row-start-2 md:col-start-2 md:row-start-1 btn btn-circle btn-primary md:ml-1.5"
         onClick={onFiltersClick}
         aria-expanded={props["aria-expanded"]}
         aria-controls={props["aria-controls"]}

@@ -22,7 +22,7 @@ export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
           </>
         }
         rightContent={
-          <ul class="grid grid-cols-2 gap-6 list-none">
+          <ul class="grid sm:grid-cols-2 grid-cols-1 gap-6 list-none">
             <For
               each={entitlements()}
               fallback={
