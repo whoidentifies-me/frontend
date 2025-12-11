@@ -31,9 +31,9 @@ export const RelyingPartyHeader: Component<RelyingPartyHeaderProps> = (
 
   return (
     <div class="wim-container pb-6 pt-2! md:py-2! bx-8! wim-card wim-card-lg bg-primary text-primary-content grid gap-x-4 gap-y-2 md:grid-rows-[1fr_auto_1fr] md:grid-cols-[1fr_auto] grid-rows-[1fr_auto] grid-cols-1">
-      <p class="m-0 row-start-1">
+      <p class="m-0  row-start-1">
         <button
-          class="btn btn-link btn-primary text-primary-content no-underline"
+          class="px-0 btn btn-link btn-primary text-primary-content no-underline"
           onClick={handleBack}
         >
           <TbArrowLeft />
@@ -41,7 +41,7 @@ export const RelyingPartyHeader: Component<RelyingPartyHeaderProps> = (
         </button>
       </p>
 
-      <div class="row-start-2 col-start-1 my-2 ms-4">
+      <div class="row-start-2 col-start-1">
         <h1 class="mb-2 !md:text-3xl text-2xl line-clamp-2">
           {props.data?.trade_name}
         </h1>
