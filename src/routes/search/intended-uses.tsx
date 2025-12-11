@@ -12,7 +12,10 @@ import { useTranslate } from "~/i18n/dict";
 import { Hero } from "~/components/Hero";
 
 const getIntendedUses = query(async (filters: BaseFilters) => {
-  return await apiClient.getIntendedUses(filters);
+  return await apiClient.getIntendedUses({
+    ...filters,
+    q: filters.q ? `%${filters.q}%` : undefined,
+  });
 }, "intended-uses");
 
 export default function SearchIntendedUses() {
@@ -25,7 +28,11 @@ export default function SearchIntendedUses() {
   );
   const intendedUsesInfinite = createInfiniteScroll({
     initialResult: intendedUsesInitial,
-    fetcher: (cursor) => getIntendedUses({ ...filters(), cursor }),
+    fetcher: (cursor) =>
+      getIntendedUses({
+        ...filters(),
+        cursor,
+      }),
   });
 
   const getTitle = () => {
@@ -45,7 +52,7 @@ export default function SearchIntendedUses() {
 
       <CategoryTabs />
 
-      <div id="results" class="mt-6">
+      <div id="results" class="my-6">
         <h2>{t.searchResults.intendedUses()}</h2>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
           <InfiniteList

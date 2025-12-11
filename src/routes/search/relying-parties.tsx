@@ -12,7 +12,10 @@ import { useTranslate } from "~/i18n/dict";
 import { Hero } from "~/components/Hero";
 
 const getRelyingParties = query(async (filters: BaseFilters) => {
-  return await apiClient.getRelyingParties(filters);
+  return await apiClient.getRelyingParties({
+    ...filters,
+    q: filters.q ? `%${filters.q}%` : undefined,
+  });
 }, "relying-parties");
 
 export default function SearchRelyingParties() {
@@ -43,7 +46,7 @@ export default function SearchRelyingParties() {
 
       <CategoryTabs />
 
-      <div id="results" class="mt-6">
+      <div id="results" class="my-6">
         <h2>{t.searchResults.relyingParties()}</h2>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
           <InfiniteList
