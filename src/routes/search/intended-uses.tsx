@@ -8,12 +8,15 @@ import { useSearchFilters } from "~/composables/useSearchFilters";
 import { createInfiniteScroll } from "~/utils/createInfiniteScroll";
 import { InfiniteList } from "~/components/InfiniteList";
 import { IntendedUseItem } from "~/components/IntendedUseItem";
+import { useTranslate } from "~/i18n/dict";
+import { Hero } from "~/components/Hero";
 
 const getIntendedUses = query(async (filters: BaseFilters) => {
   return await apiClient.getIntendedUses(filters);
 }, "intended-uses");
 
 export default function SearchIntendedUses() {
+  const t = useTranslate();
   const [searchParams] = useSearchParams<{ q: string }>();
   const { filters } = useSearchFilters("intended-uses");
 
@@ -35,11 +38,15 @@ export default function SearchIntendedUses() {
   return (
     <>
       <Title>{getTitle()}</Title>
-      <SearchAndFilter searchCategory="intended-uses"></SearchAndFilter>
+
+      <Hero>
+        <SearchAndFilter searchCategory="intended-uses"></SearchAndFilter>
+      </Hero>
+
       <CategoryTabs />
 
       <div id="results" class="mt-6">
-        <h3>Intended Uses</h3>
+        <h2>{t.searchResults.intendedUses()}</h2>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
           <InfiniteList
             class="space-y-4"

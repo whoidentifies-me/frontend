@@ -9,10 +9,7 @@ export default function SearchLayout(props: SearchLayoutProps) {
   return (
     <>
       <Title>Search</Title>
-      <main class="text-gray-700 wim-container">
-        <h2>Search</h2>
-        {props.children}
-      </main>
+      <main class="text-gray-700 wim-container">{props.children}</main>
     </>
   );
 }

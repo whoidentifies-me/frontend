@@ -90,7 +90,9 @@
   pointer-events: none;
 }
 
-.combobox-item[data-highlighted] {
+/* .combobox-item[data-highlighted] { */
+.combobox-item:hover,
+.combobox-item:focus {
   outline: none;
   background-color: color-mix(in srgb, var(--color-primary) 20%, white 80%);
 }

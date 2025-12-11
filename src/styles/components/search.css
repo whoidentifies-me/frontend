@@ -97,7 +97,9 @@
   pointer-events: none;
 }
 
-.search-item[data-highlighted] {
+/* .search-item[data-highlighted], */
+.search-item:hover,
+.search-item:focus {
   outline: none;
   box-sizing: border-box;
   background-color: color-mix(in srgb, var(--color-primary) 20%, white 80%);

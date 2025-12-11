@@ -6,6 +6,8 @@ import { RelyingParties } from "~/components/RelyingParties";
 import { CategoryTabs } from "~/components/CategoryTabs";
 import { SearchAndFilter } from "~/components/SearchAndFilter";
 import { useSearchFilters } from "~/composables/useSearchFilters";
+import { useTranslate } from "~/i18n/dict";
+import { Hero } from "~/components/Hero";
 
 const getRelyingParties = query(async (filters: BaseFilters) => {
   return await apiClient.getRelyingParties({
@@ -22,6 +24,7 @@ const getIntendedUses = query(async (filters: BaseFilters) => {
 }, "intended-uses");
 
 export default function SearchAll() {
+  const t = useTranslate();
   const limit = 5;
   const { filters } = useSearchFilters();
 
@@ -34,11 +37,14 @@ export default function SearchAll() {
 
   return (
     <>
-      <SearchAndFilter></SearchAndFilter>
+      <Hero>
+        <SearchAndFilter></SearchAndFilter>
+      </Hero>
+
       <CategoryTabs />
 
       <div id="results" class="mt-6">
-        <h3>Companies</h3>
+        <h2>{t.searchResults.relyingParties()}</h2>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
           <RelyingParties
             items={relyingParties()?.data}
@@ -48,7 +54,7 @@ export default function SearchAll() {
 
         <div class="h-10"></div>
 
-        <h3>Requested Information items</h3>
+        <h2>{t.searchResults.intendedUses()}</h2>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
           <IntendedUses
             items={intendedUses()?.data}
