@@ -43,7 +43,7 @@ export default function SearchAll() {
 
       <CategoryTabs />
 
-      <div id="results" class="mt-6">
+      <div id="results" class="my-6">
         <h2>{t.searchResults.relyingParties()}</h2>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
           <RelyingParties

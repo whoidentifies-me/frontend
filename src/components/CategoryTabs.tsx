@@ -13,7 +13,7 @@ export const CategoryTabs: Component = () => {
   const inactiveTabClass = "no-underline";
 
   return (
-    <nav class="flex space-x-2 border-b border-base-200 mt-4" role="tablist">
+    <nav class="flex space-x-2 border-b border-base-200 pt-8" role="tablist">
       <A
         href={buildUrlWithFilters("/search", filters())}
         class={tabClass}
