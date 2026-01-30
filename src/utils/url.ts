@@ -1,4 +1,4 @@
-import type { BaseFilters } from "~/api/types";
+import type { BaseFilters } from "~/api";
 
 export function buildUrlWithFilters(
   basePath: string,

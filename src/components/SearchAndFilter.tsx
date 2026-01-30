@@ -3,7 +3,7 @@ import { SearchBar } from "./SearchBar";
 import { Filters } from "./filter/Filters";
 import { ActiveFilters } from "./filter/ActiveFilters";
 import { useSearchFilters } from "~/composables/useSearchFilters";
-import type { BaseFilters } from "~/api/types";
+import type { BaseFilters } from "~/api";
 
 export const SearchAndFilter: Component<{
   collapseFilters?: boolean;

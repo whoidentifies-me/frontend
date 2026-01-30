@@ -9,7 +9,7 @@ export const RelyingPartyDescription: Component<{ data?: RelyingParty }> = (
   const { locale, t } = useI18n();
 
   const descriptions = createMemo(() =>
-    getAllDescriptions(props.data?.service_descriptions, locale())
+    getAllDescriptions(props.data?.service_descriptions || undefined, locale())
   );
 
   return (

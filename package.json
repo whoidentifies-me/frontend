@@ -2,6 +2,10 @@
   "name": "wim-frontend",
   "type": "module",
   "scripts": {
+    "prebuild": "npm run api:generate",
+    "prebuild:spa": "npm run api:generate",
+    "predev": "npm run api:generate",
+    "predev:spa": "npm run api:generate",
     "dev": "vinxi dev",
     "dev:spa": "vinxi dev --config app.config.spa.ts",
     "build": "vinxi build",
@@ -14,7 +18,9 @@
     "lint:css:fix": "stylelint \"src/**/*.css\" --fix",
     "format": "prettier --write src/",
     "format:check": "prettier --check src/",
-    "prepare": "husky"
+    "prepare": "husky",
+    "api:fetch": "curl -o openapi.yaml https://api.stage.whoidentifies.me/api/v1/openapi.yaml",
+    "api:generate": "orval"
   },
   "dependencies": {
     "@fontsource-variable/montserrat": "^5.2.8",
@@ -42,6 +48,7 @@
     "globals": "^16.4.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.3",
+    "orval": "^8.2.0",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "stylelint": "^16.25.0",

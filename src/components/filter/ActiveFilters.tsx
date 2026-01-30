@@ -1,6 +1,6 @@
 import { Component, For, Show } from "solid-js";
 import { TbX } from "solid-icons/tb";
-import type { BaseFilters } from "~/api/types";
+import type { BaseFilters } from "~/api";
 import { useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
 
@@ -21,7 +21,7 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
   const addBooleanFilter = (
     badges: FilterBadge[],
     key: keyof BaseFilters,
-    value: boolean | undefined,
+    value: "true" | "false" | undefined,
     translations: {
       true?: () => string | undefined;
       false?: () => string | undefined;
@@ -30,9 +30,10 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
     if (value !== undefined) {
       badges.push({
         key,
-        label: value
-          ? translations.true?.() || "Yes"
-          : translations.false?.() || "No",
+        label:
+          value === "true"
+            ? translations.true?.() || "Yes"
+            : translations.false?.() || "No",
       });
     }
   };
@@ -40,13 +41,12 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
   const addMultiValueFilter = (
     badges: FilterBadge[],
     key: keyof BaseFilters,
-    value: string | string[] | undefined,
+    value: string[] | null | undefined,
     labelTransform?: (val: string) => string
   ) => {
-    if (!value) return;
+    if (!value || value.length === 0) return;
 
-    const values = Array.isArray(value) ? value : [value];
-    values.forEach((val) => {
+    value.forEach((val) => {
       badges.push({
         key,
         label: labelTransform ? labelTransform(val) : val,

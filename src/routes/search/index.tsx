@@ -1,6 +1,11 @@
-import { createAsync, query } from "@solidjs/router";
+import { createAsync } from "@solidjs/router";
 import { ErrorBoundary } from "solid-js";
-import apiClient, { BaseFilters } from "~/api";
+import {
+  RelyingParties as RelyingPartiesAPI,
+  IntendedUses as IntendedUsesAPI,
+  type ListRelyingPartiesParams,
+  type ListIntendedUsesParams,
+} from "~/api";
 import { IntendedUses } from "~/components/IntendedUses";
 import { RelyingParties } from "~/components/RelyingParties";
 import { CategoryTabs } from "~/components/CategoryTabs";
@@ -9,30 +14,24 @@ import { useSearchFilters } from "~/composables/useSearchFilters";
 import { useTranslate } from "~/i18n/dict";
 import { Hero } from "~/components/Hero";
 
-const getRelyingParties = query(async (filters: BaseFilters) => {
-  return await apiClient.getRelyingParties({
-    ...filters,
-    q: filters.q ? `%${filters.q}%` : undefined,
-  });
-}, "relying-parties");
-
-const getIntendedUses = query(async (filters: BaseFilters) => {
-  return await apiClient.getIntendedUses({
-    ...filters,
-    q: filters.q ? `%${filters.q}%` : undefined,
-  });
-}, "intended-uses");
-
 export default function SearchAll() {
   const t = useTranslate();
   const limit = 5;
   const { filters } = useSearchFilters();
 
   const relyingParties = createAsync(() =>
-    getRelyingParties({ ...filters(), limit })
+    RelyingPartiesAPI.listRelyingParties({
+      ...(filters() as ListRelyingPartiesParams),
+      limit,
+      q: filters().q ? `%${filters().q}%` : undefined,
+    })
   );
   const intendedUses = createAsync(() =>
-    getIntendedUses({ ...filters(), limit })
+    IntendedUsesAPI.listIntendedUses({
+      ...(filters() as ListIntendedUsesParams),
+      limit,
+      q: filters().q ? `%${filters().q}%` : undefined,
+    })
   );
 
   return (
@@ -47,7 +46,7 @@ export default function SearchAll() {
         <h2>{t.searchResults.relyingParties()}</h2>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
           <RelyingParties
-            items={relyingParties()?.data}
+            items={relyingParties()?.data || []}
             hasMore={relyingParties()?.has_more}
           />
         </ErrorBoundary>
@@ -57,7 +56,7 @@ export default function SearchAll() {
         <h2>{t.searchResults.intendedUses()}</h2>
         <ErrorBoundary fallback={<div>Something went wrong!</div>}>
           <IntendedUses
-            items={intendedUses()?.data}
+            items={intendedUses()?.data || []}
             hasMore={intendedUses()?.has_more}
           />
         </ErrorBoundary>

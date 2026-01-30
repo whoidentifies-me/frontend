@@ -1,18 +1,16 @@
-import { A, createAsync, query } from "@solidjs/router";
+import { A, createAsync } from "@solidjs/router";
 import { Component, For } from "solid-js";
-import apiClient from "~/api";
+import { RelyingParties } from "~/api";
 import { TwoColumnLayout } from "~/components/layout/TwoColumnLayout";
 import { RelyingPartyItem } from "~/components/RelyingPartyItem";
 import { useTranslate } from "~/i18n/dict";
 
-const getRelyingParties = query(async () => {
-  return await apiClient.getRelyingParties({ limit: 3 });
-}, "relying-parties-explore");
-
 export const Explore: Component = () => {
   const t = useTranslate();
 
-  const exploreItems = createAsync(() => getRelyingParties());
+  const exploreItems = createAsync(() =>
+    RelyingParties.listRelyingParties({ limit: 3 })
+  );
 
   return (
     <section id="explore" class="wim-section">

@@ -1,27 +1,9 @@
 import { useLocation, useNavigate, useSearchParams } from "@solidjs/router";
 import { createMemo } from "solid-js";
-import type { BaseFilters } from "~/api/types";
+import type { BaseFilters } from "~/api";
 import { buildUrlWithFilters } from "~/utils/url";
-
-const booleanValue = (value: string | string[] | undefined) => {
-  if (Array.isArray(value)) {
-    return value[0] === "true"
-      ? true
-      : value[0] === "false"
-        ? false
-        : undefined;
-  }
-  return value === "true" ? true : value === "false" ? false : undefined;
-};
-
-const singleValue = (
-  value: string | string[] | undefined
-): string | undefined => {
-  if (Array.isArray(value)) {
-    return value.length ? value[0] : undefined;
-  }
-  return value;
-};
+import { toArrayOrNull } from "~/utils/array";
+import { toBooleanEnum, toSingleValue } from "~/utils/params";
 
 export function useSearchFilters(
   searchCategory?: "intended-uses" | "relying-parties"
@@ -38,15 +20,15 @@ export function useSearchFilters(
 
   const filters = createMemo((): BaseFilters => {
     return {
-      q: singleValue(searchParams.q),
-      trade_name: searchParams.trade_name,
-      purpose: searchParams.purpose,
-      claim_path: searchParams.claim_path,
-      country: searchParams.country,
-      entitlement: searchParams.entitlement,
-      is_psb: booleanValue(searchParams.is_psb),
-      is_intermediary: booleanValue(searchParams.is_intermediary),
-      uses_intermediary: booleanValue(searchParams.uses_intermediary),
+      q: toSingleValue(searchParams.q),
+      trade_name: toArrayOrNull(searchParams.trade_name),
+      purpose: toArrayOrNull(searchParams.purpose),
+      claim_path: toArrayOrNull(searchParams.claim_path),
+      country: toArrayOrNull(searchParams.country),
+      entitlement: toArrayOrNull(searchParams.entitlement),
+      is_psb: toBooleanEnum(searchParams.is_psb),
+      is_intermediary: toBooleanEnum(searchParams.is_intermediary),
+      uses_intermediary: toBooleanEnum(searchParams.uses_intermediary),
     };
   });
 

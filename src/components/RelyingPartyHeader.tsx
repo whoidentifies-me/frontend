@@ -22,7 +22,7 @@ export const RelyingPartyHeader: Component<RelyingPartyHeaderProps> = (
   const attributes = createMemo(() => getRelyingPartyAttributes(props.data, t));
 
   const description = createMemo(() =>
-    getFirstDescription(props.data?.service_descriptions, locale())
+    getFirstDescription(props.data?.service_descriptions || undefined, locale())
   );
 
   const handleBack = () => {
@@ -59,12 +59,18 @@ export const RelyingPartyHeader: Component<RelyingPartyHeaderProps> = (
         </Show>
       </div>
 
-      <Show when={props.data?.legal_entity.info_uri?.length}>
+      <Show
+        when={
+          props.data?.legal_entity?.info_uri &&
+          Array.isArray(props.data.legal_entity.info_uri) &&
+          props.data.legal_entity.info_uri.length > 0
+        }
+      >
         <div class="md:col-start-2 md:row-start-2 row-start-3 flex flex-col justify-center">
           <ExternalLink
             showIcon={false}
             class="btn btn-outline text-primary-content border-primary-content hover:bg-primary-content hover:text-primary focus:bg-primary-content focus:text-primary no-underline"
-            href={props.data!.legal_entity.info_uri[0]}
+            href={(props.data!.legal_entity!.info_uri as string[])[0]}
           >
             {t.relyingPartyDetails.website()}
           </ExternalLink>

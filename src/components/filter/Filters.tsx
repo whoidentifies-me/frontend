@@ -1,42 +1,44 @@
 import { Component, createSignal } from "solid-js";
-import type { BaseFilters } from "~/api/types";
+import type { ListRelyingPartiesParams } from "~/api";
 import { BooleanFilter } from "./BooleanFilter";
 import { MultiFilter } from "./MultiFilter";
-import { createAsync, query } from "@solidjs/router";
-import apiClient from "~/api";
+import { createAsync } from "@solidjs/router";
+import { Filters as FiltersAPI, RelyingParties, IntendedUses } from "~/api";
 import { MultiFilterAsync, MultiFilterOption } from "./MultiFilterAsync";
 import { useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
 import { toArray } from "~/utils/array";
+import {
+  booleanToStringLiteral,
+  stringLiteralToBoolean,
+} from "~/utils/boolean";
 
 interface FiltersProps {
-  filters: BaseFilters;
-  onFiltersChange?: (filters: Partial<BaseFilters>) => void;
+  filters: ListRelyingPartiesParams;
+  onFiltersChange?: (filters: Partial<ListRelyingPartiesParams>) => void;
 }
-
-const countriesQuery = query(
-  async () => await apiClient.getFilterValues("country", { limit: 1000 }),
-  "countries"
-);
 
 export const Filters: Component<FiltersProps> = (props) => {
   const t = useTranslate();
 
-  const handleFilterChange = (key: keyof BaseFilters) => (value?: unknown) => {
-    props.onFiltersChange?.({ [key]: value });
-  };
+  const handleFilterChange =
+    (key: keyof ListRelyingPartiesParams) => (value?: unknown) => {
+      props.onFiltersChange?.({ [key]: value });
+    };
 
-  const countreis = createAsync(() => countriesQuery());
+  const countreis = createAsync(() =>
+    FiltersAPI.getFilterValues("country", { limit: 1000 })
+  );
 
   const [wrpOptions, setWRPoptions] = createSignal<MultiFilterOption[]>();
   const onUpdateWRPinput = async (input?: string) => {
-    const result = await apiClient.getRelyingParties({
-      trade_name: input?.length ? `%${input}%` : undefined,
+    const result = await RelyingParties.listRelyingParties({
+      trade_name: input?.length ? [`%${input}%`] : undefined,
     });
     const opts = result?.data?.map(
       (o): MultiFilterOption => ({
-        label: o.trade_name,
-        value: o.trade_name,
+        label: o.trade_name || "",
+        value: o.trade_name || "",
         type: "exact",
       })
     );
@@ -46,7 +48,7 @@ export const Filters: Component<FiltersProps> = (props) => {
 
   const [claimOptions, setClaimOptions] = createSignal<MultiFilterOption[]>();
   const onUpdateClaimInput = async (input?: string) => {
-    const result = await apiClient.getFilterValues("claim_path", {
+    const result = await FiltersAPI.getFilterValues("claim_path", {
       q: input?.length ? `%${input}%` : undefined,
     });
     const opts = result?.data?.map(
@@ -63,11 +65,12 @@ export const Filters: Component<FiltersProps> = (props) => {
   const [purposeOptions, setPurposeOptions] =
     createSignal<MultiFilterOption[]>();
   const onUpdatePurposeInput = async (input?: string) => {
-    const result = await apiClient.getIntendedUses({
-      purpose: input?.length ? `%${input}%` : undefined,
+    const result = await IntendedUses.listIntendedUses({
+      purpose: input?.length ? [`%${input}%`] : undefined,
     });
     const purposes =
-      result?.data?.flatMap((o) => o.purposes.map((p) => p.content)) || [];
+      result?.data?.flatMap((o) => o.purposes?.map((p) => p.content) || []) ||
+      [];
     const uniquePurposes = [...new Set(purposes)];
     const opts = uniquePurposes.map(
       (purpose): MultiFilterOption => ({
@@ -83,10 +86,11 @@ export const Filters: Component<FiltersProps> = (props) => {
   const [entitlementOptions, setEntitlementOptions] =
     createSignal<MultiFilterOption[]>();
   const onUpdateEntitlementInput = async (input?: string) => {
-    const result = await apiClient.getRelyingParties({
-      entitlement: input?.length ? `%${input}%` : undefined,
+    const result = await RelyingParties.listRelyingParties({
+      entitlement: input?.length ? [`%${input}%`] : undefined,
     });
-    const entitlements = result?.data?.flatMap((o) => o.entitlements) || [];
+    const entitlements =
+      result?.data?.flatMap((o) => o.entitlements || []) || [];
     const uniqueEntitlements = [...new Set(entitlements)];
     const opts = uniqueEntitlements.map(
       (entitlement): MultiFilterOption => ({
@@ -140,7 +144,7 @@ export const Filters: Component<FiltersProps> = (props) => {
           label={t.filters.labels.country()!}
           name="country"
           placeholder={t.filters.placeholders.country()}
-          values={props.filters.country}
+          values={props.filters.country || undefined}
           onChange={handleFilterChange("country")}
           options={countryOptions()}
         ></MultiFilter>
@@ -157,8 +161,10 @@ export const Filters: Component<FiltersProps> = (props) => {
         <BooleanFilter
           label={t.filters.labels.is_psb()!}
           name="is_psb"
-          value={props.filters.is_psb}
-          onChange={handleFilterChange("is_psb")}
+          value={stringLiteralToBoolean(props.filters.is_psb)}
+          onChange={(value) =>
+            handleFilterChange("is_psb")(booleanToStringLiteral(value))
+          }
           trueLabel={t.filters.values.is_psb.true()}
           falseLabel={t.filters.values.is_psb.false()}
           allLabel={t.filters.values.is_psb.all()}
@@ -176,8 +182,10 @@ export const Filters: Component<FiltersProps> = (props) => {
         <BooleanFilter
           label={t.filters.labels.is_intermediary()!}
           name="is_intermediary"
-          value={props.filters.is_intermediary}
-          onChange={handleFilterChange("is_intermediary")}
+          value={stringLiteralToBoolean(props.filters.is_intermediary)}
+          onChange={(value) =>
+            handleFilterChange("is_intermediary")(booleanToStringLiteral(value))
+          }
           trueLabel={t.filters.values.is_intermediary.true()}
           falseLabel={t.filters.values.is_intermediary.false()}
           allLabel={t.filters.values.is_intermediary.all()}
@@ -185,8 +193,12 @@ export const Filters: Component<FiltersProps> = (props) => {
         <BooleanFilter
           label={t.filters.labels.uses_intermediary()!}
           name="uses_intermediary"
-          value={props.filters.uses_intermediary}
-          onChange={handleFilterChange("uses_intermediary")}
+          value={stringLiteralToBoolean(props.filters.uses_intermediary)}
+          onChange={(value) =>
+            handleFilterChange("uses_intermediary")(
+              booleanToStringLiteral(value)
+            )
+          }
           trueLabel={t.filters.values.uses_intermediary.true()}
           falseLabel={t.filters.values.uses_intermediary.false()}
           allLabel={t.filters.values.uses_intermediary.all()}

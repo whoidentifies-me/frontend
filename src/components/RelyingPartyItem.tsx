@@ -13,13 +13,13 @@ export const RelyingPartyItem: Component<{ data: RelyingParty }> = (props) => {
   const attributes = createMemo(() => getRelyingPartyAttributes(props.data, t));
 
   const description = createMemo(() =>
-    getFirstDescription(props.data.service_descriptions, locale())
+    getFirstDescription(props.data.service_descriptions || undefined, locale())
   );
 
   return (
     <ItemCard
       id={props.data.id}
-      title={props.data.trade_name}
+      title={props.data.trade_name || ""}
       attributes={attributes()}
       description={description() ?? undefined}
       href={`/rp/${props.data.id}`}

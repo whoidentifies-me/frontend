@@ -1,16 +1,25 @@
 import { createEffect, createSignal } from "solid-js";
-import { ApiResponse } from "~/api";
+import type {
+  ListRelyingPartiesOutputBody,
+  ListIntendedUsesOutputBody,
+} from "~/api";
 
-type InfiniteScrollOptions<T> = {
-  fetcher: (cursor: string | undefined) => Promise<ApiResponse<T>>;
-  initialResult?: () => ApiResponse<T> | undefined;
+type ApiResponseType =
+  | ListRelyingPartiesOutputBody
+  | ListIntendedUsesOutputBody;
+
+type InfiniteScrollOptions<T extends ApiResponseType> = {
+  fetcher: (cursor: string | undefined) => Promise<T>;
+  initialResult?: () => T | undefined;
 };
 
-export function createInfiniteScroll<T>(options: InfiniteScrollOptions<T>) {
+export function createInfiniteScroll<T extends ApiResponseType>(
+  options: InfiniteScrollOptions<T>
+) {
   const { fetcher, initialResult } = options;
 
   const [cursor, setCursor] = createSignal<string | undefined>(undefined);
-  const [items, setItems] = createSignal<T[]>([]);
+  const [items, setItems] = createSignal<any[]>([]);
   const [loading, setLoading] = createSignal(false);
   const [hasMore, setHasMore] = createSignal(false);
 
@@ -21,8 +30,8 @@ export function createInfiniteScroll<T>(options: InfiniteScrollOptions<T>) {
     try {
       const result = await fetcher(cursor());
 
-      if (result.data.length > 0) {
-        setItems((items) => [...items, ...result.data]);
+      if (result.data && result.data.length > 0) {
+        setItems((items) => [...items, ...result.data!]);
       }
 
       setCursor(result.next_cursor);
@@ -37,7 +46,7 @@ export function createInfiniteScroll<T>(options: InfiniteScrollOptions<T>) {
   createEffect(() => {
     const newResult = initialResult?.();
     if (newResult) {
-      setItems(newResult.data);
+      setItems(newResult.data || []);
       setCursor(newResult.next_cursor);
       setHasMore(newResult.has_more);
     }

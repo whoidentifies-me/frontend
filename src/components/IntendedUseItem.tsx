@@ -8,7 +8,7 @@ export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
   const { locale, t } = useI18n();
 
   const purpose = createMemo((): string => {
-    const purposes = props.data.purposes
+    const purposes = (props.data.purposes || [])
       .slice()
       .sort(
         (a, b) => (a.purpose_index || Infinity) - (b.purpose_index || Infinity)
