@@ -10,6 +10,7 @@ export default [
   compat.configs["flat/recommended"],
   {
     files: ["**/*.{ts,tsx}"],
+    ignores: ["src/api/generated/**/*"],
     ...solid,
     languageOptions: {
       parser: tsParser,
