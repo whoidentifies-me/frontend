@@ -2,6 +2,7 @@ import { Component } from "solid-js";
 import { A } from "@solidjs/router";
 import { buildUrlWithFilters } from "~/utils/url";
 import { useSearchFilters } from "~/composables/useSearchFilters";
+import { uiFiltersToUrlParams } from "~/types/filters";
 import { useTranslate } from "~/i18n/dict";
 
 export const CategoryTabs: Component = () => {
@@ -15,7 +16,7 @@ export const CategoryTabs: Component = () => {
   return (
     <nav class="flex space-x-2 border-b border-base-200 pt-8" role="tablist">
       <A
-        href={buildUrlWithFilters("/search", filters())}
+        href={buildUrlWithFilters("/search", uiFiltersToUrlParams(filters()))}
         class={tabClass}
         activeClass={activeTabClass}
         inactiveClass={inactiveTabClass}
@@ -27,7 +28,10 @@ export const CategoryTabs: Component = () => {
       </A>
       <span>|</span>
       <A
-        href={buildUrlWithFilters("/search/relying-parties", filters())}
+        href={buildUrlWithFilters(
+          "/search/relying-parties",
+          uiFiltersToUrlParams(filters())
+        )}
         class={tabClass}
         activeClass={activeTabClass}
         inactiveClass={inactiveTabClass}
@@ -38,7 +42,10 @@ export const CategoryTabs: Component = () => {
       </A>
       <span>|</span>
       <A
-        href={buildUrlWithFilters("/search/intended-uses", filters())}
+        href={buildUrlWithFilters(
+          "/search/intended-uses",
+          uiFiltersToUrlParams(filters())
+        )}
         class={tabClass}
         activeClass={activeTabClass}
         inactiveClass={inactiveTabClass}

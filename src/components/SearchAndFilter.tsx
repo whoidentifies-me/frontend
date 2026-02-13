@@ -3,7 +3,8 @@ import { SearchBar } from "./SearchBar";
 import { Filters } from "./filter/Filters";
 import { ActiveFilters } from "./filter/ActiveFilters";
 import { useSearchFilters } from "~/composables/useSearchFilters";
-import type { BaseFilters } from "~/api";
+import type { UIFilters, FilterValue } from "~/types/filters";
+import { LIKE_FILTER_KEYS, type LikeFilterKey } from "~/types/filters";
 
 export const SearchAndFilter: Component<{
   collapseFilters?: boolean;
@@ -18,24 +19,39 @@ export const SearchAndFilter: Component<{
     params.searchCategory
   );
 
-  const handleRemoveFilter = (key: keyof BaseFilters, value?: string) => {
+  const handleRemoveFilter = (
+    key: keyof UIFilters,
+    value?: string,
+    mode?: FilterValue["mode"]
+  ) => {
     const currentFilters = filters();
     const currentValue = currentFilters[key];
 
     if (!value) {
-      // Remove entire filter
+      // Remove entire filter (booleans)
       handleFiltersChange({ [key]: undefined });
+    } else if (LIKE_FILTER_KEYS.has(key as LikeFilterKey)) {
+      // FilterValue[] filter - match by both value and mode
+      const filterValues = currentValue as FilterValue[] | null | undefined;
+      if (filterValues) {
+        const newArray = filterValues.filter(
+          (fv) => !(fv.value === value && fv.mode === (mode || "exact"))
+        );
+        handleFiltersChange({
+          [key]: newArray.length > 0 ? newArray : undefined,
+        });
+      }
     } else if (Array.isArray(currentValue)) {
-      // Remove specific value from array
-      const newArray = currentValue.filter((v) => v !== value);
+      // string[] filter (country)
+      const newArray = (currentValue as string[]).filter((v) => v !== value);
       handleFiltersChange({
         [key]: newArray.length > 0 ? newArray : undefined,
       });
     } else {
-      // Single value filter - remove entirely
       handleFiltersChange({ [key]: undefined });
     }
   };
+
   return (
     <search class="rounded-2xl md:p-6 sm:p-4 p-2 py-4  bg-white border-black/20 border">
       <form

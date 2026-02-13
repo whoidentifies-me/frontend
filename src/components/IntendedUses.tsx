@@ -4,6 +4,7 @@ import { IntendedUseItem } from "./IntendedUseItem";
 import { useSearchFilters } from "~/composables/useSearchFilters";
 import { A } from "@solidjs/router";
 import { buildUrlWithFilters } from "~/utils/url";
+import { uiFiltersToUrlParams } from "~/types/filters";
 import { useTranslate } from "~/i18n/dict";
 
 export const IntendedUses: Component<{
@@ -23,7 +24,10 @@ export const IntendedUses: Component<{
         <div class="flex flex-row justify-center my-4">
           <A
             class="btn btn-primary no-underline"
-            href={buildUrlWithFilters("/search/intended-uses", filters())}
+            href={buildUrlWithFilters(
+              "/search/intended-uses",
+              uiFiltersToUrlParams(filters())
+            )}
           >
             {t.components.generic.viewMore()}
           </A>

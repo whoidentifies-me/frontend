@@ -1,13 +1,14 @@
 import { Title } from "@solidjs/meta";
 import { createAsync, useSearchParams } from "@solidjs/router";
 import { ErrorBoundary, For } from "solid-js";
-import { IntendedUses, type ListIntendedUsesParams } from "~/api";
+import { IntendedUses } from "~/api";
 import { CategoryTabs } from "~/components/CategoryTabs";
 import { SearchAndFilter } from "~/components/SearchAndFilter";
 import { useSearchFilters } from "~/composables/useSearchFilters";
 import { createInfiniteScroll } from "~/utils/createInfiniteScroll";
 import { InfiniteList } from "~/components/InfiniteList";
 import { IntendedUseItem } from "~/components/IntendedUseItem";
+import { uiFiltersToIntendedUsesParams } from "~/types/filters";
 import { useTranslate } from "~/i18n/dict";
 import { Hero } from "~/components/Hero";
 
@@ -17,18 +18,14 @@ export default function SearchIntendedUses() {
   const { filters } = useSearchFilters("intended-uses");
 
   const intendedUsesInitial = createAsync(() =>
-    IntendedUses.listIntendedUses({
-      ...(filters() as ListIntendedUsesParams),
-      q: filters().q ? `%${filters().q}%` : undefined,
-    })
+    IntendedUses.listIntendedUses(uiFiltersToIntendedUsesParams(filters()))
   );
   const intendedUsesInfinite = createInfiniteScroll({
     initialResult: intendedUsesInitial,
     fetcher: (cursor) =>
       IntendedUses.listIntendedUses({
-        ...(filters() as ListIntendedUsesParams),
+        ...uiFiltersToIntendedUsesParams(filters()),
         cursor,
-        q: filters().q ? `%${filters().q}%` : undefined,
       }),
   });
 

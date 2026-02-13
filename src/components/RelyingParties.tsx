@@ -4,6 +4,7 @@ import { RelyingPartyItem } from "./RelyingPartyItem";
 import { A } from "@solidjs/router";
 import { useSearchFilters } from "~/composables/useSearchFilters";
 import { buildUrlWithFilters } from "~/utils/url";
+import { uiFiltersToUrlParams } from "~/types/filters";
 import { useTranslate } from "~/i18n/dict";
 
 export const RelyingParties: Component<{
@@ -22,7 +23,10 @@ export const RelyingParties: Component<{
         <div class="flex flex-row justify-center my-4">
           <A
             class="btn btn-primary no-underline"
-            href={buildUrlWithFilters("/search/relying-parties", filters())}
+            href={buildUrlWithFilters(
+              "/search/relying-parties",
+              uiFiltersToUrlParams(filters())
+            )}
           >
             {t.components.generic.viewMore()}
           </A>

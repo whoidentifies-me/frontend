@@ -1,5 +1,6 @@
 import { Component, createSignal } from "solid-js";
-import type { ListRelyingPartiesParams } from "~/api";
+import type { UIFilters } from "~/types/filters";
+import type { FilterValue } from "~/types/filters";
 import { BooleanFilter } from "./BooleanFilter";
 import { MultiFilter } from "./MultiFilter";
 import { createAsync } from "@solidjs/router";
@@ -7,26 +8,24 @@ import { Filters as FiltersAPI, RelyingParties, IntendedUses } from "~/api";
 import { MultiFilterAsync, MultiFilterOption } from "./MultiFilterAsync";
 import { useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
-import { toArray } from "~/utils/array";
 import {
   booleanToStringLiteral,
   stringLiteralToBoolean,
 } from "~/utils/boolean";
 
 interface FiltersProps {
-  filters: ListRelyingPartiesParams;
-  onFiltersChange?: (filters: Partial<ListRelyingPartiesParams>) => void;
+  filters: UIFilters;
+  onFiltersChange?: (filters: Partial<UIFilters>) => void;
 }
 
 export const Filters: Component<FiltersProps> = (props) => {
   const t = useTranslate();
 
-  const handleFilterChange =
-    (key: keyof ListRelyingPartiesParams) => (value?: unknown) => {
-      props.onFiltersChange?.({ [key]: value });
-    };
+  const handleFilterChange = (key: keyof UIFilters) => (value?: unknown) => {
+    props.onFiltersChange?.({ [key]: value });
+  };
 
-  const countreis = createAsync(() =>
+  const countries = createAsync(() =>
     FiltersAPI.getFilterValues("country", { limit: 1000 })
   );
 
@@ -104,7 +103,7 @@ export const Filters: Component<FiltersProps> = (props) => {
   onUpdateEntitlementInput();
 
   const countryOptions = () =>
-    countreis()
+    countries()
       ?.data?.map((v) => ({
         label: t.countries[v.value as CountryCode]?.() || v.value,
         value: v.value,
@@ -125,9 +124,11 @@ export const Filters: Component<FiltersProps> = (props) => {
           name="claim_path"
           placeholder={t.filters.placeholders.claim_path()}
           options={claimOptions()}
-          values={toArray(props.filters.claim_path)}
+          values={props.filters.claim_path || undefined}
           onInputChange={onUpdateClaimInput}
-          onChange={handleFilterChange("claim_path")}
+          onChange={
+            handleFilterChange("claim_path") as (val: FilterValue[]) => void
+          }
           allowSubstr={true}
         ></MultiFilterAsync>
         <MultiFilterAsync
@@ -135,9 +136,11 @@ export const Filters: Component<FiltersProps> = (props) => {
           name="purpose"
           placeholder={t.filters.placeholders.purpose()}
           options={purposeOptions()}
-          values={toArray(props.filters.purpose)}
+          values={props.filters.purpose || undefined}
           onInputChange={onUpdatePurposeInput}
-          onChange={handleFilterChange("purpose")}
+          onChange={
+            handleFilterChange("purpose") as (val: FilterValue[]) => void
+          }
           allowSubstr={true}
         ></MultiFilterAsync>
         <MultiFilter
@@ -153,9 +156,11 @@ export const Filters: Component<FiltersProps> = (props) => {
           name="wrp_id"
           placeholder={t.filters.placeholders.trade_name()}
           options={wrpOptions()}
-          values={toArray(props.filters.trade_name)}
+          values={props.filters.trade_name || undefined}
           onInputChange={onUpdateWRPinput}
-          onChange={handleFilterChange("trade_name")}
+          onChange={
+            handleFilterChange("trade_name") as (val: FilterValue[]) => void
+          }
           allowSubstr={true}
         ></MultiFilterAsync>
         <BooleanFilter
@@ -174,9 +179,11 @@ export const Filters: Component<FiltersProps> = (props) => {
           name="entitlement"
           placeholder={t.filters.placeholders.entitlement()}
           options={entitlementOptions()}
-          values={toArray(props.filters.entitlement)}
+          values={props.filters.entitlement || undefined}
           onInputChange={onUpdateEntitlementInput}
-          onChange={handleFilterChange("entitlement")}
+          onChange={
+            handleFilterChange("entitlement") as (val: FilterValue[]) => void
+          }
           allowSubstr={true}
         ></MultiFilterAsync>
         <BooleanFilter

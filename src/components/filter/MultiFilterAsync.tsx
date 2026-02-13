@@ -2,6 +2,7 @@ import { Component, createMemo, createSignal, Show } from "solid-js";
 import { Combobox } from "@kobalte/core/combobox";
 import { TbCheck, TbX } from "solid-icons/tb";
 import { Search } from "@kobalte/core/search";
+import type { FilterValue } from "~/types/filters";
 
 export interface MultiFilterOption {
   value: string;
@@ -9,29 +10,37 @@ export interface MultiFilterOption {
   type: "exact" | "substr";
 }
 
-function toOption(value: string): MultiFilterOption {
-  if (value.startsWith("%") && value.endsWith("%")) {
-    return {
-      label: value.substring(1, value.length - 1),
-      value,
-      type: "substr",
-    };
-  }
+function toCompositeKey(fv: FilterValue): string {
+  return `${fv.mode}:${fv.value}`;
+}
+
+function fromCompositeKey(key: string): FilterValue {
+  const colonIndex = key.indexOf(":");
+  const mode = key.substring(0, colonIndex) as "exact" | "like";
+  const value = key.substring(colonIndex + 1);
+  return { value, mode };
+}
+
+function filterValueToOption(fv: FilterValue): MultiFilterOption {
   return {
-    label: value,
-    value,
-    type: "exact",
+    label: fv.value,
+    value: toCompositeKey(fv),
+    type: fv.mode === "like" ? "substr" : "exact",
   };
+}
+
+function optionToFilterValue(opt: MultiFilterOption): FilterValue {
+  return fromCompositeKey(opt.value);
 }
 
 interface MultiFilterProps {
   label: string;
   name: string;
   options?: MultiFilterOption[];
-  values?: string[];
+  values?: FilterValue[];
   placeholder?: string;
   allowSubstr?: boolean;
-  onChange?: (val: string[]) => void;
+  onChange?: (val: FilterValue[]) => void;
   onInputChange?: (val: string) => void;
 }
 
@@ -39,12 +48,14 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
   const [input, setInput] = createSignal<string | undefined>(undefined);
   const [isOpen, setIsOpen] = createSignal(false);
 
-  const selectedValuesSet = createMemo(() => new Set(props.values));
+  const selectedCompositeKeys = createMemo(
+    () => new Set(props.values?.map(toCompositeKey))
+  );
   const optionValuesSet = createMemo(
     () => new Set(props.options?.map((o) => o.value))
   );
   const selectedOptions = createMemo<MultiFilterOption[]>(
-    () => props.values?.map((v) => toOption(v)) || []
+    () => props.values?.map(filterValueToOption) || []
   );
 
   // snapshot only updates when modal is closed
@@ -67,7 +78,8 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
       );
     } else {
       if (props.allowSubstr) {
-        options.push(toOption(`%${input()}%`));
+        const substrFv: FilterValue = { value: input()!, mode: "like" };
+        options.push(filterValueToOption(substrFv));
       }
       if (props.options) {
         options.push(...props.options);
@@ -80,7 +92,10 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
   const value = createMemo((): MultiFilterOption[] => {
     return (
       props.values
-        ?.map((val) => options().find((opt) => opt.value === val))
+        ?.map((fv) => {
+          const key = toCompositeKey(fv);
+          return options().find((opt) => opt.value === key);
+        })
         .filter((opt) => !!opt) || []
     );
   });
@@ -95,21 +110,24 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
 
     // Add newly selected values
     for (const item of values) {
-      if (!selectedValuesSet().has(item.value)) {
+      if (!selectedCompositeKeys().has(item.value)) {
         selected.push(item);
       }
     }
 
     // remove unselected
-    const oldSelectedValuesSet =
-      optionValuesSet().intersection(selectedValuesSet());
+    const oldSelectedValuesSet = optionValuesSet().intersection(
+      selectedCompositeKeys()
+    );
     const newSelectedValuesSet = new Set(values.map((v) => v.value));
     const removedValuesSet =
       oldSelectedValuesSet.difference(newSelectedValuesSet);
 
     const selectedSubstringValuesSet = new Set(
       options()
-        .filter((o) => selectedValuesSet().has(o.value) && o.type === "substr")
+        .filter(
+          (o) => selectedCompositeKeys().has(o.value) && o.type === "substr"
+        )
         .map((o) => o.value)
     );
     const removedSubstringValue =
@@ -120,14 +138,7 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
       selected = selected.filter((o) => !removeSet.has(o.value));
     }
 
-    console.log(
-      "updated selected",
-      selectedOptions(),
-      oldSelectedValuesSet,
-      removeSet
-    );
-
-    props.onChange?.(selected.map((v) => v.value));
+    props.onChange?.(selected.map(optionToFilterValue));
   };
 
   const onClear = () => {
@@ -165,11 +176,7 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
           return (
             <>
               <Show when={props.item.rawValue.type === "exact"}>
-                <Search.Item
-                  onSelect={console.log}
-                  class="search-item"
-                  item={props.item}
-                >
+                <Search.Item class="search-item" item={props.item}>
                   <Search.ItemLabel>
                     {props.item.rawValue.label}
                   </Search.ItemLabel>
@@ -197,8 +204,8 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
             <>
               <Search.Input class="select w-full" id={id()}></Search.Input>
               <div class="flex flex-row items-center">
-                <Show when={selectedValuesSet().size && false}>
-                  <span class="mx-2">{selectedValuesSet().size}</span>
+                <Show when={selectedCompositeKeys().size && false}>
+                  <span class="mx-2">{selectedCompositeKeys().size}</span>
                   <button
                     onPointerDown={(e) => e.stopPropagation()}
                     onClick={onClear}

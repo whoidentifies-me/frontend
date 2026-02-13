@@ -1,13 +1,14 @@
 import { Title } from "@solidjs/meta";
 import { createAsync, useSearchParams } from "@solidjs/router";
 import { ErrorBoundary, For } from "solid-js";
-import { RelyingParties, type ListRelyingPartiesParams } from "~/api";
+import { RelyingParties } from "~/api";
 import { CategoryTabs } from "~/components/CategoryTabs";
 import { SearchAndFilter } from "~/components/SearchAndFilter";
 import { useSearchFilters } from "~/composables/useSearchFilters";
 import { InfiniteList } from "~/components/InfiniteList";
 import { RelyingPartyItem } from "~/components/RelyingPartyItem";
 import { createInfiniteScroll } from "~/utils/createInfiniteScroll";
+import { uiFiltersToApiParams } from "~/types/filters";
 import { useTranslate } from "~/i18n/dict";
 import { Hero } from "~/components/Hero";
 
@@ -16,19 +17,15 @@ export default function SearchRelyingParties() {
   const [searchParams] = useSearchParams<{ q: string }>();
   const { filters } = useSearchFilters("relying-parties");
   const relyingPartiesInitial = createAsync(() =>
-    RelyingParties.listRelyingParties({
-      ...(filters() as ListRelyingPartiesParams),
-      q: filters().q ? `%${filters().q}%` : undefined,
-    })
+    RelyingParties.listRelyingParties(uiFiltersToApiParams(filters()))
   );
 
   const relyingPartiesInfinite = createInfiniteScroll({
     initialResult: relyingPartiesInitial,
     fetcher: (cursor) =>
       RelyingParties.listRelyingParties({
-        ...(filters() as ListRelyingPartiesParams),
+        ...uiFiltersToApiParams(filters()),
         cursor,
-        q: filters().q ? `%${filters().q}%` : undefined,
       }),
   });
 

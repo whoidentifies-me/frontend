@@ -1,8 +1,6 @@
-import type { BaseFilters } from "~/api";
-
 export function buildUrlWithFilters(
   basePath: string,
-  filters: BaseFilters
+  filters: Record<string, string | string[] | undefined>
 ): string {
   const urlParams = new URLSearchParams();
 

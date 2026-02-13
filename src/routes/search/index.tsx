@@ -3,14 +3,16 @@ import { ErrorBoundary } from "solid-js";
 import {
   RelyingParties as RelyingPartiesAPI,
   IntendedUses as IntendedUsesAPI,
-  type ListRelyingPartiesParams,
-  type ListIntendedUsesParams,
 } from "~/api";
 import { IntendedUses } from "~/components/IntendedUses";
 import { RelyingParties } from "~/components/RelyingParties";
 import { CategoryTabs } from "~/components/CategoryTabs";
 import { SearchAndFilter } from "~/components/SearchAndFilter";
 import { useSearchFilters } from "~/composables/useSearchFilters";
+import {
+  uiFiltersToApiParams,
+  uiFiltersToIntendedUsesParams,
+} from "~/types/filters";
 import { useTranslate } from "~/i18n/dict";
 import { Hero } from "~/components/Hero";
 
@@ -21,16 +23,14 @@ export default function SearchAll() {
 
   const relyingParties = createAsync(() =>
     RelyingPartiesAPI.listRelyingParties({
-      ...(filters() as ListRelyingPartiesParams),
+      ...uiFiltersToApiParams(filters()),
       limit,
-      q: filters().q ? `%${filters().q}%` : undefined,
     })
   );
   const intendedUses = createAsync(() =>
     IntendedUsesAPI.listIntendedUses({
-      ...(filters() as ListIntendedUsesParams),
+      ...uiFiltersToIntendedUsesParams(filters()),
       limit,
-      q: filters().q ? `%${filters().q}%` : undefined,
     })
   );
 

@@ -14,7 +14,6 @@ export type {
   ListRelyingPartiesOutputBody,
   ListIntendedUsesOutputBody,
   GetFilterValuesOutputBody,
-  ListRelyingPartiesParams as BaseFilters,
 } from "./generated/index.schemas";
 
 // Re-export all generated types

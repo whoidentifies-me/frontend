@@ -1,18 +1,23 @@
 import { Component, For, Show } from "solid-js";
 import { TbX } from "solid-icons/tb";
-import type { BaseFilters } from "~/api";
+import type { UIFilters, FilterValue } from "~/types/filters";
 import { useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
 
 interface ActiveFiltersProps {
-  filters: BaseFilters;
-  onRemoveFilter: (key: keyof BaseFilters, value?: string) => void;
+  filters: UIFilters;
+  onRemoveFilter: (
+    key: keyof UIFilters,
+    value?: string,
+    mode?: FilterValue["mode"]
+  ) => void;
 }
 
 interface FilterBadge {
-  key: keyof BaseFilters;
+  key: keyof UIFilters;
   label: string;
   value?: string;
+  mode?: FilterValue["mode"];
 }
 
 export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
@@ -20,7 +25,7 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
 
   const addBooleanFilter = (
     badges: FilterBadge[],
-    key: keyof BaseFilters,
+    key: keyof UIFilters,
     value: "true" | "false" | undefined,
     translations: {
       true?: () => string | undefined;
@@ -38,9 +43,26 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
     }
   };
 
-  const addMultiValueFilter = (
+  const addFilterValueFilter = (
     badges: FilterBadge[],
-    key: keyof BaseFilters,
+    key: keyof UIFilters,
+    values: FilterValue[] | null | undefined
+  ) => {
+    if (!values || values.length === 0) return;
+
+    values.forEach((fv) => {
+      badges.push({
+        key,
+        label: fv.mode === "like" ? `Contains: "${fv.value}"` : fv.value,
+        value: fv.value,
+        mode: fv.mode,
+      });
+    });
+  };
+
+  const addStringArrayFilter = (
+    badges: FilterBadge[],
+    key: keyof UIFilters,
     value: string[] | null | undefined,
     labelTransform?: (val: string) => string
   ) => {
@@ -60,18 +82,18 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
     const { filters } = props;
 
     // Match the order from Filters.tsx
-    addMultiValueFilter(badges, "claim_path", filters.claim_path);
-    addMultiValueFilter(badges, "purpose", filters.purpose);
-    addMultiValueFilter(
+    addFilterValueFilter(badges, "claim_path", filters.claim_path);
+    addFilterValueFilter(badges, "purpose", filters.purpose);
+    addStringArrayFilter(
       badges,
       "country",
       filters.country,
       (countryCode) =>
         t.countries[countryCode as CountryCode]?.() || countryCode
     );
-    addMultiValueFilter(badges, "trade_name", filters.trade_name);
+    addFilterValueFilter(badges, "trade_name", filters.trade_name);
     addBooleanFilter(badges, "is_psb", filters.is_psb, t.filters.values.is_psb);
-    addMultiValueFilter(badges, "entitlement", filters.entitlement);
+    addFilterValueFilter(badges, "entitlement", filters.entitlement);
     addBooleanFilter(
       badges,
       "is_intermediary",
@@ -89,7 +111,7 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
   };
 
   const handleRemove = (badge: FilterBadge) => {
-    props.onRemoveFilter(badge.key, badge.value);
+    props.onRemoveFilter(badge.key, badge.value, badge.mode);
   };
 
   const activeBadges = () => getActiveFilters();
