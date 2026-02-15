@@ -6,6 +6,7 @@ import {
   getRelyingPartyAttributes,
   getFirstDescription,
 } from "~/utils/relyingPartyAttributes";
+import { routes } from "~/config/routes";
 
 export const RelyingPartyItem: Component<{ data: RelyingParty }> = (props) => {
   const { locale, t } = useI18n();
@@ -22,7 +23,7 @@ export const RelyingPartyItem: Component<{ data: RelyingParty }> = (props) => {
       title={props.data.trade_name || ""}
       attributes={attributes()}
       description={description() ?? undefined}
-      href={`/rp/${props.data.id}`}
+      href={routes.rp(props.data.id)}
     />
   );
 };

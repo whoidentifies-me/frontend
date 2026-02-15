@@ -1,6 +1,5 @@
 import { Component, createSignal } from "solid-js";
 import type { UIFilters } from "~/types/filters";
-import type { FilterValue } from "~/types/filters";
 import { BooleanFilter } from "./BooleanFilter";
 import { MultiFilter } from "./MultiFilter";
 import { createAsync } from "@solidjs/router";
@@ -22,6 +21,7 @@ export const Filters: Component<FiltersProps> = (props) => {
   const t = useTranslate();
 
   const handleFilterChange = (key: keyof UIFilters) => (value?: unknown) => {
+    console.log("key", key, "value", value);
     props.onFiltersChange?.({ [key]: value });
   };
 
@@ -31,9 +31,9 @@ export const Filters: Component<FiltersProps> = (props) => {
 
   const [wrpOptions, setWRPoptions] = createSignal<MultiFilterOption[]>();
   const onUpdateWRPinput = async (input?: string) => {
-    const result = await RelyingParties.listRelyingParties({
-      trade_name: input?.length ? [`%${input}%`] : undefined,
-    });
+    const result = await RelyingParties.listRelyingParties(
+      input?.length ? { trade_name: [`%${input}%`] } : undefined
+    );
     const opts = result?.data?.map(
       (o): MultiFilterOption => ({
         label: o.trade_name || "",
@@ -47,9 +47,10 @@ export const Filters: Component<FiltersProps> = (props) => {
 
   const [claimOptions, setClaimOptions] = createSignal<MultiFilterOption[]>();
   const onUpdateClaimInput = async (input?: string) => {
-    const result = await FiltersAPI.getFilterValues("claim_path", {
-      q: input?.length ? `%${input}%` : undefined,
-    });
+    const result = await FiltersAPI.getFilterValues(
+      "claim_path",
+      input?.length ? { q: `%${input}%` } : undefined
+    );
     const opts = result?.data?.map(
       (o): MultiFilterOption => ({
         label: o.value,
@@ -64,9 +65,9 @@ export const Filters: Component<FiltersProps> = (props) => {
   const [purposeOptions, setPurposeOptions] =
     createSignal<MultiFilterOption[]>();
   const onUpdatePurposeInput = async (input?: string) => {
-    const result = await IntendedUses.listIntendedUses({
-      purpose: input?.length ? [`%${input}%`] : undefined,
-    });
+    const result = await IntendedUses.listIntendedUses(
+      input?.length ? { purpose: [`%${input}%`] } : undefined
+    );
     const purposes =
       result?.data?.flatMap((o) => o.purposes?.map((p) => p.content) || []) ||
       [];
@@ -85,9 +86,9 @@ export const Filters: Component<FiltersProps> = (props) => {
   const [entitlementOptions, setEntitlementOptions] =
     createSignal<MultiFilterOption[]>();
   const onUpdateEntitlementInput = async (input?: string) => {
-    const result = await RelyingParties.listRelyingParties({
-      entitlement: input?.length ? [`%${input}%`] : undefined,
-    });
+    const result = await RelyingParties.listRelyingParties(
+      input?.length ? { entitlement: [`%${input}%`] } : undefined
+    );
     const entitlements =
       result?.data?.flatMap((o) => o.entitlements || []) || [];
     const uniqueEntitlements = [...new Set(entitlements)];
@@ -126,9 +127,7 @@ export const Filters: Component<FiltersProps> = (props) => {
           options={claimOptions()}
           values={props.filters.claim_path || undefined}
           onInputChange={onUpdateClaimInput}
-          onChange={
-            handleFilterChange("claim_path") as (val: FilterValue[]) => void
-          }
+          onChange={handleFilterChange("claim_path")}
           allowSubstr={true}
         ></MultiFilterAsync>
         <MultiFilterAsync
@@ -138,9 +137,7 @@ export const Filters: Component<FiltersProps> = (props) => {
           options={purposeOptions()}
           values={props.filters.purpose || undefined}
           onInputChange={onUpdatePurposeInput}
-          onChange={
-            handleFilterChange("purpose") as (val: FilterValue[]) => void
-          }
+          onChange={handleFilterChange("purpose")}
           allowSubstr={true}
         ></MultiFilterAsync>
         <MultiFilter
@@ -158,9 +155,7 @@ export const Filters: Component<FiltersProps> = (props) => {
           options={wrpOptions()}
           values={props.filters.trade_name || undefined}
           onInputChange={onUpdateWRPinput}
-          onChange={
-            handleFilterChange("trade_name") as (val: FilterValue[]) => void
-          }
+          onChange={handleFilterChange("trade_name")}
           allowSubstr={true}
         ></MultiFilterAsync>
         <BooleanFilter
@@ -181,9 +176,7 @@ export const Filters: Component<FiltersProps> = (props) => {
           options={entitlementOptions()}
           values={props.filters.entitlement || undefined}
           onInputChange={onUpdateEntitlementInput}
-          onChange={
-            handleFilterChange("entitlement") as (val: FilterValue[]) => void
-          }
+          onChange={handleFilterChange("entitlement")}
           allowSubstr={true}
         ></MultiFilterAsync>
         <BooleanFilter

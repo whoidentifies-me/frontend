@@ -22,7 +22,7 @@ export const SearchAndFilter: Component<{
   const handleRemoveFilter = (
     key: keyof UIFilters,
     value?: string,
-    mode?: FilterValue["mode"]
+    mode?: FilterValue["type"]
   ) => {
     const currentFilters = filters();
     const currentValue = currentFilters[key];
@@ -35,7 +35,7 @@ export const SearchAndFilter: Component<{
       const filterValues = currentValue as FilterValue[] | null | undefined;
       if (filterValues) {
         const newArray = filterValues.filter(
-          (fv) => !(fv.value === value && fv.mode === (mode || "exact"))
+          (fv) => !(fv.value === value && fv.type === (mode || "exact"))
         );
         handleFiltersChange({
           [key]: newArray.length > 0 ? newArray : undefined,

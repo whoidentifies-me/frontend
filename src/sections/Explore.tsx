@@ -4,6 +4,7 @@ import { RelyingParties } from "~/api";
 import { TwoColumnLayout } from "~/components/layout/TwoColumnLayout";
 import { RelyingPartyItem } from "~/components/RelyingPartyItem";
 import { useTranslate } from "~/i18n/dict";
+import { routes } from "~/config/routes";
 
 export const Explore: Component = () => {
   const t = useTranslate();
@@ -30,7 +31,10 @@ export const Explore: Component = () => {
               {(item) => <RelyingPartyItem data={item}></RelyingPartyItem>}
             </For>
             <div class="flex flex-row justify-center">
-              <A href="/search" class="btn btn-primary no-underline">
+              <A
+                href={routes.search.index}
+                class="btn btn-primary no-underline"
+              >
                 {t.components.generic.viewMore()}
               </A>
             </div>

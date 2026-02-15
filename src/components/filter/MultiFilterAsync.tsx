@@ -11,21 +11,21 @@ export interface MultiFilterOption {
 }
 
 function toCompositeKey(fv: FilterValue): string {
-  return `${fv.mode}:${fv.value}`;
+  return `${fv.type}:${fv.value}`;
 }
 
 function fromCompositeKey(key: string): FilterValue {
   const colonIndex = key.indexOf(":");
-  const mode = key.substring(0, colonIndex) as "exact" | "like";
+  const type = key.substring(0, colonIndex) as "exact" | "like";
   const value = key.substring(colonIndex + 1);
-  return { value, mode };
+  return { value, type };
 }
 
 function filterValueToOption(fv: FilterValue): MultiFilterOption {
   return {
     label: fv.value,
     value: toCompositeKey(fv),
-    type: fv.mode === "like" ? "substr" : "exact",
+    type: fv.type === "like" ? "substr" : "exact",
   };
 }
 
@@ -78,7 +78,7 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
       );
     } else {
       if (props.allowSubstr) {
-        const substrFv: FilterValue = { value: input()!, mode: "like" };
+        const substrFv: FilterValue = { value: input()!, type: "like" };
         options.push(filterValueToOption(substrFv));
       }
       if (props.options) {

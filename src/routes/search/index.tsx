@@ -9,10 +9,7 @@ import { RelyingParties } from "~/components/RelyingParties";
 import { CategoryTabs } from "~/components/CategoryTabs";
 import { SearchAndFilter } from "~/components/SearchAndFilter";
 import { useSearchFilters } from "~/composables/useSearchFilters";
-import {
-  uiFiltersToApiParams,
-  uiFiltersToIntendedUsesParams,
-} from "~/types/filters";
+import { uiFiltersToApiParams } from "~/utils/filter-api";
 import { useTranslate } from "~/i18n/dict";
 import { Hero } from "~/components/Hero";
 
@@ -29,7 +26,7 @@ export default function SearchAll() {
   );
   const intendedUses = createAsync(() =>
     IntendedUsesAPI.listIntendedUses({
-      ...uiFiltersToIntendedUsesParams(filters()),
+      ...uiFiltersToApiParams(filters()),
       limit,
     })
   );

@@ -8,7 +8,7 @@ import { useSearchFilters } from "~/composables/useSearchFilters";
 import { createInfiniteScroll } from "~/utils/createInfiniteScroll";
 import { InfiniteList } from "~/components/InfiniteList";
 import { IntendedUseItem } from "~/components/IntendedUseItem";
-import { uiFiltersToIntendedUsesParams } from "~/types/filters";
+import { uiFiltersToApiParams } from "~/utils/filter-api";
 import { useTranslate } from "~/i18n/dict";
 import { Hero } from "~/components/Hero";
 
@@ -18,13 +18,13 @@ export default function SearchIntendedUses() {
   const { filters } = useSearchFilters("intended-uses");
 
   const intendedUsesInitial = createAsync(() =>
-    IntendedUses.listIntendedUses(uiFiltersToIntendedUsesParams(filters()))
+    IntendedUses.listIntendedUses(uiFiltersToApiParams(filters()))
   );
   const intendedUsesInfinite = createInfiniteScroll({
     initialResult: intendedUsesInitial,
     fetcher: (cursor) =>
       IntendedUses.listIntendedUses({
-        ...uiFiltersToIntendedUsesParams(filters()),
+        ...uiFiltersToApiParams(filters()),
         cursor,
       }),
   });

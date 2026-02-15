@@ -9,7 +9,7 @@ interface ActiveFiltersProps {
   onRemoveFilter: (
     key: keyof UIFilters,
     value?: string,
-    mode?: FilterValue["mode"]
+    mode?: FilterValue["type"]
   ) => void;
 }
 
@@ -17,7 +17,7 @@ interface FilterBadge {
   key: keyof UIFilters;
   label: string;
   value?: string;
-  mode?: FilterValue["mode"];
+  mode?: FilterValue["type"];
 }
 
 export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
@@ -26,7 +26,7 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
   const addBooleanFilter = (
     badges: FilterBadge[],
     key: keyof UIFilters,
-    value: "true" | "false" | undefined,
+    value: boolean | undefined,
     translations: {
       true?: () => string | undefined;
       false?: () => string | undefined;
@@ -35,10 +35,9 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
     if (value !== undefined) {
       badges.push({
         key,
-        label:
-          value === "true"
-            ? translations.true?.() || "Yes"
-            : translations.false?.() || "No",
+        label: value
+          ? translations.true?.() || "Yes"
+          : translations.false?.() || "No",
       });
     }
   };
@@ -53,9 +52,9 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
     values.forEach((fv) => {
       badges.push({
         key,
-        label: fv.mode === "like" ? `Contains: "${fv.value}"` : fv.value,
+        label: fv.type === "like" ? `Contains: "${fv.value}"` : fv.value,
         value: fv.value,
-        mode: fv.mode,
+        mode: fv.type,
       });
     });
   };

@@ -8,7 +8,7 @@ import { useSearchFilters } from "~/composables/useSearchFilters";
 import { InfiniteList } from "~/components/InfiniteList";
 import { RelyingPartyItem } from "~/components/RelyingPartyItem";
 import { createInfiniteScroll } from "~/utils/createInfiniteScroll";
-import { uiFiltersToApiParams } from "~/types/filters";
+import { uiFiltersToApiParams } from "~/utils/filter-api";
 import { useTranslate } from "~/i18n/dict";
 import { Hero } from "~/components/Hero";
 

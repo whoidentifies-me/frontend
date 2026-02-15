@@ -1,12 +1,14 @@
+import { SearchParams } from "~/types/search-params";
+
 export function buildUrlWithFilters(
   basePath: string,
-  filters: Record<string, string | string[] | undefined>
+  filters: Partial<SearchParams>
 ): string {
   const urlParams = new URLSearchParams();
 
   Object.entries(filters).forEach(([key, value]) => {
     if (value !== undefined) {
-      if (Array.isArray(value)) {
+      if (Array.isArray(value) && value.length > 0) {
         value.forEach((v) => urlParams.append(key, String(v)));
       } else {
         urlParams.set(key, String(value));
