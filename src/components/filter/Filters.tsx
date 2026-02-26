@@ -1,10 +1,10 @@
 import { Component, createSignal } from "solid-js";
-import type { UIFilters } from "~/types/filters";
+import type { FilterValue, UIFilters } from "~/types/filters";
 import { BooleanFilter } from "./BooleanFilter";
 import { MultiFilter } from "./MultiFilter";
 import { createAsync } from "@solidjs/router";
 import { Filters as FiltersAPI, RelyingParties, IntendedUses } from "~/api";
-import { MultiFilterAsync, MultiFilterOption } from "./MultiFilterAsync";
+import { MultiFilterAsync } from "./MultiFilterAsync";
 import { useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
 import {
@@ -29,14 +29,13 @@ export const Filters: Component<FiltersProps> = (props) => {
     FiltersAPI.getFilterValues("country", { limit: 1000 })
   );
 
-  const [wrpOptions, setWRPoptions] = createSignal<MultiFilterOption[]>();
+  const [wrpOptions, setWRPoptions] = createSignal<FilterValue[]>();
   const onUpdateWRPinput = async (input?: string) => {
     const result = await RelyingParties.listRelyingParties(
       input?.length ? { trade_name: [`%${input}%`] } : undefined
     );
     const opts = result?.data?.map(
-      (o): MultiFilterOption => ({
-        label: o.trade_name || "",
+      (o): FilterValue => ({
         value: o.trade_name || "",
         type: "exact",
       })
@@ -45,15 +44,14 @@ export const Filters: Component<FiltersProps> = (props) => {
   };
   onUpdateWRPinput();
 
-  const [claimOptions, setClaimOptions] = createSignal<MultiFilterOption[]>();
+  const [claimOptions, setClaimOptions] = createSignal<FilterValue[]>();
   const onUpdateClaimInput = async (input?: string) => {
     const result = await FiltersAPI.getFilterValues(
       "claim_path",
       input?.length ? { q: `%${input}%` } : undefined
     );
     const opts = result?.data?.map(
-      (o): MultiFilterOption => ({
-        label: o.value,
+      (o): FilterValue => ({
         value: o.value,
         type: "exact",
       })
@@ -62,8 +60,7 @@ export const Filters: Component<FiltersProps> = (props) => {
   };
   onUpdateClaimInput();
 
-  const [purposeOptions, setPurposeOptions] =
-    createSignal<MultiFilterOption[]>();
+  const [purposeOptions, setPurposeOptions] = createSignal<FilterValue[]>();
   const onUpdatePurposeInput = async (input?: string) => {
     const result = await IntendedUses.listIntendedUses(
       input?.length ? { purpose: [`%${input}%`] } : undefined
@@ -73,8 +70,7 @@ export const Filters: Component<FiltersProps> = (props) => {
       [];
     const uniquePurposes = [...new Set(purposes)];
     const opts = uniquePurposes.map(
-      (purpose): MultiFilterOption => ({
-        label: purpose,
+      (purpose): FilterValue => ({
         value: purpose,
         type: "exact",
       })
@@ -84,7 +80,7 @@ export const Filters: Component<FiltersProps> = (props) => {
   onUpdatePurposeInput();
 
   const [entitlementOptions, setEntitlementOptions] =
-    createSignal<MultiFilterOption[]>();
+    createSignal<FilterValue[]>();
   const onUpdateEntitlementInput = async (input?: string) => {
     const result = await RelyingParties.listRelyingParties(
       input?.length ? { entitlement: [`%${input}%`] } : undefined
@@ -93,8 +89,7 @@ export const Filters: Component<FiltersProps> = (props) => {
       result?.data?.flatMap((o) => o.entitlements || []) || [];
     const uniqueEntitlements = [...new Set(entitlements)];
     const opts = uniqueEntitlements.map(
-      (entitlement): MultiFilterOption => ({
-        label: entitlement,
+      (entitlement): FilterValue => ({
         value: entitlement,
         type: "exact",
       })

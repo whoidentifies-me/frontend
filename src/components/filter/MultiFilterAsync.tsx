@@ -4,42 +4,18 @@ import { TbCheck, TbX } from "solid-icons/tb";
 import { Search } from "@kobalte/core/search";
 import type { FilterValue } from "~/types/filters";
 
-export interface MultiFilterOption {
-  value: string;
-  label: string;
-  type: "exact" | "substr";
-}
-
 function toCompositeKey(fv: FilterValue): string {
   return `${fv.type}:${fv.value}`;
-}
-
-function fromCompositeKey(key: string): FilterValue {
-  const colonIndex = key.indexOf(":");
-  const type = key.substring(0, colonIndex) as "exact" | "like";
-  const value = key.substring(colonIndex + 1);
-  return { value, type };
-}
-
-function filterValueToOption(fv: FilterValue): MultiFilterOption {
-  return {
-    label: fv.value,
-    value: toCompositeKey(fv),
-    type: fv.type === "like" ? "substr" : "exact",
-  };
-}
-
-function optionToFilterValue(opt: MultiFilterOption): FilterValue {
-  return fromCompositeKey(opt.value);
 }
 
 interface MultiFilterProps {
   label: string;
   name: string;
-  options?: MultiFilterOption[];
+  options?: FilterValue[];
   values?: FilterValue[];
   placeholder?: string;
   allowSubstr?: boolean;
+  getLabel?: (fv: FilterValue) => string;
   onChange?: (val: FilterValue[]) => void;
   onInputChange?: (val: string) => void;
 }
@@ -48,53 +24,52 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
   const [input, setInput] = createSignal<string | undefined>(undefined);
   const [isOpen, setIsOpen] = createSignal(false);
 
-  const selectedCompositeKeys = createMemo(
+  const getLabel = (fv: FilterValue) => props.getLabel?.(fv) ?? fv.value;
+
+  const selectedKeys = createMemo(
     () => new Set(props.values?.map(toCompositeKey))
   );
-  const optionValuesSet = createMemo(
-    () => new Set(props.options?.map((o) => o.value))
+  const optionKeysSet = createMemo(
+    () => new Set(props.options?.map(toCompositeKey))
   );
-  const selectedOptions = createMemo<MultiFilterOption[]>(
-    () => props.values?.map(filterValueToOption) || []
-  );
+  const selectedValues = createMemo<FilterValue[]>(() => props.values || []);
 
   // snapshot only updates when modal is closed
-  const selectedOptionsSnapshot = createMemo<MultiFilterOption[]>((prev) =>
-    !isOpen() ? selectedOptions() : prev || []
+  const selectedSnapshot = createMemo<FilterValue[]>((prev) =>
+    !isOpen() ? selectedValues() : prev || []
   );
-  const selectedOptionsSnapshotValuesSet = createMemo(
-    () => new Set(selectedOptionsSnapshot().map((o) => o.value))
+  const selectedSnapshotKeys = createMemo(
+    () => new Set(selectedSnapshot().map(toCompositeKey))
   );
 
-  const options = createMemo<MultiFilterOption[]>(() => {
-    const options: MultiFilterOption[] = [];
+  const options = createMemo<FilterValue[]>(() => {
+    const result: FilterValue[] = [];
 
     if (!input()) {
-      options.push(
-        ...(selectedOptionsSnapshot() || []),
+      result.push(
+        ...(selectedSnapshot() || []),
         ...(props.options?.filter(
-          (o) => !selectedOptionsSnapshotValuesSet()?.has(o.value)
+          (o) => !selectedSnapshotKeys()?.has(toCompositeKey(o))
         ) || [])
       );
     } else {
       if (props.allowSubstr) {
-        const substrFv: FilterValue = { value: input()!, type: "like" };
-        options.push(filterValueToOption(substrFv));
+        result.push({ value: input()!, type: "like" });
       }
       if (props.options) {
-        options.push(...props.options);
+        result.push(...props.options);
       }
     }
 
-    return options;
+    return result;
   });
 
-  const value = createMemo((): MultiFilterOption[] => {
+  const value = createMemo((): FilterValue[] => {
     return (
       props.values
         ?.map((fv) => {
           const key = toCompositeKey(fv);
-          return options().find((opt) => opt.value === key);
+          return options().find((opt) => toCompositeKey(opt) === key);
         })
         .filter((opt) => !!opt) || []
     );
@@ -105,40 +80,36 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
     props.onInputChange?.(v);
   };
 
-  const onChange = (values: MultiFilterOption[]) => {
-    let selected = selectedOptions();
+  const onChange = (values: FilterValue[]) => {
+    let selected = [...selectedValues()];
+    const newKeys = new Set(values.map(toCompositeKey));
 
     // Add newly selected values
     for (const item of values) {
-      if (!selectedCompositeKeys().has(item.value)) {
+      if (!selectedKeys().has(toCompositeKey(item))) {
         selected.push(item);
       }
     }
 
     // remove unselected
-    const oldSelectedValuesSet = optionValuesSet().intersection(
-      selectedCompositeKeys()
-    );
-    const newSelectedValuesSet = new Set(values.map((v) => v.value));
-    const removedValuesSet =
-      oldSelectedValuesSet.difference(newSelectedValuesSet);
+    const oldSelectedKeys = optionKeysSet().intersection(selectedKeys());
+    const removedKeys = oldSelectedKeys.difference(newKeys);
 
-    const selectedSubstringValuesSet = new Set(
+    const selectedLikeKeys = new Set(
       options()
         .filter(
-          (o) => selectedCompositeKeys().has(o.value) && o.type === "substr"
+          (o) => selectedKeys().has(toCompositeKey(o)) && o.type === "like"
         )
-        .map((o) => o.value)
+        .map(toCompositeKey)
     );
-    const removedSubstringValue =
-      selectedSubstringValuesSet.difference(newSelectedValuesSet);
+    const removedLikeKeys = selectedLikeKeys.difference(newKeys);
 
-    const removeSet = removedValuesSet.union(removedSubstringValue);
+    const removeSet = removedKeys.union(removedLikeKeys);
     if (removeSet.size) {
-      selected = selected.filter((o) => !removeSet.has(o.value));
+      selected = selected.filter((o) => !removeSet.has(toCompositeKey(o)));
     }
 
-    props.onChange?.(selected.map(optionToFilterValue));
+    props.onChange?.(selected);
   };
 
   const onClear = () => {
@@ -159,9 +130,9 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
       <Search
         triggerMode="focus"
         options={options()}
-        optionValue={(v) => v.value}
-        optionLabel={(o) => o.label}
-        optionTextValue={(o) => o.label}
+        optionValue={(fv) => toCompositeKey(fv)}
+        optionLabel={(fv) => getLabel(fv)}
+        optionTextValue={(fv) => getLabel(fv)}
         onInputChange={onInputChange}
         onChange={(v) => onChange(v)}
         onOpenChange={onOpenChange}
@@ -172,23 +143,23 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
         debounceOptionsMillisecond={300}
         removeOnBackspace={false}
         closeOnSelection={false}
-        itemComponent={(props) => {
+        itemComponent={(itemProps) => {
           return (
             <>
-              <Show when={props.item.rawValue.type === "exact"}>
-                <Search.Item class="search-item" item={props.item}>
+              <Show when={itemProps.item.rawValue.type === "exact"}>
+                <Search.Item class="search-item" item={itemProps.item}>
                   <Search.ItemLabel>
-                    {props.item.rawValue.label}
+                    {getLabel(itemProps.item.rawValue)}
                   </Search.ItemLabel>
                   <Combobox.ItemIndicator class="combobox-item-indicator">
                     <TbCheck />
                   </Combobox.ItemIndicator>
                 </Search.Item>
               </Show>
-              <Show when={props.item.rawValue.type === "substr"}>
-                <Search.Item class="search-item" item={props.item}>
+              <Show when={itemProps.item.rawValue.type === "like"}>
+                <Search.Item class="search-item" item={itemProps.item}>
                   <Search.ItemLabel>
-                    Contains: "{props.item.rawValue.label}"
+                    Contains: "{getLabel(itemProps.item.rawValue)}"
                   </Search.ItemLabel>
                   <Combobox.ItemIndicator class="combobox-item-indicator">
                     <TbCheck />
@@ -204,8 +175,8 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
             <>
               <Search.Input class="select w-full" id={id()}></Search.Input>
               <div class="flex flex-row items-center">
-                <Show when={selectedCompositeKeys().size && false}>
-                  <span class="mx-2">{selectedCompositeKeys().size}</span>
+                <Show when={selectedKeys().size && false}>
+                  <span class="mx-2">{selectedKeys().size}</span>
                   <button
                     onPointerDown={(e) => e.stopPropagation()}
                     onClick={onClear}
