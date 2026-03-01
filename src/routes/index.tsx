@@ -6,10 +6,12 @@ import { Hero } from "~/components/Hero";
 
 export default function Home() {
   return (
-    <main class="">
-      <Hero>
-        <SearchAndFilter collapseFilters={true}></SearchAndFilter>
-      </Hero>
+    <main>
+      <div class="wim-container">
+        <Hero>
+          <SearchAndFilter collapseFilters={true}></SearchAndFilter>
+        </Hero>
+      </div>
 
       <Explore />
 

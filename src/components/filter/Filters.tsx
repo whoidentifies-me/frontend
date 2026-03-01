@@ -22,7 +22,7 @@ export const Filters: Component<FiltersProps> = (props) => {
   };
 
   const countries = createAsync(() =>
-    FiltersAPI.getFilterValues("country", { limit: 1000 })
+    FiltersAPI.getFilterValues("country", { limit: 50 })
   );
 
   const wrpFetch = createDebouncedFetch(async (input) => {
