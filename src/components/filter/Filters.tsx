@@ -5,8 +5,6 @@ import { MultiFilter } from "./MultiFilter";
 import { createAsync } from "@solidjs/router";
 import { Filters as FiltersAPI, RelyingParties, IntendedUses } from "~/api";
 import { MultiFilterAsync } from "./MultiFilterAsync";
-import { ArkMultiFilter } from "./ArkMultiFilter";
-import { ArkMultiFilterAsync } from "./ArkMultiFilterAsync";
 import { useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
 import {
@@ -111,7 +109,6 @@ export const Filters: Component<FiltersProps> = (props) => {
   return (
     <fieldset class="my-4 mx-0 py-0 px-1 border-none">
       <legend class="sr-only">Filters</legend>
-      <h3 class="text-lg font-semibold mb-4">Kobalte</h3>
       <div
         class="grid gap-8"
         style={{
@@ -127,7 +124,7 @@ export const Filters: Component<FiltersProps> = (props) => {
           onInputChange={onUpdateClaimInput}
           onChange={handleFilterChange("claim_path")}
           allowSubstr={true}
-        ></MultiFilterAsync>
+        />
         <MultiFilterAsync
           label={t.filters.labels.purpose()!}
           name="purpose"
@@ -137,7 +134,7 @@ export const Filters: Component<FiltersProps> = (props) => {
           onInputChange={onUpdatePurposeInput}
           onChange={handleFilterChange("purpose")}
           allowSubstr={true}
-        ></MultiFilterAsync>
+        />
         <MultiFilter
           label={t.filters.labels.country()!}
           name="country"
@@ -145,7 +142,7 @@ export const Filters: Component<FiltersProps> = (props) => {
           values={props.filters.country || undefined}
           onChange={handleFilterChange("country")}
           options={countryOptions()}
-        ></MultiFilter>
+        />
         <MultiFilterAsync
           label={t.filters.labels.trade_name()!}
           name="wrp_id"
@@ -155,7 +152,7 @@ export const Filters: Component<FiltersProps> = (props) => {
           onInputChange={onUpdateWRPinput}
           onChange={handleFilterChange("trade_name")}
           allowSubstr={true}
-        ></MultiFilterAsync>
+        />
         <BooleanFilter
           label={t.filters.labels.is_psb()!}
           name="is_psb"
@@ -176,7 +173,7 @@ export const Filters: Component<FiltersProps> = (props) => {
           onInputChange={onUpdateEntitlementInput}
           onChange={handleFilterChange("entitlement")}
           allowSubstr={true}
-        ></MultiFilterAsync>
+        />
         <BooleanFilter
           label={t.filters.labels.is_intermediary()!}
           name="is_intermediary"
@@ -200,64 +197,6 @@ export const Filters: Component<FiltersProps> = (props) => {
           trueLabel={t.filters.values.uses_intermediary.true()}
           falseLabel={t.filters.values.uses_intermediary.false()}
           allLabel={t.filters.values.uses_intermediary.all()}
-        />
-      </div>
-
-      <legend class="sr-only">ARK UI Filters</legend>
-      <h3 class="text-lg font-semibold mt-8 mb-4">ARK UI</h3>
-      <div
-        class="grid gap-8"
-        style={{
-          "grid-template-columns": "repeat(auto-fit, minmax(250px, 1fr))",
-        }}
-      >
-        <ArkMultiFilterAsync
-          label={t.filters.labels.claim_path()!}
-          name="claim_path"
-          placeholder={t.filters.placeholders.claim_path()}
-          options={claimOptions()}
-          values={props.filters.claim_path || undefined}
-          onInputChange={onUpdateClaimInput}
-          onChange={handleFilterChange("claim_path")}
-          allowSubstr={true}
-        />
-        <ArkMultiFilterAsync
-          label={t.filters.labels.purpose()!}
-          name="purpose"
-          placeholder={t.filters.placeholders.purpose()}
-          options={purposeOptions()}
-          values={props.filters.purpose || undefined}
-          onInputChange={onUpdatePurposeInput}
-          onChange={handleFilterChange("purpose")}
-          allowSubstr={true}
-        />
-        <ArkMultiFilter
-          label={t.filters.labels.country()!}
-          name="country"
-          placeholder={t.filters.placeholders.country()}
-          values={props.filters.country || undefined}
-          onChange={handleFilterChange("country")}
-          options={countryOptions()}
-        />
-        <ArkMultiFilterAsync
-          label={t.filters.labels.trade_name()!}
-          name="wrp_id"
-          placeholder={t.filters.placeholders.trade_name()}
-          options={wrpOptions()}
-          values={props.filters.trade_name || undefined}
-          onInputChange={onUpdateWRPinput}
-          onChange={handleFilterChange("trade_name")}
-          allowSubstr={true}
-        />
-        <ArkMultiFilterAsync
-          label={t.filters.labels.entitlement()!}
-          name="entitlement"
-          placeholder={t.filters.placeholders.entitlement()}
-          options={entitlementOptions()}
-          values={props.filters.entitlement || undefined}
-          onInputChange={onUpdateEntitlementInput}
-          onChange={handleFilterChange("entitlement")}
-          allowSubstr={true}
         />
       </div>
     </fieldset>

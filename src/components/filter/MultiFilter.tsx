@@ -1,6 +1,7 @@
-import { Component, Show } from "solid-js";
-import { Combobox } from "@kobalte/core/combobox";
-import { TbCheck, TbX } from "solid-icons/tb";
+import { Component, createMemo, createSignal, For, Show } from "solid-js";
+import { Combobox, createListCollection } from "@ark-ui/solid/combobox";
+import { Portal } from "solid-js/web";
+import { TbCheck } from "solid-icons/tb";
 
 interface MultiFilterOption {
   value: string;
@@ -17,89 +18,82 @@ interface MultiFilterProps {
 }
 
 export const MultiFilter: Component<MultiFilterProps> = (props) => {
+  const [inputValue, setInputValue] = createSignal("");
+
   const id = () => `multi-filter-${props.name}`;
-  const onChange = (value: any[]) => {
-    if (props.onChange) {
-      props.onChange(value.map((v) => v.value));
-    }
-  };
-  const options = () => props.options || [];
-  const value = (): MultiFilterOption[] => {
-    if (!props.values) {
-      return [];
-    }
-    const input = Array.isArray(props.values) ? props.values : [props.values];
-    return input
-      .map((val) => props.options?.find((opt) => opt.value === val))
-      .filter((opt) => !!opt);
-  };
+
+  const allOptions = () => props.options || [];
+
+  const filteredOptions = createMemo(() => {
+    const query = inputValue().toLowerCase();
+    if (!query) return allOptions();
+    return allOptions().filter(
+      (opt) =>
+        opt.label.toLowerCase().includes(query) ||
+        opt.value.toLowerCase().includes(query)
+    );
+  });
+
+  const collection = createMemo(() =>
+    createListCollection({
+      items: filteredOptions(),
+      itemToValue: (item) => item.value,
+      itemToString: (item) => item.label,
+    })
+  );
+
+  const value = createMemo((): string[] => {
+    if (!props.values) return [];
+    return Array.isArray(props.values) ? props.values : [props.values];
+  });
+
   return (
     <div class="flex flex-col items-stretch justify-end text-start">
       <label for={id()} class="font-semibold text-sm mb-2">
         {props.label}
       </label>
-      <Combobox
-        class=""
+      <Combobox.Root
+        value={value()}
+        collection={collection()}
         multiple
-        options={options()}
-        placeholder={props.placeholder}
-        onChange={(v) => onChange(v)}
-        optionValue={(v) => v.value}
-        optionLabel={(v) => v.value}
-        optionTextValue={(v) => v.label}
-        value={value() as any} // any required as it seems there is some strange type inference going on
-        name={props.name}
-        triggerMode="focus"
-        itemComponent={(props) => (
-          <Combobox.Item item={props.item} class="combobox-item">
-            <Combobox.ItemLabel>{props.item.rawValue.label}</Combobox.ItemLabel>
-            <Combobox.ItemIndicator class="combobox-item-indicator">
-              <TbCheck />
-            </Combobox.ItemIndicator>
-          </Combobox.Item>
-        )}
+        openOnClick
+        onValueChange={(details) => {
+          props.onChange?.(details.value);
+        }}
+        onInputValueChange={(details) => {
+          setInputValue(details.inputValue);
+        }}
+        loopFocus
       >
-        <Combobox.Control class="" aria-label={props.label}>
-          {(state) => (
-            <>
-              {/* <For each={state?.selectedOptions() || []}>
-                {(option) => (
-                  <span onPointerDown={(e) => e.stopPropagation()}>
-                    {(option as MultiFilterOption).label}
-                    <button onClick={() => state.remove(option)}>
-                      <TbX />
-                    </button>
-                  </span>
-                )}
-              </For> */}
-              <Combobox.Input id={id()} class="select w-full" />
-              <div class="flex flex-row items-center">
-                <Show when={state?.selectedOptions()?.length && false}>
-                  <span class="mx-2">{state?.selectedOptions()?.length}</span>
-                  <button
-                    onPointerDown={(e) => e.stopPropagation()}
-                    onClick={state.clear}
-                  >
-                    <TbX />
-                  </button>
-                </Show>
-              </div>
-              {/*
-              <Combobox.Trigger class="combobox-trigger">
-                <Combobox.Icon class="combobox-icon">
-                  <TbSelector />
-                </Combobox.Icon>
-              </Combobox.Trigger>
-              */}
-            </>
-          )}
+        <Combobox.Control>
+          <Combobox.Input
+            id={id()}
+            class="select w-full"
+            placeholder={props.placeholder}
+          />
         </Combobox.Control>
-        <Combobox.Portal>
-          <Combobox.Content class="combobox-content">
-            <Combobox.Listbox class="combobox-listbox" />
-          </Combobox.Content>
-        </Combobox.Portal>
-      </Combobox>
+        <Portal>
+          <Combobox.Positioner>
+            <Combobox.Content class="ark-combobox-content">
+              <Combobox.ItemGroup>
+                <For each={filteredOptions()}>
+                  {(option) => (
+                    <Combobox.Item item={option} class="ark-combobox-item">
+                      <Combobox.ItemText>{option.label}</Combobox.ItemText>
+                      <Combobox.ItemIndicator class="ark-combobox-item-indicator">
+                        <TbCheck />
+                      </Combobox.ItemIndicator>
+                    </Combobox.Item>
+                  )}
+                </For>
+              </Combobox.ItemGroup>
+              <Show when={filteredOptions().length === 0}>
+                <div class="ark-combobox-no-result">No results</div>
+              </Show>
+            </Combobox.Content>
+          </Combobox.Positioner>
+        </Portal>
+      </Combobox.Root>
     </div>
   );
 };

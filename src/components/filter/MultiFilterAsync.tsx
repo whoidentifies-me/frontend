@@ -1,14 +1,14 @@
-import { Component, createMemo, createSignal, Show } from "solid-js";
-import { Combobox } from "@kobalte/core/combobox";
-import { TbCheck, TbX } from "solid-icons/tb";
-import { Search } from "@kobalte/core/search";
+import { Component, createMemo, createSignal, For, Show } from "solid-js";
+import { Combobox, createListCollection } from "@ark-ui/solid/combobox";
+import { Portal } from "solid-js/web";
+import { TbCheck } from "solid-icons/tb";
 import type { FilterValue } from "~/types/filters";
 
 function toCompositeKey(fv: FilterValue): string {
   return `${fv.type}:${fv.value}`;
 }
 
-interface MultiFilterProps {
+interface MultiFilterAsyncProps {
   label: string;
   name: string;
   options?: FilterValue[];
@@ -20,9 +20,10 @@ interface MultiFilterProps {
   onInputChange?: (val: string) => void;
 }
 
-export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
-  const [input, setInput] = createSignal<string | undefined>(undefined);
+export const MultiFilterAsync: Component<MultiFilterAsyncProps> = (props) => {
+  const [input, setInput] = createSignal("");
   const [isOpen, setIsOpen] = createSignal(false);
+  let debounceTimer: ReturnType<typeof setTimeout> | undefined;
 
   const getLabel = (fv: FilterValue) => props.getLabel?.(fv) ?? fv.value;
 
@@ -54,7 +55,7 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
       );
     } else {
       if (props.allowSubstr) {
-        result.push({ value: input()!, type: "like" });
+        result.push({ value: input(), type: "like" });
       }
       if (props.options) {
         result.push(...props.options);
@@ -64,34 +65,53 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
     return result;
   });
 
-  const value = createMemo((): FilterValue[] => {
+  const selectedCompositeKeys = createMemo((): string[] => {
     return (
       props.values
         ?.map((fv) => {
           const key = toCompositeKey(fv);
-          return options().find((opt) => toCompositeKey(opt) === key);
+          const found = options().find((opt) => toCompositeKey(opt) === key);
+          return found ? key : undefined;
         })
-        .filter((opt) => !!opt) || []
+        .filter((k): k is string => !!k) || []
     );
   });
 
+  const collection = createMemo(() =>
+    createListCollection({
+      items: options(),
+      itemToValue: (item) => toCompositeKey(item),
+      itemToString: (item) =>
+        item.type === "like" ? `Contains: "${getLabel(item)}"` : getLabel(item),
+    })
+  );
+
   const onInputChange = (v: string) => {
     setInput(v);
-    props.onInputChange?.(v);
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      props.onInputChange?.(v);
+    }, 300);
   };
 
-  const onChange = (values: FilterValue[]) => {
+  const onValueChange = (details: { value: string[] }) => {
+    const newKeys = new Set(details.value);
     let selected = [...selectedValues()];
-    const newKeys = new Set(values.map(toCompositeKey));
+
+    // Map composite keys back to FilterValue objects from current options
+    const keyToOption = new Map(options().map((o) => [toCompositeKey(o), o]));
 
     // Add newly selected values
-    for (const item of values) {
-      if (!selectedKeys().has(toCompositeKey(item))) {
-        selected.push(item);
+    for (const key of details.value) {
+      if (!selectedKeys().has(key)) {
+        const option = keyToOption.get(key);
+        if (option) {
+          selected.push(option);
+        }
       }
     }
 
-    // remove unselected
+    // Remove unselected
     const oldSelectedKeys = optionKeysSet().intersection(selectedKeys());
     const removedKeys = oldSelectedKeys.difference(newKeys);
 
@@ -112,14 +132,6 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
     props.onChange?.(selected);
   };
 
-  const onClear = () => {
-    props.onChange?.([]);
-  };
-
-  const onOpenChange = (isOpen: boolean) => {
-    setIsOpen(isOpen);
-  };
-
   const id = () => `async-select-${props.name}`;
 
   return (
@@ -127,79 +139,54 @@ export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
       <label for={id()} class="text-sm font-semibold mb-2">
         {props.label}
       </label>
-      <Search
-        triggerMode="focus"
-        options={options()}
-        optionValue={(fv) => toCompositeKey(fv)}
-        optionLabel={(fv) => getLabel(fv)}
-        optionTextValue={(fv) => getLabel(fv)}
-        onInputChange={onInputChange}
-        onChange={(v) => onChange(v)}
-        onOpenChange={onOpenChange}
-        name={props.name}
-        value={value() as any}
-        placeholder={props.placeholder}
+      <Combobox.Root
+        value={selectedCompositeKeys()}
+        collection={collection()}
         multiple
-        debounceOptionsMillisecond={300}
-        removeOnBackspace={false}
-        closeOnSelection={false}
-        itemComponent={(itemProps) => {
-          return (
-            <>
-              <Show when={itemProps.item.rawValue.type === "exact"}>
-                <Search.Item class="search-item" item={itemProps.item}>
-                  <Search.ItemLabel>
-                    {getLabel(itemProps.item.rawValue)}
-                  </Search.ItemLabel>
-                  <Combobox.ItemIndicator class="combobox-item-indicator">
-                    <TbCheck />
-                  </Combobox.ItemIndicator>
-                </Search.Item>
-              </Show>
-              <Show when={itemProps.item.rawValue.type === "like"}>
-                <Search.Item class="search-item" item={itemProps.item}>
-                  <Search.ItemLabel>
-                    Contains: "{getLabel(itemProps.item.rawValue)}"
-                  </Search.ItemLabel>
-                  <Combobox.ItemIndicator class="combobox-item-indicator">
-                    <TbCheck />
-                  </Combobox.ItemIndicator>
-                </Search.Item>
-              </Show>
-            </>
-          );
-        }}
+        openOnClick
+        open={isOpen()}
+        onOpenChange={(details) => setIsOpen(details.open)}
+        onValueChange={onValueChange}
+        inputValue={input()}
+        onInputValueChange={(details) => onInputChange(details.inputValue)}
+        loopFocus
       >
-        <Search.Control class="" aria-label={props.label}>
-          {() => (
-            <>
-              <Search.Input class="select w-full" id={id()}></Search.Input>
-              <div class="flex flex-row items-center">
-                <Show when={selectedKeys().size && false}>
-                  <span class="mx-2">{selectedKeys().size}</span>
-                  <button
-                    onPointerDown={(e) => e.stopPropagation()}
-                    onClick={onClear}
-                  >
-                    <TbX />
-                  </button>
-                </Show>
-              </div>
-            </>
-          )}
-        </Search.Control>
-        <Search.Portal>
-          <Search.Content
-            class="search-content"
-            onCloseAutoFocus={(e) => e.preventDefault()}
-          >
-            <Search.Listbox class="search-listbox" />
-            <Search.NoResult class="search-no-result">
-              No results
-            </Search.NoResult>
-          </Search.Content>
-        </Search.Portal>
-      </Search>
+        <Combobox.Control>
+          <Combobox.Input
+            id={id()}
+            class="select w-full"
+            placeholder={props.placeholder}
+          />
+        </Combobox.Control>
+        <Portal>
+          <Combobox.Positioner>
+            <Combobox.Content class="ark-combobox-content">
+              <Combobox.ItemGroup>
+                <For each={options()}>
+                  {(option) => (
+                    <Combobox.Item item={option} class="ark-combobox-item">
+                      <Combobox.ItemText>
+                        <Show when={option.type === "like"}>
+                          Contains: "{getLabel(option)}"
+                        </Show>
+                        <Show when={option.type === "exact"}>
+                          {getLabel(option)}
+                        </Show>
+                      </Combobox.ItemText>
+                      <Combobox.ItemIndicator class="ark-combobox-item-indicator">
+                        <TbCheck />
+                      </Combobox.ItemIndicator>
+                    </Combobox.Item>
+                  )}
+                </For>
+              </Combobox.ItemGroup>
+              <Show when={options().length === 0}>
+                <div class="ark-combobox-no-result">No results</div>
+              </Show>
+            </Combobox.Content>
+          </Combobox.Positioner>
+        </Portal>
+      </Combobox.Root>
     </div>
   );
 };
