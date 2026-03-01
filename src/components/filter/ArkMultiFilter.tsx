@@ -1,0 +1,105 @@
+import { Component, createMemo, createSignal, For, Show } from "solid-js";
+import { Combobox, createListCollection } from "@ark-ui/solid/combobox";
+import { Portal } from "solid-js/web";
+import { TbCheck } from "solid-icons/tb";
+
+interface MultiFilterOption {
+  value: string;
+  label: string;
+}
+
+interface ArkMultiFilterProps {
+  label: string;
+  name: string;
+  options?: MultiFilterOption[];
+  values?: string | string[];
+  placeholder?: string;
+  onChange?: (val: string[]) => void;
+}
+
+export const ArkMultiFilter: Component<ArkMultiFilterProps> = (props) => {
+  const [inputValue, setInputValue] = createSignal("");
+
+  const id = () => `ark-multi-filter-${props.name}`;
+
+  const allOptions = () => props.options || [];
+
+  const filteredOptions = createMemo(() => {
+    const query = inputValue().toLowerCase();
+    if (!query) return allOptions();
+    return allOptions().filter(
+      (opt) =>
+        opt.label.toLowerCase().includes(query) ||
+        opt.value.toLowerCase().includes(query)
+    );
+  });
+
+  const collection = createMemo(() =>
+    createListCollection({
+      items: filteredOptions(),
+      itemToValue: (item) => item.value,
+      itemToString: (item) => item.label,
+    })
+  );
+
+  const value = createMemo((): string[] => {
+    if (!props.values) return [];
+    return Array.isArray(props.values) ? props.values : [props.values];
+  });
+
+  return (
+    <div class="flex flex-col items-stretch justify-end text-start">
+      <label for={id()} class="font-semibold text-sm mb-2">
+        {props.label}
+      </label>
+      <Combobox.Root
+        value={value()}
+        collection={collection()}
+        multiple
+        openOnClick
+        onValueChange={(details) => {
+          props.onChange?.(details.value);
+        }}
+        onInputValueChange={(details) => {
+          setInputValue(details.inputValue);
+        }}
+        loopFocus
+      >
+        <Combobox.Control>
+          <Combobox.Input
+            id={id()}
+            class="select w-full"
+            placeholder={props.placeholder}
+            onFocus={(e) => {
+              const api = e.currentTarget.closest("[data-scope='combobox']");
+              if (api) {
+                // Ark opens on click; focusing also opens via openOnClick behavior
+              }
+            }}
+          />
+        </Combobox.Control>
+        <Portal>
+          <Combobox.Positioner>
+            <Combobox.Content class="ark-combobox-content">
+              <Combobox.ItemGroup>
+                <For each={filteredOptions()}>
+                  {(option) => (
+                    <Combobox.Item item={option} class="ark-combobox-item">
+                      <Combobox.ItemText>{option.label}</Combobox.ItemText>
+                      <Combobox.ItemIndicator class="ark-combobox-item-indicator">
+                        <TbCheck />
+                      </Combobox.ItemIndicator>
+                    </Combobox.Item>
+                  )}
+                </For>
+              </Combobox.ItemGroup>
+              <Show when={filteredOptions().length === 0}>
+                <div class="ark-combobox-no-result">No results</div>
+              </Show>
+            </Combobox.Content>
+          </Combobox.Positioner>
+        </Portal>
+      </Combobox.Root>
+    </div>
+  );
+};

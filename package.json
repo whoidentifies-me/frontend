@@ -23,6 +23,7 @@
     "api:generate": "orval"
   },
   "dependencies": {
+    "@ark-ui/solid": "^5.34.0",
     "@fontsource-variable/montserrat": "^5.2.8",
     "@fontsource-variable/open-sans": "^5.2.7",
     "@kobalte/core": "^0.13.11",

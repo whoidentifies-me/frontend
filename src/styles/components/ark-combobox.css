@@ -1,0 +1,67 @@
+.ark-combobox-content {
+  background-color: white;
+  border-radius: 12px;
+  border: 1px solid hsl(240deg 6% 90%);
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 10%),
+    0 2px 4px -2px rgb(0 0 0 / 10%);
+  z-index: 50;
+}
+
+.ark-combobox-content [data-scope="combobox"][data-part="item-group"] {
+  overflow-y: auto;
+  max-height: 360px;
+  padding-block: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style-type: none;
+}
+
+.ark-combobox-item {
+  font-size: 1em;
+  line-height: 1;
+  color: hsl(240deg 4% 16%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 8px;
+  padding-inline: 12px;
+  position: relative;
+  user-select: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.ark-combobox-item[data-disabled] {
+  color: hsl(240deg 5% 65%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.ark-combobox-item[data-highlighted],
+.ark-combobox-item:hover,
+.ark-combobox-item:focus {
+  outline: none;
+  background-color: color-mix(in srgb, var(--color-primary) 20%, white 80%);
+}
+
+.ark-combobox-item-indicator {
+  height: 20px;
+  width: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ark-combobox-item-indicator[hidden] {
+  display: none;
+}
+
+.ark-combobox-no-result {
+  text-align: center;
+  padding: 8px;
+  padding-bottom: 24px;
+  margin: auto;
+  color: hsl(240deg 4% 46%);
+}
