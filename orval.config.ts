@@ -11,6 +11,12 @@ export default defineConfig({
       mock: false,
       clean: true,
       prettier: true,
+      override: {
+        mutator: {
+          path: "./src/api/fetchInstance.ts",
+          name: "fetchInstance",
+        },
+      },
     },
     input: {
       target: "./openapi.yaml",

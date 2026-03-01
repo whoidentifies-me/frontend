@@ -1,4 +1,4 @@
-import { Component, createSignal } from "solid-js";
+import { Component } from "solid-js";
 import type { FilterValue, UIFilters } from "~/types/filters";
 import { BooleanFilter } from "./BooleanFilter";
 import { MultiFilter } from "./MultiFilter";
@@ -7,10 +7,7 @@ import { Filters as FiltersAPI, RelyingParties, IntendedUses } from "~/api";
 import { MultiFilterAsync } from "./MultiFilterAsync";
 import { useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
-import {
-  booleanToStringLiteral,
-  stringLiteralToBoolean,
-} from "~/utils/boolean";
+import { createDebouncedFetch } from "~/utils/createDebouncedFetch";
 
 interface FiltersProps {
   filters: UIFilters;
@@ -21,7 +18,6 @@ export const Filters: Component<FiltersProps> = (props) => {
   const t = useTranslate();
 
   const handleFilterChange = (key: keyof UIFilters) => (value?: unknown) => {
-    console.log("key", key, "value", value);
     props.onFiltersChange?.({ [key]: value });
   };
 
@@ -29,74 +25,55 @@ export const Filters: Component<FiltersProps> = (props) => {
     FiltersAPI.getFilterValues("country", { limit: 1000 })
   );
 
-  const [wrpOptions, setWRPoptions] = createSignal<FilterValue[]>();
-  const onUpdateWRPinput = async (input?: string) => {
+  const wrpFetch = createDebouncedFetch(async (input) => {
     const result = await RelyingParties.listRelyingParties(
       input?.length ? { trade_name: [`%${input}%`] } : undefined
     );
-    const opts = result?.data?.map(
-      (o): FilterValue => ({
-        value: o.trade_name || "",
-        type: "exact",
-      })
+    return (
+      result?.data?.map(
+        (o): FilterValue => ({ value: o.trade_name || "", type: "exact" })
+      ) || []
     );
-    setWRPoptions(opts || []);
-  };
-  onUpdateWRPinput();
+  });
+  wrpFetch.trigger();
 
-  const [claimOptions, setClaimOptions] = createSignal<FilterValue[]>();
-  const onUpdateClaimInput = async (input?: string) => {
+  const claimFetch = createDebouncedFetch(async (input) => {
     const result = await FiltersAPI.getFilterValues(
       "claim_path",
       input?.length ? { q: `%${input}%` } : undefined
     );
-    const opts = result?.data?.map(
-      (o): FilterValue => ({
-        value: o.value,
-        type: "exact",
-      })
+    return (
+      result?.data?.map(
+        (o): FilterValue => ({ value: o.value, type: "exact" })
+      ) || []
     );
-    setClaimOptions(opts);
-  };
-  onUpdateClaimInput();
+  });
+  claimFetch.trigger();
 
-  const [purposeOptions, setPurposeOptions] = createSignal<FilterValue[]>();
-  const onUpdatePurposeInput = async (input?: string) => {
+  const purposeFetch = createDebouncedFetch(async (input) => {
     const result = await IntendedUses.listIntendedUses(
       input?.length ? { purpose: [`%${input}%`] } : undefined
     );
     const purposes =
       result?.data?.flatMap((o) => o.purposes?.map((p) => p.content) || []) ||
       [];
-    const uniquePurposes = [...new Set(purposes)];
-    const opts = uniquePurposes.map(
-      (purpose): FilterValue => ({
-        value: purpose,
-        type: "exact",
-      })
+    return [...new Set(purposes)].map(
+      (purpose): FilterValue => ({ value: purpose, type: "exact" })
     );
-    setPurposeOptions(opts);
-  };
-  onUpdatePurposeInput();
+  });
+  purposeFetch.trigger();
 
-  const [entitlementOptions, setEntitlementOptions] =
-    createSignal<FilterValue[]>();
-  const onUpdateEntitlementInput = async (input?: string) => {
+  const entitlementFetch = createDebouncedFetch(async (input) => {
     const result = await RelyingParties.listRelyingParties(
       input?.length ? { entitlement: [`%${input}%`] } : undefined
     );
     const entitlements =
       result?.data?.flatMap((o) => o.entitlements || []) || [];
-    const uniqueEntitlements = [...new Set(entitlements)];
-    const opts = uniqueEntitlements.map(
-      (entitlement): FilterValue => ({
-        value: entitlement,
-        type: "exact",
-      })
+    return [...new Set(entitlements)].map(
+      (entitlement): FilterValue => ({ value: entitlement, type: "exact" })
     );
-    setEntitlementOptions(opts);
-  };
-  onUpdateEntitlementInput();
+  });
+  entitlementFetch.trigger();
 
   const countryOptions = () =>
     countries()
@@ -119,9 +96,9 @@ export const Filters: Component<FiltersProps> = (props) => {
           label={t.filters.labels.claim_path()!}
           name="claim_path"
           placeholder={t.filters.placeholders.claim_path()}
-          options={claimOptions()}
+          options={claimFetch.data()}
           values={props.filters.claim_path || undefined}
-          onInputChange={onUpdateClaimInput}
+          onInputChange={claimFetch.trigger}
           onChange={handleFilterChange("claim_path")}
           allowSubstr={true}
         />
@@ -129,9 +106,9 @@ export const Filters: Component<FiltersProps> = (props) => {
           label={t.filters.labels.purpose()!}
           name="purpose"
           placeholder={t.filters.placeholders.purpose()}
-          options={purposeOptions()}
+          options={purposeFetch.data()}
           values={props.filters.purpose || undefined}
-          onInputChange={onUpdatePurposeInput}
+          onInputChange={purposeFetch.trigger}
           onChange={handleFilterChange("purpose")}
           allowSubstr={true}
         />
@@ -147,19 +124,17 @@ export const Filters: Component<FiltersProps> = (props) => {
           label={t.filters.labels.trade_name()!}
           name="wrp_id"
           placeholder={t.filters.placeholders.trade_name()}
-          options={wrpOptions()}
+          options={wrpFetch.data()}
           values={props.filters.trade_name || undefined}
-          onInputChange={onUpdateWRPinput}
+          onInputChange={wrpFetch.trigger}
           onChange={handleFilterChange("trade_name")}
           allowSubstr={true}
         />
         <BooleanFilter
           label={t.filters.labels.is_psb()!}
           name="is_psb"
-          value={stringLiteralToBoolean(props.filters.is_psb)}
-          onChange={(value) =>
-            handleFilterChange("is_psb")(booleanToStringLiteral(value))
-          }
+          value={props.filters.is_psb}
+          onChange={(value) => handleFilterChange("is_psb")(value)}
           trueLabel={t.filters.values.is_psb.true()}
           falseLabel={t.filters.values.is_psb.false()}
           allLabel={t.filters.values.is_psb.all()}
@@ -168,19 +143,17 @@ export const Filters: Component<FiltersProps> = (props) => {
           label={t.filters.labels.entitlement()!}
           name="entitlement"
           placeholder={t.filters.placeholders.entitlement()}
-          options={entitlementOptions()}
+          options={entitlementFetch.data()}
           values={props.filters.entitlement || undefined}
-          onInputChange={onUpdateEntitlementInput}
+          onInputChange={entitlementFetch.trigger}
           onChange={handleFilterChange("entitlement")}
           allowSubstr={true}
         />
         <BooleanFilter
           label={t.filters.labels.is_intermediary()!}
           name="is_intermediary"
-          value={stringLiteralToBoolean(props.filters.is_intermediary)}
-          onChange={(value) =>
-            handleFilterChange("is_intermediary")(booleanToStringLiteral(value))
-          }
+          value={props.filters.is_intermediary}
+          onChange={(value) => handleFilterChange("is_intermediary")(value)}
           trueLabel={t.filters.values.is_intermediary.true()}
           falseLabel={t.filters.values.is_intermediary.false()}
           allLabel={t.filters.values.is_intermediary.all()}
@@ -188,12 +161,8 @@ export const Filters: Component<FiltersProps> = (props) => {
         <BooleanFilter
           label={t.filters.labels.uses_intermediary()!}
           name="uses_intermediary"
-          value={stringLiteralToBoolean(props.filters.uses_intermediary)}
-          onChange={(value) =>
-            handleFilterChange("uses_intermediary")(
-              booleanToStringLiteral(value)
-            )
-          }
+          value={props.filters.uses_intermediary}
+          onChange={(value) => handleFilterChange("uses_intermediary")(value)}
           trueLabel={t.filters.values.uses_intermediary.true()}
           falseLabel={t.filters.values.uses_intermediary.false()}
           allLabel={t.filters.values.uses_intermediary.all()}

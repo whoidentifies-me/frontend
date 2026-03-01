@@ -28,8 +28,14 @@ export function useSearchFilters(
   const filters = createMemo(() => searchParamsToUIfilters(searchParams));
 
   const handleFiltersChange = (newFilters: Partial<UIFilters>) => {
-    const stringParams = uiFiltersToSearchParams(newFilters);
-    console.log("params", stringParams, newFilters);
+    const mergedFilters: UIFilters = { ...filters(), ...newFilters };
+    const stringParams = uiFiltersToSearchParams(mergedFilters);
+    console.log("handleFiltresChange", {
+      filters: filters(),
+      newFilters,
+      mergedFilters,
+      stringParams,
+    });
 
     if (shouldNavigate()) {
       const url = buildUrlWithFilters(formAction(), stringParams);

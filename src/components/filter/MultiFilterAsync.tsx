@@ -23,58 +23,40 @@ interface MultiFilterAsyncProps {
 export const MultiFilterAsync: Component<MultiFilterAsyncProps> = (props) => {
   const [input, setInput] = createSignal("");
   const [isOpen, setIsOpen] = createSignal(false);
-  let debounceTimer: ReturnType<typeof setTimeout> | undefined;
 
   const getLabel = (fv: FilterValue) => props.getLabel?.(fv) ?? fv.value;
 
   const selectedKeys = createMemo(
     () => new Set(props.values?.map(toCompositeKey))
   );
-  const optionKeysSet = createMemo(
-    () => new Set(props.options?.map(toCompositeKey))
-  );
-  const selectedValues = createMemo<FilterValue[]>(() => props.values || []);
-
-  // snapshot only updates when modal is closed
-  const selectedSnapshot = createMemo<FilterValue[]>((prev) =>
-    !isOpen() ? selectedValues() : prev || []
-  );
-  const selectedSnapshotKeys = createMemo(
-    () => new Set(selectedSnapshot().map(toCompositeKey))
+  const selectedKeysSnapshot = createMemo<Set<string>>((prev) =>
+    !isOpen() ? selectedKeys() : prev || new Set<string>()
   );
 
   const options = createMemo<FilterValue[]>(() => {
-    const result: FilterValue[] = [];
+    const keys = selectedKeysSnapshot();
+    const selected =
+      props.values?.filter((v) => keys.has(toCompositeKey(v))) || [];
+    const result: FilterValue[] = [...selected];
 
-    if (!input()) {
-      result.push(
-        ...(selectedSnapshot() || []),
-        ...(props.options?.filter(
-          (o) => !selectedSnapshotKeys()?.has(toCompositeKey(o))
-        ) || [])
-      );
-    } else {
+    if (input()) {
       if (props.allowSubstr) {
         result.push({ value: input(), type: "like" });
       }
       if (props.options) {
-        result.push(...props.options);
+        result.push(
+          ...props.options.filter((o) => !keys.has(toCompositeKey(o)))
+        );
+      }
+    } else {
+      if (props.options) {
+        result.push(
+          ...props.options.filter((o) => !keys.has(toCompositeKey(o)))
+        );
       }
     }
 
     return result;
-  });
-
-  const selectedCompositeKeys = createMemo((): string[] => {
-    return (
-      props.values
-        ?.map((fv) => {
-          const key = toCompositeKey(fv);
-          const found = options().find((opt) => toCompositeKey(opt) === key);
-          return found ? key : undefined;
-        })
-        .filter((k): k is string => !!k) || []
-    );
   });
 
   const collection = createMemo(() =>
@@ -88,47 +70,18 @@ export const MultiFilterAsync: Component<MultiFilterAsyncProps> = (props) => {
 
   const onInputChange = (v: string) => {
     setInput(v);
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      props.onInputChange?.(v);
-    }, 300);
+    props.onInputChange?.(v);
   };
 
   const onValueChange = (details: { value: string[] }) => {
-    const newKeys = new Set(details.value);
-    let selected = [...selectedValues()];
+    const keyToOption = new Map<string, FilterValue>();
+    for (const fv of props.values || [])
+      keyToOption.set(toCompositeKey(fv), fv);
+    for (const fv of options()) keyToOption.set(toCompositeKey(fv), fv);
 
-    // Map composite keys back to FilterValue objects from current options
-    const keyToOption = new Map(options().map((o) => [toCompositeKey(o), o]));
-
-    // Add newly selected values
-    for (const key of details.value) {
-      if (!selectedKeys().has(key)) {
-        const option = keyToOption.get(key);
-        if (option) {
-          selected.push(option);
-        }
-      }
-    }
-
-    // Remove unselected
-    const oldSelectedKeys = optionKeysSet().intersection(selectedKeys());
-    const removedKeys = oldSelectedKeys.difference(newKeys);
-
-    const selectedLikeKeys = new Set(
-      options()
-        .filter(
-          (o) => selectedKeys().has(toCompositeKey(o)) && o.type === "like"
-        )
-        .map(toCompositeKey)
-    );
-    const removedLikeKeys = selectedLikeKeys.difference(newKeys);
-
-    const removeSet = removedKeys.union(removedLikeKeys);
-    if (removeSet.size) {
-      selected = selected.filter((o) => !removeSet.has(toCompositeKey(o)));
-    }
-
+    const selected = details.value
+      .map((key) => keyToOption.get(key))
+      .filter((fv): fv is FilterValue => !!fv);
     props.onChange?.(selected);
   };
 
@@ -140,11 +93,10 @@ export const MultiFilterAsync: Component<MultiFilterAsyncProps> = (props) => {
         {props.label}
       </label>
       <Combobox.Root
-        value={selectedCompositeKeys()}
+        value={props.values?.map(toCompositeKey) || []}
         collection={collection()}
         multiple
         openOnClick
-        open={isOpen()}
         onOpenChange={(details) => setIsOpen(details.open)}
         onValueChange={onValueChange}
         inputValue={input()}
@@ -156,6 +108,9 @@ export const MultiFilterAsync: Component<MultiFilterAsyncProps> = (props) => {
             id={id()}
             class="select w-full"
             placeholder={props.placeholder}
+            on:click={(e: MouseEvent) => {
+              if (isOpen()) e.preventDefault();
+            }}
           />
         </Combobox.Control>
         <Portal>

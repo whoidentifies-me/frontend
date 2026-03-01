@@ -19,6 +19,7 @@ interface MultiFilterProps {
 
 export const MultiFilter: Component<MultiFilterProps> = (props) => {
   const [inputValue, setInputValue] = createSignal("");
+  const [isOpen, setIsOpen] = createSignal(false);
 
   const id = () => `multi-filter-${props.name}`;
 
@@ -57,6 +58,7 @@ export const MultiFilter: Component<MultiFilterProps> = (props) => {
         collection={collection()}
         multiple
         openOnClick
+        onOpenChange={(details) => setIsOpen(details.open)}
         onValueChange={(details) => {
           props.onChange?.(details.value);
         }}
@@ -70,6 +72,9 @@ export const MultiFilter: Component<MultiFilterProps> = (props) => {
             id={id()}
             class="select w-full"
             placeholder={props.placeholder}
+            on:click={(e: MouseEvent) => {
+              if (isOpen()) e.preventDefault();
+            }}
           />
         </Combobox.Control>
         <Portal>
