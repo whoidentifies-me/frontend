@@ -20,9 +20,12 @@ interface MultiFilterAsyncProps {
   onInputChange?: (val: string) => void;
 }
 
+const REOPEN_GUARD_MS = 350;
+
 export const MultiFilterAsync: Component<MultiFilterAsyncProps> = (props) => {
   const [input, setInput] = createSignal("");
   const [isOpen, setIsOpen] = createSignal(false);
+  const [lastCloseTime, setLastCloseTime] = createSignal(0);
 
   const getLabel = (fv: FilterValue) => props.getLabel?.(fv) ?? fv.value;
 
@@ -85,32 +88,36 @@ export const MultiFilterAsync: Component<MultiFilterAsyncProps> = (props) => {
     props.onChange?.(selected);
   };
 
-  const id = () => `async-select-${props.name}`;
-
   return (
     <div class="flex flex-col items-stretch justify-end text-start">
-      <label for={id()} class="text-sm font-semibold mb-2">
-        {props.label}
-      </label>
       <Combobox.Root
         value={props.values?.map(toCompositeKey) || []}
         collection={collection()}
         multiple
         openOnClick
-        onOpenChange={(details) => setIsOpen(details.open)}
+        onOpenChange={(details) => {
+          setIsOpen(details.open);
+          if (!details.open) {
+            setLastCloseTime(performance.now());
+          }
+        }}
         onValueChange={onValueChange}
-        inputValue={input()}
         onInputValueChange={(details) => onInputChange(details.inputValue)}
         loopFocus
       >
-        <Combobox.Control>
+        <Combobox.Label class="text-sm font-semibold mb-2">
+          {props.label}
+        </Combobox.Label>
+        <Combobox.Control
+          on:click={(e: MouseEvent) => {
+            if (performance.now() - lastCloseTime() < REOPEN_GUARD_MS) {
+              e.preventDefault();
+            }
+          }}
+        >
           <Combobox.Input
-            id={id()}
             class="select w-full"
             placeholder={props.placeholder}
-            on:click={(e: MouseEvent) => {
-              if (isOpen()) e.preventDefault();
-            }}
           />
         </Combobox.Control>
         <Portal>

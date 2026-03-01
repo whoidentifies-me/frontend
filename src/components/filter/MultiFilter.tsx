@@ -17,11 +17,11 @@ interface MultiFilterProps {
   onChange?: (val: string[]) => void;
 }
 
+const REOPEN_GUARD_MS = 350;
+
 export const MultiFilter: Component<MultiFilterProps> = (props) => {
   const [inputValue, setInputValue] = createSignal("");
-  const [isOpen, setIsOpen] = createSignal(false);
-
-  const id = () => `multi-filter-${props.name}`;
+  const [lastCloseTime, setLastCloseTime] = createSignal(0);
 
   const allOptions = () => props.options || [];
 
@@ -50,15 +50,16 @@ export const MultiFilter: Component<MultiFilterProps> = (props) => {
 
   return (
     <div class="flex flex-col items-stretch justify-end text-start">
-      <label for={id()} class="font-semibold text-sm mb-2">
-        {props.label}
-      </label>
       <Combobox.Root
         value={value()}
         collection={collection()}
         multiple
         openOnClick
-        onOpenChange={(details) => setIsOpen(details.open)}
+        onOpenChange={(details) => {
+          if (!details.open) {
+            setLastCloseTime(performance.now());
+          }
+        }}
         onValueChange={(details) => {
           props.onChange?.(details.value);
         }}
@@ -67,14 +68,19 @@ export const MultiFilter: Component<MultiFilterProps> = (props) => {
         }}
         loopFocus
       >
-        <Combobox.Control>
+        <Combobox.Label class="font-semibold text-sm mb-2">
+          {props.label}
+        </Combobox.Label>
+        <Combobox.Control
+          on:click={(e: MouseEvent) => {
+            if (performance.now() - lastCloseTime() < REOPEN_GUARD_MS) {
+              e.preventDefault();
+            }
+          }}
+        >
           <Combobox.Input
-            id={id()}
             class="select w-full"
             placeholder={props.placeholder}
-            on:click={(e: MouseEvent) => {
-              if (isOpen()) e.preventDefault();
-            }}
           />
         </Combobox.Control>
         <Portal>
