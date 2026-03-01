@@ -104,6 +104,7 @@ export const MultiFilterAsync: Component<MultiFilterAsyncProps> = (props) => {
         onValueChange={onValueChange}
         onInputValueChange={(details) => onInputChange(details.inputValue)}
         loopFocus
+        positioning={{ sameWidth: false }}
       >
         <Combobox.Label class="text-sm font-semibold mb-2">
           {props.label}

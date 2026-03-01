@@ -67,6 +67,7 @@ export const MultiFilter: Component<MultiFilterProps> = (props) => {
           setInputValue(details.inputValue);
         }}
         loopFocus
+        positioning={{ sameWidth: false }}
       >
         <Combobox.Label class="font-semibold text-sm mb-2">
           {props.label}

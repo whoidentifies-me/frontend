@@ -86,6 +86,18 @@ export const SearchAndFilter: Component<{
         <ActiveFilters
           filters={filters()}
           onRemoveFilter={handleRemoveFilter}
+          onClearAll={() =>
+            handleFiltersChange({
+              claim_path: undefined,
+              purpose: undefined,
+              country: undefined,
+              trade_name: undefined,
+              is_psb: undefined,
+              entitlement: undefined,
+              is_intermediary: undefined,
+              uses_intermediary: undefined,
+            })
+          }
         />
       </form>
     </search>

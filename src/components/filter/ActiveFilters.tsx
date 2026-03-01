@@ -11,6 +11,7 @@ interface ActiveFiltersProps {
     value?: string,
     mode?: FilterValue["type"]
   ) => void;
+  onClearAll?: () => void;
 }
 
 interface FilterBadge {
@@ -117,7 +118,7 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
 
   return (
     <Show when={activeBadges().length > 0}>
-      <div class="flex flex-wrap gap-2 my-4">
+      <div class="flex flex-wrap items-center gap-2 mb-4 mt-8">
         <For each={activeBadges()}>
           {(badge) => (
             <div class="inline-flex items-center gap-2 p-2 pe-4 border border-primary rounded-full text-sm">
@@ -132,6 +133,15 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
             </div>
           )}
         </For>
+        <Show when={activeBadges().length > 1 && props.onClearAll}>
+          <button
+            onClick={() => props.onClearAll?.()}
+            class="btn btn-ghost"
+            aria-label={t.filters.clear_all()}
+          >
+            {t.filters.clear_all()}
+          </button>
+        </Show>
       </div>
     </Show>
   );

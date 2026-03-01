@@ -96,6 +96,7 @@ export const en = {
       uses_intermediary: "Uses Intermediaries",
       entitlement: "Permissions",
     },
+    clear_all: "Clear all filters",
     placeholders: {
       q: "Search for Relying Party or Use Cases",
       trade_name: "Enter company name...",
