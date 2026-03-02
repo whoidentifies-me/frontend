@@ -7,10 +7,7 @@ export const Newsletter: Component = () => {
   const t = useTranslate();
 
   return (
-    <section
-      id="newsletter"
-      class="wim-section bg-primary text-primary-content"
-    >
+    <section id="status" class="wim-section bg-primary text-primary-content">
       <TwoColumnLayout
         class="wim-container"
         largerCol="left"

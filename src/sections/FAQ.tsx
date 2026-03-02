@@ -7,19 +7,18 @@ export const FAQ: Component = () => {
   const t = useTranslate();
 
   return (
-    <section id="faq" class="wim-section">
+    <section id="how" class="wim-section">
       <div class="wim-container">
         <TwoColumnLayout
           largerCol="right"
           leftContent={
             <div>
-              <h2>{t.home.faq.title()}</h2>
-              <p>{t.home.faq.description()}</p>
+              <h2>{t.home.howItWorks.title()}</h2>
             </div>
           }
           rightContent={
             <div class="space-y-4">
-              <For each={t.home.faq.items()}>
+              <For each={t.home.howItWorks.items()}>
                 {(item) => <Collapse title={item.title}>{item.body}</Collapse>}
               </For>
             </div>

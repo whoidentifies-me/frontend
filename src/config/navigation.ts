@@ -16,19 +16,23 @@ export const createNavigationItems = (): NavigationItem[] => {
       label: () => t.navigation.home(),
     },
     {
-      href: `${routes.home}#explore`,
-      anchor: "#explore",
+      href: routes.search.results,
       label: () => t.navigation.explore(),
     },
     {
-      href: `${routes.home}#newsletter`,
-      anchor: "#newsletter",
+      href: routes.sections.status,
+      anchor: "#status",
       label: () => t.navigation.newsletter(),
     },
     {
-      href: `${routes.home}#faq`,
-      anchor: "#faq",
-      label: () => t.navigation.faqs(),
+      href: routes.sections.how,
+      anchor: "#how",
+      label: () => t.navigation.howItWorks(),
+    },
+    {
+      href: routes.sections.help,
+      anchor: "#help",
+      label: () => t.navigation.help(),
     },
   ];
 };
