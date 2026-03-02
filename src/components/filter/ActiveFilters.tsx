@@ -50,10 +50,15 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
   ) => {
     if (!values || values.length === 0) return;
 
+    const filterLabel = t.filters.labels[key]?.();
     values.forEach((fv) => {
+      const displayLabel =
+        fv.type === "like"
+          ? `${filterLabel || key} contains "${fv.value}"`
+          : fv.value;
       badges.push({
         key,
-        label: fv.type === "like" ? `Contains: "${fv.value}"` : fv.value,
+        label: displayLabel,
         value: fv.value,
         mode: fv.type,
       });
@@ -129,7 +134,9 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
               >
                 <TbX size="1.125rem" />
               </button>
-              <span>{badge.label}</span>
+              <span class="line-clamp-2" title={badge.label}>
+                {badge.label}
+              </span>
             </div>
           )}
         </For>
