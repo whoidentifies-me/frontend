@@ -1,227 +1,155 @@
-import { Component, createMemo, createSignal, Show } from "solid-js";
-import { Combobox } from "@kobalte/core/combobox";
-import { TbCheck, TbX } from "solid-icons/tb";
-import { Search } from "@kobalte/core/search";
+import { Component, createMemo, createSignal, For, Show } from "solid-js";
+import { Combobox, createListCollection } from "@ark-ui/solid/combobox";
+import { Portal } from "solid-js/web";
+import { TbCheck } from "solid-icons/tb";
+import type { FilterValue } from "~/types/filters";
 
-export interface MultiFilterOption {
-  value: string;
-  label: string;
-  type: "exact" | "substr";
+function toCompositeKey(fv: FilterValue): string {
+  return `${fv.type}:${fv.value}`;
 }
 
-function toOption(value: string): MultiFilterOption {
-  if (value.startsWith("%") && value.endsWith("%")) {
-    return {
-      label: value.substring(1, value.length - 1),
-      value,
-      type: "substr",
-    };
-  }
-  return {
-    label: value,
-    value,
-    type: "exact",
-  };
-}
-
-interface MultiFilterProps {
+interface MultiFilterAsyncProps {
   label: string;
   name: string;
-  options?: MultiFilterOption[];
-  values?: string[];
+  options?: FilterValue[];
+  values?: FilterValue[];
   placeholder?: string;
   allowSubstr?: boolean;
-  onChange?: (val: string[]) => void;
+  getLabel?: (fv: FilterValue) => string;
+  onChange?: (val: FilterValue[]) => void;
   onInputChange?: (val: string) => void;
 }
 
-export const MultiFilterAsync: Component<MultiFilterProps> = (props) => {
-  const [input, setInput] = createSignal<string | undefined>(undefined);
+const REOPEN_GUARD_MS = 350;
+
+export const MultiFilterAsync: Component<MultiFilterAsyncProps> = (props) => {
+  const [input, setInput] = createSignal("");
   const [isOpen, setIsOpen] = createSignal(false);
+  const [lastCloseTime, setLastCloseTime] = createSignal(0);
 
-  const selectedValuesSet = createMemo(() => new Set(props.values));
-  const optionValuesSet = createMemo(
-    () => new Set(props.options?.map((o) => o.value))
-  );
-  const selectedOptions = createMemo<MultiFilterOption[]>(
-    () => props.values?.map((v) => toOption(v)) || []
-  );
+  const getLabel = (fv: FilterValue) => props.getLabel?.(fv) ?? fv.value;
 
-  // snapshot only updates when modal is closed
-  const selectedOptionsSnapshot = createMemo<MultiFilterOption[]>((prev) =>
-    !isOpen() ? selectedOptions() : prev || []
+  const selectedKeys = createMemo(
+    () => new Set(props.values?.map(toCompositeKey))
   );
-  const selectedOptionsSnapshotValuesSet = createMemo(
-    () => new Set(selectedOptionsSnapshot().map((o) => o.value))
+  const selectedKeysSnapshot = createMemo<Set<string>>((prev) =>
+    !isOpen() ? selectedKeys() : prev || new Set<string>()
   );
 
-  const options = createMemo<MultiFilterOption[]>(() => {
-    const options: MultiFilterOption[] = [];
+  const options = createMemo<FilterValue[]>(() => {
+    const keys = selectedKeysSnapshot();
+    const selected =
+      props.values?.filter((v) => keys.has(toCompositeKey(v))) || [];
+    const result: FilterValue[] = [...selected];
 
-    if (!input()) {
-      options.push(
-        ...(selectedOptionsSnapshot() || []),
-        ...(props.options?.filter(
-          (o) => !selectedOptionsSnapshotValuesSet()?.has(o.value)
-        ) || [])
-      );
-    } else {
+    if (input()) {
       if (props.allowSubstr) {
-        options.push(toOption(`%${input()}%`));
+        result.push({ value: input(), type: "like" });
       }
       if (props.options) {
-        options.push(...props.options);
+        result.push(
+          ...props.options.filter((o) => !keys.has(toCompositeKey(o)))
+        );
+      }
+    } else {
+      if (props.options) {
+        result.push(
+          ...props.options.filter((o) => !keys.has(toCompositeKey(o)))
+        );
       }
     }
 
-    return options;
+    return result;
   });
 
-  const value = createMemo((): MultiFilterOption[] => {
-    return (
-      props.values
-        ?.map((val) => options().find((opt) => opt.value === val))
-        .filter((opt) => !!opt) || []
-    );
-  });
+  const collection = createMemo(() =>
+    createListCollection({
+      items: options(),
+      itemToValue: (item) => toCompositeKey(item),
+      itemToString: (item) =>
+        item.type === "like" ? `Contains: "${getLabel(item)}"` : getLabel(item),
+    })
+  );
 
   const onInputChange = (v: string) => {
     setInput(v);
     props.onInputChange?.(v);
   };
 
-  const onChange = (values: MultiFilterOption[]) => {
-    let selected = selectedOptions();
+  const onValueChange = (details: { value: string[] }) => {
+    const keyToOption = new Map<string, FilterValue>();
+    for (const fv of props.values || [])
+      keyToOption.set(toCompositeKey(fv), fv);
+    for (const fv of options()) keyToOption.set(toCompositeKey(fv), fv);
 
-    // Add newly selected values
-    for (const item of values) {
-      if (!selectedValuesSet().has(item.value)) {
-        selected.push(item);
-      }
-    }
-
-    // remove unselected
-    const oldSelectedValuesSet =
-      optionValuesSet().intersection(selectedValuesSet());
-    const newSelectedValuesSet = new Set(values.map((v) => v.value));
-    const removedValuesSet =
-      oldSelectedValuesSet.difference(newSelectedValuesSet);
-
-    const selectedSubstringValuesSet = new Set(
-      options()
-        .filter((o) => selectedValuesSet().has(o.value) && o.type === "substr")
-        .map((o) => o.value)
-    );
-    const removedSubstringValue =
-      selectedSubstringValuesSet.difference(newSelectedValuesSet);
-
-    const removeSet = removedValuesSet.union(removedSubstringValue);
-    if (removeSet.size) {
-      selected = selected.filter((o) => !removeSet.has(o.value));
-    }
-
-    console.log(
-      "updated selected",
-      selectedOptions(),
-      oldSelectedValuesSet,
-      removeSet
-    );
-
-    props.onChange?.(selected.map((v) => v.value));
+    const selected = details.value
+      .map((key) => keyToOption.get(key))
+      .filter((fv): fv is FilterValue => !!fv);
+    props.onChange?.(selected);
   };
-
-  const onClear = () => {
-    props.onChange?.([]);
-  };
-
-  const onOpenChange = (isOpen: boolean) => {
-    setIsOpen(isOpen);
-  };
-
-  const id = () => `async-select-${props.name}`;
 
   return (
     <div class="flex flex-col items-stretch justify-end text-start">
-      <label for={id()} class="text-sm font-semibold mb-2">
-        {props.label}
-      </label>
-      <Search
-        triggerMode="focus"
-        options={options()}
-        optionValue={(v) => v.value}
-        optionLabel={(o) => o.label}
-        optionTextValue={(o) => o.label}
-        onInputChange={onInputChange}
-        onChange={(v) => onChange(v)}
-        onOpenChange={onOpenChange}
-        name={props.name}
-        value={value() as any}
-        placeholder={props.placeholder}
+      <Combobox.Root
+        value={props.values?.map(toCompositeKey) || []}
+        collection={collection()}
         multiple
-        debounceOptionsMillisecond={300}
-        removeOnBackspace={false}
-        closeOnSelection={false}
-        itemComponent={(props) => {
-          return (
-            <>
-              <Show when={props.item.rawValue.type === "exact"}>
-                <Search.Item
-                  onSelect={console.log}
-                  class="search-item"
-                  item={props.item}
-                >
-                  <Search.ItemLabel>
-                    {props.item.rawValue.label}
-                  </Search.ItemLabel>
-                  <Combobox.ItemIndicator class="combobox-item-indicator">
-                    <TbCheck />
-                  </Combobox.ItemIndicator>
-                </Search.Item>
-              </Show>
-              <Show when={props.item.rawValue.type === "substr"}>
-                <Search.Item class="search-item" item={props.item}>
-                  <Search.ItemLabel>
-                    Contains: "{props.item.rawValue.label}"
-                  </Search.ItemLabel>
-                  <Combobox.ItemIndicator class="combobox-item-indicator">
-                    <TbCheck />
-                  </Combobox.ItemIndicator>
-                </Search.Item>
-              </Show>
-            </>
-          );
+        openOnClick
+        onOpenChange={(details) => {
+          setIsOpen(details.open);
+          if (!details.open) {
+            setLastCloseTime(performance.now());
+          }
         }}
+        onValueChange={onValueChange}
+        onInputValueChange={(details) => onInputChange(details.inputValue)}
+        loopFocus
+        positioning={{ sameWidth: false }}
       >
-        <Search.Control class="" aria-label={props.label}>
-          {() => (
-            <>
-              <Search.Input class="select w-full" id={id()}></Search.Input>
-              <div class="flex flex-row items-center">
-                <Show when={selectedValuesSet().size && false}>
-                  <span class="mx-2">{selectedValuesSet().size}</span>
-                  <button
-                    onPointerDown={(e) => e.stopPropagation()}
-                    onClick={onClear}
-                  >
-                    <TbX />
-                  </button>
-                </Show>
-              </div>
-            </>
-          )}
-        </Search.Control>
-        <Search.Portal>
-          <Search.Content
-            class="search-content"
-            onCloseAutoFocus={(e) => e.preventDefault()}
-          >
-            <Search.Listbox class="search-listbox" />
-            <Search.NoResult class="search-no-result">
-              No results
-            </Search.NoResult>
-          </Search.Content>
-        </Search.Portal>
-      </Search>
+        <Combobox.Label class="text-sm font-semibold mb-2">
+          {props.label}
+        </Combobox.Label>
+        <Combobox.Control
+          on:click={(e: MouseEvent) => {
+            if (performance.now() - lastCloseTime() < REOPEN_GUARD_MS) {
+              e.preventDefault();
+            }
+          }}
+        >
+          <Combobox.Input
+            class="select w-full"
+            placeholder={props.placeholder}
+          />
+        </Combobox.Control>
+        <Portal>
+          <Combobox.Positioner>
+            <Combobox.Content class="ark-combobox-content">
+              <Combobox.ItemGroup>
+                <For each={options()}>
+                  {(option) => (
+                    <Combobox.Item item={option} class="ark-combobox-item">
+                      <Combobox.ItemText>
+                        <Show when={option.type === "like"}>
+                          Contains: "{getLabel(option)}"
+                        </Show>
+                        <Show when={option.type === "exact"}>
+                          {getLabel(option)}
+                        </Show>
+                      </Combobox.ItemText>
+                      <Combobox.ItemIndicator class="ark-combobox-item-indicator">
+                        <TbCheck />
+                      </Combobox.ItemIndicator>
+                    </Combobox.Item>
+                  )}
+                </For>
+              </Combobox.ItemGroup>
+              <Show when={options().length === 0}>
+                <div class="ark-combobox-no-result">No results</div>
+              </Show>
+            </Combobox.Content>
+          </Combobox.Positioner>
+        </Portal>
+      </Combobox.Root>
     </div>
   );
 };

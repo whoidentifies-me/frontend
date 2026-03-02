@@ -1,0 +1,970 @@
+components:
+  schemas:
+    ErrorDetail:
+      additionalProperties: false
+      properties:
+        location:
+          description: Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id'
+          type: string
+        message:
+          description: Error message text
+          type: string
+        value:
+          description: The value at the given location
+      type: object
+    ErrorModel:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - https://api.stage.whoidentifies.me/api/v1/schemas/ErrorModel.json
+          format: uri
+          readOnly: true
+          type: string
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          examples:
+            - Property foo is required but is missing.
+          type: string
+        errors:
+          description: Optional list of individual error details
+          items:
+            $ref: "#/components/schemas/ErrorDetail"
+          type:
+            - array
+            - "null"
+        instance:
+          description: A URI reference that identifies the specific occurrence of the problem.
+          examples:
+            - https://example.com/error-log/abc123
+          format: uri
+          type: string
+        status:
+          description: HTTP status code
+          examples:
+            - 400
+          format: int64
+          type: integer
+        title:
+          description: A short, human-readable summary of the problem type. This value should not change between occurrences of the error.
+          examples:
+            - Bad Request
+          type: string
+        type:
+          default: about:blank
+          description: A URI reference to human-readable documentation for the error.
+          examples:
+            - https://example.com/errors/example
+          format: uri
+          type: string
+      type: object
+    FilterFieldInfo:
+      additionalProperties: false
+      properties:
+        description:
+          type: string
+        display_name:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+      required:
+        - name
+        - display_name
+        - description
+        - type
+      type: object
+    FilterInfo:
+      additionalProperties: false
+      properties:
+        filters:
+          description: List of available filter parameter names
+          items:
+            type: string
+          type:
+            - array
+            - "null"
+      required:
+        - filters
+      type: object
+    FilterValue:
+      additionalProperties: false
+      properties:
+        created_at:
+          format: date-time
+          type: string
+        field_name:
+          type: string
+        id:
+          format: int64
+          type: integer
+        updated_at:
+          format: date-time
+          type: string
+        usage_count:
+          format: int64
+          type: integer
+        value:
+          type: string
+      required:
+        - id
+        - field_name
+        - value
+        - usage_count
+        - created_at
+        - updated_at
+      type: object
+    GetFilterValuesOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - https://api.stage.whoidentifies.me/api/v1/schemas/GetFilterValuesOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        data:
+          description: List of filter values
+          items:
+            $ref: "#/components/schemas/FilterValue"
+          type:
+            - array
+            - "null"
+        has_more:
+          description: Whether there are more results available
+          type: boolean
+        next_cursor:
+          description: Cursor for the next page of results
+          type: string
+      required:
+        - data
+        - has_more
+      type: object
+    GetFilteringOptionsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - https://api.stage.whoidentifies.me/api/v1/schemas/GetFilteringOptionsOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        filterable_fields:
+          description: Detailed information about filterable fields
+          items:
+            $ref: "#/components/schemas/FilterFieldInfo"
+          type:
+            - array
+            - "null"
+        intended_uses:
+          $ref: "#/components/schemas/FilterInfo"
+          description: Filters available for intended uses
+        relying_parties:
+          $ref: "#/components/schemas/FilterInfo"
+          description: Filters available for relying parties
+      required:
+        - relying_parties
+        - intended_uses
+        - filterable_fields
+      type: object
+    IntendedUseAPIResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - https://api.stage.whoidentifies.me/api/v1/schemas/IntendedUseAPIResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        created_at:
+          format: date-time
+          type: string
+        credentials:
+          items:
+            $ref: "#/components/schemas/IntendedUseCredentialAPIResponse"
+          type:
+            - array
+            - "null"
+        id:
+          type: string
+        ipfs_cid:
+          type: string
+        ipfs_url:
+          type: string
+        policies:
+          items:
+            $ref: "#/components/schemas/IntendedUsePolicyAPIResponse"
+          type:
+            - array
+            - "null"
+        purposes:
+          items:
+            $ref: "#/components/schemas/PurposeEntryAPIResponse"
+          type:
+            - array
+            - "null"
+        relying_party:
+          $ref: "#/components/schemas/RelyingPartyAPIResponse"
+        updated_at:
+          format: date-time
+          type: string
+        wrp_id:
+          type: string
+      required:
+        - id
+        - wrp_id
+        - purposes
+        - policies
+        - credentials
+        - created_at
+        - updated_at
+      type: object
+    IntendedUseClaimAPIResponse:
+      additionalProperties: false
+      properties:
+        id:
+          format: int64
+          type: integer
+        path:
+          type: string
+        values: {}
+      required:
+        - id
+        - path
+      type: object
+    IntendedUseCredentialAPIResponse:
+      additionalProperties: false
+      properties:
+        claims:
+          items:
+            $ref: "#/components/schemas/IntendedUseClaimAPIResponse"
+          type:
+            - array
+            - "null"
+        format:
+          type: string
+        id:
+          type: string
+        meta:
+          type: string
+        meta_text:
+          type: string
+      required:
+        - id
+        - format
+        - claims
+      type: object
+    IntendedUsePolicyAPIResponse:
+      additionalProperties: false
+      properties:
+        policy_uri:
+          type: string
+        type:
+          type: string
+      required:
+        - policy_uri
+      type: object
+    LegalEntityAPIResponse:
+      additionalProperties: false
+      properties:
+        country:
+          type: string
+        email: {}
+        id:
+          type: string
+        identifiers:
+          items:
+            $ref: "#/components/schemas/RelyingPartyIdentifierAPIResponse"
+          type:
+            - array
+            - "null"
+        info_uri: {}
+        legal_person: {}
+        natural_person: {}
+        phone: {}
+        postal_address: {}
+      required:
+        - id
+        - country
+      type: object
+    ListIntendedUsesOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - https://api.stage.whoidentifies.me/api/v1/schemas/ListIntendedUsesOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        data:
+          description: List of intended uses
+          items:
+            $ref: "#/components/schemas/IntendedUseAPIResponse"
+          type:
+            - array
+            - "null"
+        has_more:
+          description: Whether there are more results available
+          type: boolean
+        next_cursor:
+          description: Cursor for the next page of results
+          type: string
+      required:
+        - data
+        - has_more
+      type: object
+    ListRelyingPartiesOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - https://api.stage.whoidentifies.me/api/v1/schemas/ListRelyingPartiesOutputBody.json
+          format: uri
+          readOnly: true
+          type: string
+        data:
+          description: List of relying parties
+          items:
+            $ref: "#/components/schemas/RelyingPartyAPIResponse"
+          type:
+            - array
+            - "null"
+        has_more:
+          description: Whether there are more results available
+          type: boolean
+        next_cursor:
+          description: Cursor for the next page of results
+          type: string
+      required:
+        - data
+        - has_more
+      type: object
+    PurposeEntryAPIResponse:
+      additionalProperties: false
+      properties:
+        content:
+          type: string
+        lang:
+          type: string
+        purpose_index:
+          format: int64
+          type: integer
+      required:
+        - purpose_index
+        - lang
+        - content
+      type: object
+    RelyingPartyAPIResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - https://api.stage.whoidentifies.me/api/v1/schemas/RelyingPartyAPIResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        created_at:
+          format: date-time
+          type: string
+        entitlements:
+          items:
+            type: string
+          type:
+            - array
+            - "null"
+        id:
+          type: string
+        identifiers:
+          items:
+            $ref: "#/components/schemas/RelyingPartyIdentifierAPIResponse"
+          type:
+            - array
+            - "null"
+        ipfs_cid:
+          type: string
+        ipfs_url:
+          type: string
+        is_intermediary:
+          type: boolean
+        is_psb:
+          type: boolean
+        legal_entity:
+          $ref: "#/components/schemas/LegalEntityAPIResponse"
+        policy: {}
+        provided_attestations:
+          items:
+            $ref: "#/components/schemas/RelyingPartyProvidedAttestationAPIResponse"
+          type:
+            - array
+            - "null"
+        provider_type:
+          type: string
+        service_descriptions:
+          items:
+            $ref: "#/components/schemas/ServiceDescriptionEntryAPIResponse"
+          type:
+            - array
+            - "null"
+        supervisory_authority:
+          $ref: "#/components/schemas/LegalEntityAPIResponse"
+        support_uris:
+          items:
+            type: string
+          type:
+            - array
+            - "null"
+        trade_name:
+          type: string
+        updated_at:
+          format: date-time
+          type: string
+        uses_intermediaries:
+          items:
+            type: string
+          type:
+            - array
+            - "null"
+      required:
+        - id
+        - policy
+        - identifiers
+        - entitlements
+        - support_uris
+        - service_descriptions
+        - uses_intermediaries
+        - provided_attestations
+        - created_at
+        - updated_at
+      type: object
+    RelyingPartyIdentifierAPIResponse:
+      additionalProperties: false
+      properties:
+        identifier:
+          type: string
+        type:
+          type: string
+      required:
+        - type
+        - identifier
+      type: object
+    RelyingPartyProvidedAttestationAPIResponse:
+      additionalProperties: false
+      properties:
+        claims:
+          items:
+            $ref: "#/components/schemas/RelyingPartyProvidedClaimAPIResponse"
+          type:
+            - array
+            - "null"
+        format:
+          type: string
+        id:
+          type: string
+        meta:
+          type: string
+        meta_text:
+          type: string
+      required:
+        - id
+        - format
+        - claims
+      type: object
+    RelyingPartyProvidedClaimAPIResponse:
+      additionalProperties: false
+      properties:
+        id:
+          format: int64
+          type: integer
+        path:
+          type: string
+        values: {}
+      required:
+        - id
+        - path
+      type: object
+    ServiceDescriptionEntryAPIResponse:
+      additionalProperties: false
+      properties:
+        content:
+          type: string
+        lang:
+          type: string
+        service_index:
+          format: int64
+          type: integer
+      required:
+        - service_index
+        - lang
+        - content
+      type: object
+info:
+  description: API for tracking eIDAS wallet relying parties and their intended uses
+  title: WhoIdentifies.me API
+  version: 1.0.0
+openapi: 3.1.0
+paths:
+  /api/v1/filtering-options:
+    get:
+      description: Get metadata about available filters for relying parties and intended uses
+      operationId: get-filtering-options
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetFilteringOptionsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get available filter options
+      tags:
+        - Filters
+  /api/v1/filtering-options/{field}:
+    get:
+      description: Get available values for a specific filter field with autocomplete support
+      operationId: get-filter-values
+      parameters:
+        - description: Filter field name (e.g., country, entitlement)
+          in: path
+          name: field
+          required: true
+          schema:
+            description: Filter field name (e.g., country, entitlement)
+            type: string
+        - description: Search prefix for autocomplete
+          explode: false
+          in: query
+          name: q
+          schema:
+            description: Search prefix for autocomplete
+            type: string
+        - description: Pagination cursor
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            description: Pagination cursor
+            type: string
+        - description: Result limit
+          explode: false
+          in: query
+          name: limit
+          schema:
+            default: 5
+            description: Result limit
+            format: int64
+            maximum: 1000
+            minimum: 1
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetFilterValuesOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get values for a filter field
+      tags:
+        - Filters
+  /api/v1/intended-uses:
+    get:
+      description: Get a paginated list of intended uses with optional filtering
+      operationId: list-intended-uses
+      parameters:
+        - description: Pagination cursor from previous response
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            description: Pagination cursor from previous response
+            type: string
+        - description: Number of items per page
+          explode: false
+          in: query
+          name: limit
+          schema:
+            default: 20
+            description: Number of items per page
+            format: int64
+            maximum: 1000
+            minimum: 1
+            type: integer
+        - description: Search query
+          explode: false
+          in: query
+          name: q
+          schema:
+            description: Search query
+            type: string
+        - description: Filter by WRP ID
+          explode: false
+          in: query
+          name: wrp_id
+          schema:
+            description: Filter by WRP ID
+            type: string
+        - description: Filter by country codes (ISO 3166-1 alpha-2)
+          explode: true
+          in: query
+          name: country
+          schema:
+            description: Filter by country codes (ISO 3166-1 alpha-2)
+            items:
+              type: string
+            type:
+              - array
+              - "null"
+        - description: Filter by credential formats
+          explode: true
+          in: query
+          name: credential_format
+          schema:
+            description: Filter by credential formats
+            items:
+              type: string
+            type:
+              - array
+              - "null"
+        - description: Filter by claim paths
+          explode: true
+          in: query
+          name: claim_path
+          schema:
+            description: Filter by claim paths
+            items:
+              type: string
+            type:
+              - array
+              - "null"
+        - description: Filter by trade name
+          explode: true
+          in: query
+          name: trade_name
+          schema:
+            description: Filter by trade name
+            items:
+              type: string
+            type:
+              - array
+              - "null"
+        - description: Filter by purposes
+          explode: true
+          in: query
+          name: purpose
+          schema:
+            description: Filter by purposes
+            items:
+              type: string
+            type:
+              - array
+              - "null"
+        - description: Filter by entitlements
+          explode: true
+          in: query
+          name: entitlement
+          schema:
+            description: Filter by entitlements
+            items:
+              type: string
+            type:
+              - array
+              - "null"
+        - description: Filter by PSB status
+          explode: false
+          in: query
+          name: is_psb
+          schema:
+            description: Filter by PSB status
+            enum:
+              - "true"
+              - "false"
+            type: string
+        - description: Filter by intermediary status
+          explode: false
+          in: query
+          name: is_intermediary
+          schema:
+            description: Filter by intermediary status
+            enum:
+              - "true"
+              - "false"
+            type: string
+        - description: Filter by uses intermediary
+          explode: false
+          in: query
+          name: uses_intermediary
+          schema:
+            description: Filter by uses intermediary
+            enum:
+              - "true"
+              - "false"
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListIntendedUsesOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: List intended uses
+      tags:
+        - Intended Uses
+  /api/v1/intended-uses/{id}:
+    get:
+      description: Get a single intended use by its unique identifier
+      operationId: get-intended-use
+      parameters:
+        - description: Intended use ID (UUID)
+          in: path
+          name: id
+          required: true
+          schema:
+            description: Intended use ID (UUID)
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IntendedUseAPIResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get intended use by ID
+      tags:
+        - Intended Uses
+  /api/v1/relying-parties:
+    get:
+      description: Get a paginated list of wallet relying parties with optional filtering
+      operationId: list-relying-parties
+      parameters:
+        - description: Pagination cursor from previous response
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            description: Pagination cursor from previous response
+            type: string
+        - description: Number of items per page
+          explode: false
+          in: query
+          name: limit
+          schema:
+            default: 20
+            description: Number of items per page
+            format: int64
+            maximum: 1000
+            minimum: 1
+            type: integer
+        - description: Search query (matches trade name)
+          explode: false
+          in: query
+          name: q
+          schema:
+            description: Search query (matches trade name)
+            type: string
+        - description: Filter by country codes (ISO 3166-1 alpha-2)
+          explode: true
+          in: query
+          name: country
+          schema:
+            description: Filter by country codes (ISO 3166-1 alpha-2)
+            items:
+              type: string
+            type:
+              - array
+              - "null"
+        - description: Filter by entitlements
+          explode: true
+          in: query
+          name: entitlement
+          schema:
+            description: Filter by entitlements
+            items:
+              type: string
+            type:
+              - array
+              - "null"
+        - description: Filter by provided attestation formats
+          explode: true
+          in: query
+          name: provided_format
+          schema:
+            description: Filter by provided attestation formats
+            items:
+              type: string
+            type:
+              - array
+              - "null"
+        - description: Filter by trade name
+          explode: true
+          in: query
+          name: trade_name
+          schema:
+            description: Filter by trade name
+            items:
+              type: string
+            type:
+              - array
+              - "null"
+        - description: Filter by purposes
+          explode: true
+          in: query
+          name: purpose
+          schema:
+            description: Filter by purposes
+            items:
+              type: string
+            type:
+              - array
+              - "null"
+        - description: Filter by claim paths
+          explode: true
+          in: query
+          name: claim_path
+          schema:
+            description: Filter by claim paths
+            items:
+              type: string
+            type:
+              - array
+              - "null"
+        - description: Filter by support URI
+          explode: false
+          in: query
+          name: support_uri
+          schema:
+            description: Filter by support URI
+            type: string
+        - description: Filter by identifier value
+          explode: false
+          in: query
+          name: identifier
+          schema:
+            description: Filter by identifier value
+            type: string
+        - description: Filter by identifier type
+          explode: false
+          in: query
+          name: identifier_type
+          schema:
+            description: Filter by identifier type
+            type: string
+        - description: Search in provided metadata
+          explode: false
+          in: query
+          name: provided_meta
+          schema:
+            description: Search in provided metadata
+            type: string
+        - description: Filter by intermediary ID
+          explode: false
+          in: query
+          name: intermediary_id
+          schema:
+            description: Filter by intermediary ID
+            type: string
+        - description: Filter by PSB status
+          explode: false
+          in: query
+          name: is_psb
+          schema:
+            description: Filter by PSB status
+            enum:
+              - "true"
+              - "false"
+            type: string
+        - description: Filter by intermediary status
+          explode: false
+          in: query
+          name: is_intermediary
+          schema:
+            description: Filter by intermediary status
+            enum:
+              - "true"
+              - "false"
+            type: string
+        - description: Filter by uses intermediary
+          explode: false
+          in: query
+          name: uses_intermediary
+          schema:
+            description: Filter by uses intermediary
+            enum:
+              - "true"
+              - "false"
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListRelyingPartiesOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: List relying parties
+      tags:
+        - Relying Parties
+  /api/v1/relying-parties/{id}:
+    get:
+      description: Get a single wallet relying party by its unique identifier
+      operationId: get-relying-party
+      parameters:
+        - description: Relying party ID (UUID)
+          in: path
+          name: id
+          required: true
+          schema:
+            description: Relying party ID (UUID)
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RelyingPartyAPIResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: Get relying party by ID
+      tags:
+        - Relying Parties
+servers:
+  - url: https://api.stage.whoidentifies.me

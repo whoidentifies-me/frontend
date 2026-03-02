@@ -9,7 +9,7 @@ export function getIntendedUseDescription(
     return undefined;
   }
 
-  const sortedDescriptions = intendedUse.purposes
+  const sortedDescriptions = (intendedUse.purposes || [])
     .slice()
     .sort(
       (a, b) => (a.purpose_index ?? Infinity) - (b.purpose_index ?? Infinity)

@@ -1,10 +1,12 @@
 import { Component, For, Show } from "solid-js";
 import { IntendedUse } from "~/api";
 import { IntendedUseItem } from "./IntendedUseItem";
-import { useSearchFilters } from "~/composables/useSearchFilters";
+import { useSearchFilters } from "~/providers/FilterProvider";
 import { A } from "@solidjs/router";
 import { buildUrlWithFilters } from "~/utils/url";
+import { routes } from "~/config/routes";
 import { useTranslate } from "~/i18n/dict";
+import { uiFiltersToSearchParams } from "~/utils/filter-url";
 
 export const IntendedUses: Component<{
   items?: IntendedUse[];
@@ -23,7 +25,10 @@ export const IntendedUses: Component<{
         <div class="flex flex-row justify-center my-4">
           <A
             class="btn btn-primary no-underline"
-            href={buildUrlWithFilters("/search/intended-uses", filters())}
+            href={buildUrlWithFilters(
+              routes.search.intendedUses,
+              uiFiltersToSearchParams(filters())
+            )}
           >
             {t.components.generic.viewMore()}
           </A>

@@ -1,18 +1,17 @@
-import { A, createAsync, query } from "@solidjs/router";
+import { A, createAsync } from "@solidjs/router";
 import { Component, For } from "solid-js";
-import apiClient from "~/api";
+import { RelyingParties } from "~/api";
 import { TwoColumnLayout } from "~/components/layout/TwoColumnLayout";
 import { RelyingPartyItem } from "~/components/RelyingPartyItem";
 import { useTranslate } from "~/i18n/dict";
-
-const getRelyingParties = query(async () => {
-  return await apiClient.getRelyingParties({ limit: 3 });
-}, "relying-parties-explore");
+import { routes } from "~/config/routes";
 
 export const Explore: Component = () => {
   const t = useTranslate();
 
-  const exploreItems = createAsync(() => getRelyingParties());
+  const exploreItems = createAsync(() =>
+    RelyingParties.listRelyingParties({ limit: 3 })
+  );
 
   return (
     <section id="explore" class="wim-section">
@@ -32,7 +31,10 @@ export const Explore: Component = () => {
               {(item) => <RelyingPartyItem data={item}></RelyingPartyItem>}
             </For>
             <div class="flex flex-row justify-center">
-              <A href="/search" class="btn btn-primary no-underline">
+              <A
+                href={routes.search.index}
+                class="btn btn-primary no-underline"
+              >
                 {t.components.generic.viewMore()}
               </A>
             </div>

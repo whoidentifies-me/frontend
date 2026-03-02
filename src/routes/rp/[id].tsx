@@ -1,22 +1,17 @@
-import { createAsync, query, useParams } from "@solidjs/router";
-import apiClient from "~/api";
+import { createAsync, useParams } from "@solidjs/router";
+import { RelyingParties, IntendedUses } from "~/api";
 import { RelyingPartyDescription } from "~/components/RelyingPartyDescription";
 import { RelyingPartyEntitlements } from "~/components/RelyingPartyEntitlements";
 import { RelyingPartyHeader } from "~/components/RelyingPartyHeader";
 import { RelyingPartyIntendedUses } from "~/components/RelyingPartyIntendedUses";
 
-const getRelyingParty = query(async (id: string) => {
-  return await apiClient.getRelyingParty(id);
-}, "relying-party");
-const getIntendedUsesForRelyingParty = query(async (id: string) => {
-  return await apiClient.getIntendedUses({ wrp_id: id, limit: 1000 });
-}, "intended-uses-for-relying-party");
-
 export default function RelyingParty() {
   const params = useParams<{ id: string }>();
-  const relyingParty = createAsync(() => getRelyingParty(params.id));
+  const relyingParty = createAsync(() =>
+    RelyingParties.getRelyingParty(params.id)
+  );
   const intendedUses = createAsync(() =>
-    getIntendedUsesForRelyingParty(params.id)
+    IntendedUses.listIntendedUses({ wrp_id: params.id, limit: 1000 })
   );
 
   return (
@@ -29,7 +24,7 @@ export default function RelyingParty() {
 
       <RelyingPartyIntendedUses
         relyingParty={relyingParty()}
-        intendedUses={intendedUses()?.data}
+        intendedUses={intendedUses()?.data || []}
       />
     </div>
   );

@@ -3,12 +3,13 @@ import { IntendedUse } from "~/api";
 import { defaultLocale, useI18n } from "~/i18n/dict";
 import { ItemCard } from "./ItemCard";
 import { getRelyingPartyAttributes } from "~/utils/relyingPartyAttributes";
+import { routes } from "~/config/routes";
 
 export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
   const { locale, t } = useI18n();
 
   const purpose = createMemo((): string => {
-    const purposes = props.data.purposes
+    const purposes = (props.data.purposes || [])
       .slice()
       .sort(
         (a, b) => (a.purpose_index || Infinity) - (b.purpose_index || Infinity)
@@ -43,9 +44,7 @@ export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
   });
 
   const href = () =>
-    props.data?.id
-      ? `/rp/${props.data.wrp_id}#intended_use_${props.data.id.substring(0, 8)}`
-      : "";
+    props.data?.id ? routes.intendedUse(props.data.wrp_id, props.data.id) : "";
 
   return (
     <ItemCard

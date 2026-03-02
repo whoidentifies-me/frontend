@@ -6,10 +6,14 @@ import globals from "globals";
 import compat from "eslint-plugin-compat";
 
 export default [
+  {
+    ignores: [".output/**", ".vinxi/**", "node_modules/**"],
+  },
   js.configs.recommended,
   compat.configs["flat/recommended"],
   {
     files: ["**/*.{ts,tsx}"],
+    ignores: ["src/api/generated/**/*"],
     ...solid,
     languageOptions: {
       parser: tsParser,

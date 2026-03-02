@@ -1,16 +1,16 @@
-import type { BaseFilters } from "~/api/types";
+import { SearchParams } from "~/types/search-params";
 
 export function buildUrlWithFilters(
   basePath: string,
-  filters: BaseFilters
+  filters: Partial<SearchParams>
 ): string {
   const urlParams = new URLSearchParams();
 
   Object.entries(filters).forEach(([key, value]) => {
-    if (value !== undefined) {
-      if (Array.isArray(value)) {
+    if (value !== undefined && value !== "") {
+      if (Array.isArray(value) && value.length > 0) {
         value.forEach((v) => urlParams.append(key, String(v)));
-      } else {
+      } else if (!Array.isArray(value)) {
         urlParams.set(key, String(value));
       }
     }

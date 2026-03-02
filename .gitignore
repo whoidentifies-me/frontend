@@ -13,6 +13,9 @@ app.config.timestamp_*.js
 # dependencies
 /node_modules
 
+# Generated API client
+/src/api/generated
+
 # IDEs and editors
 /.idea
 .project

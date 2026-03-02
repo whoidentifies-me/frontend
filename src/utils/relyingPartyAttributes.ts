@@ -21,8 +21,8 @@ export function getRelyingPartyAttributes(
 
   // Add country
   const country =
-    t.countries[data.legal_entity.country as CountryCode]?.() ||
-    data.legal_entity.country;
+    t.countries[data.legal_entity?.country as CountryCode]?.() ||
+    data.legal_entity?.country;
 
   if (country) {
     attributes.push(country);

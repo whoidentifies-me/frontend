@@ -1,32 +1,32 @@
 import { Title } from "@solidjs/meta";
-import { createAsync, query, useSearchParams } from "@solidjs/router";
+import { createAsync, useSearchParams } from "@solidjs/router";
 import { ErrorBoundary, For } from "solid-js";
-import apiClient, { BaseFilters } from "~/api";
+import { RelyingParties } from "~/api";
 import { CategoryTabs } from "~/components/CategoryTabs";
 import { SearchAndFilter } from "~/components/SearchAndFilter";
-import { useSearchFilters } from "~/composables/useSearchFilters";
+import { useSearchFilters } from "~/providers/FilterProvider";
 import { InfiniteList } from "~/components/InfiniteList";
 import { RelyingPartyItem } from "~/components/RelyingPartyItem";
 import { createInfiniteScroll } from "~/utils/createInfiniteScroll";
+import { uiFiltersToApiParams } from "~/utils/filter-api";
 import { useTranslate } from "~/i18n/dict";
 import { Hero } from "~/components/Hero";
-
-const getRelyingParties = query(async (filters: BaseFilters) => {
-  return await apiClient.getRelyingParties({
-    ...filters,
-    q: filters.q ? `%${filters.q}%` : undefined,
-  });
-}, "relying-parties");
 
 export default function SearchRelyingParties() {
   const t = useTranslate();
   const [searchParams] = useSearchParams<{ q: string }>();
   const { filters } = useSearchFilters("relying-parties");
-  const relyingPartiesInitial = createAsync(() => getRelyingParties(filters()));
+  const relyingPartiesInitial = createAsync(() =>
+    RelyingParties.listRelyingParties(uiFiltersToApiParams(filters()))
+  );
 
   const relyingPartiesInfinite = createInfiniteScroll({
     initialResult: relyingPartiesInitial,
-    fetcher: (cursor) => getRelyingParties({ ...filters(), cursor }),
+    fetcher: (cursor) =>
+      RelyingParties.listRelyingParties({
+        ...uiFiltersToApiParams(filters()),
+        cursor,
+      }),
   });
 
   const getTitle = () => {

@@ -1,106 +1,82 @@
-import { Component, createSignal } from "solid-js";
-import type { BaseFilters } from "~/api/types";
+import { Component } from "solid-js";
+import type { FilterValue, UIFilters } from "~/types/filters";
 import { BooleanFilter } from "./BooleanFilter";
 import { MultiFilter } from "./MultiFilter";
-import { createAsync, query } from "@solidjs/router";
-import apiClient from "~/api";
-import { MultiFilterAsync, MultiFilterOption } from "./MultiFilterAsync";
+import { createAsync } from "@solidjs/router";
+import { Filters as FiltersAPI, RelyingParties, IntendedUses } from "~/api";
+import { MultiFilterAsync } from "./MultiFilterAsync";
 import { useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
-import { toArray } from "~/utils/array";
+import { createDebouncedFetch } from "~/utils/createDebouncedFetch";
 
 interface FiltersProps {
-  filters: BaseFilters;
-  onFiltersChange?: (filters: Partial<BaseFilters>) => void;
+  filters: UIFilters;
+  onFiltersChange?: (filters: Partial<UIFilters>) => void;
 }
-
-const countriesQuery = query(
-  async () => await apiClient.getFilterValues("country", { limit: 1000 }),
-  "countries"
-);
 
 export const Filters: Component<FiltersProps> = (props) => {
   const t = useTranslate();
 
-  const handleFilterChange = (key: keyof BaseFilters) => (value?: unknown) => {
+  const handleFilterChange = (key: keyof UIFilters) => (value?: unknown) => {
     props.onFiltersChange?.({ [key]: value });
   };
 
-  const countreis = createAsync(() => countriesQuery());
+  const countries = createAsync(() =>
+    FiltersAPI.getFilterValues("country", { limit: 50 })
+  );
 
-  const [wrpOptions, setWRPoptions] = createSignal<MultiFilterOption[]>();
-  const onUpdateWRPinput = async (input?: string) => {
-    const result = await apiClient.getRelyingParties({
-      trade_name: input?.length ? `%${input}%` : undefined,
-    });
-    const opts = result?.data?.map(
-      (o): MultiFilterOption => ({
-        label: o.trade_name,
-        value: o.trade_name,
-        type: "exact",
-      })
+  const wrpFetch = createDebouncedFetch(async (input) => {
+    const result = await RelyingParties.listRelyingParties(
+      input?.length ? { trade_name: [`%${input}%`] } : undefined
     );
-    setWRPoptions(opts || []);
-  };
-  onUpdateWRPinput();
-
-  const [claimOptions, setClaimOptions] = createSignal<MultiFilterOption[]>();
-  const onUpdateClaimInput = async (input?: string) => {
-    const result = await apiClient.getFilterValues("claim_path", {
-      q: input?.length ? `%${input}%` : undefined,
-    });
-    const opts = result?.data?.map(
-      (o): MultiFilterOption => ({
-        label: o.value,
-        value: o.value,
-        type: "exact",
-      })
+    return (
+      result?.data?.map(
+        (o): FilterValue => ({ value: o.trade_name || "", type: "exact" })
+      ) || []
     );
-    setClaimOptions(opts);
-  };
-  onUpdateClaimInput();
+  });
+  wrpFetch.trigger();
 
-  const [purposeOptions, setPurposeOptions] =
-    createSignal<MultiFilterOption[]>();
-  const onUpdatePurposeInput = async (input?: string) => {
-    const result = await apiClient.getIntendedUses({
-      purpose: input?.length ? `%${input}%` : undefined,
-    });
+  const claimFetch = createDebouncedFetch(async (input) => {
+    const result = await FiltersAPI.getFilterValues(
+      "claim_path",
+      input?.length ? { q: `%${input}%` } : undefined
+    );
+    return (
+      result?.data?.map(
+        (o): FilterValue => ({ value: o.value, type: "exact" })
+      ) || []
+    );
+  });
+  claimFetch.trigger();
+
+  const purposeFetch = createDebouncedFetch(async (input) => {
+    const result = await IntendedUses.listIntendedUses(
+      input?.length ? { purpose: [`%${input}%`] } : undefined
+    );
     const purposes =
-      result?.data?.flatMap((o) => o.purposes.map((p) => p.content)) || [];
-    const uniquePurposes = [...new Set(purposes)];
-    const opts = uniquePurposes.map(
-      (purpose): MultiFilterOption => ({
-        label: purpose,
-        value: purpose,
-        type: "exact",
-      })
+      result?.data?.flatMap((o) => o.purposes?.map((p) => p.content) || []) ||
+      [];
+    return [...new Set(purposes)].map(
+      (purpose): FilterValue => ({ value: purpose, type: "exact" })
     );
-    setPurposeOptions(opts);
-  };
-  onUpdatePurposeInput();
+  });
+  purposeFetch.trigger();
 
-  const [entitlementOptions, setEntitlementOptions] =
-    createSignal<MultiFilterOption[]>();
-  const onUpdateEntitlementInput = async (input?: string) => {
-    const result = await apiClient.getRelyingParties({
-      entitlement: input?.length ? `%${input}%` : undefined,
-    });
-    const entitlements = result?.data?.flatMap((o) => o.entitlements) || [];
-    const uniqueEntitlements = [...new Set(entitlements)];
-    const opts = uniqueEntitlements.map(
-      (entitlement): MultiFilterOption => ({
-        label: entitlement,
-        value: entitlement,
-        type: "exact",
-      })
+  const entitlementFetch = createDebouncedFetch(async (input) => {
+    const result = await RelyingParties.listRelyingParties(
+      input?.length ? { entitlement: [`%${input}%`] } : undefined
     );
-    setEntitlementOptions(opts);
-  };
-  onUpdateEntitlementInput();
+    const entitlements =
+      result?.data?.flatMap((o) => o.entitlements || []) || [];
+    return [...new Set(entitlements)].map(
+      (entitlement): FilterValue => ({ value: entitlement, type: "exact" })
+    );
+  });
+  entitlementFetch.trigger();
 
   const countryOptions = () =>
-    countreis()
+    countries()
       ?.data?.map((v) => ({
         label: t.countries[v.value as CountryCode]?.() || v.value,
         value: v.value,
@@ -120,45 +96,45 @@ export const Filters: Component<FiltersProps> = (props) => {
           label={t.filters.labels.claim_path()!}
           name="claim_path"
           placeholder={t.filters.placeholders.claim_path()}
-          options={claimOptions()}
-          values={toArray(props.filters.claim_path)}
-          onInputChange={onUpdateClaimInput}
+          options={claimFetch.data()}
+          values={props.filters.claim_path || undefined}
+          onInputChange={claimFetch.trigger}
           onChange={handleFilterChange("claim_path")}
           allowSubstr={true}
-        ></MultiFilterAsync>
+        />
         <MultiFilterAsync
           label={t.filters.labels.purpose()!}
           name="purpose"
           placeholder={t.filters.placeholders.purpose()}
-          options={purposeOptions()}
-          values={toArray(props.filters.purpose)}
-          onInputChange={onUpdatePurposeInput}
+          options={purposeFetch.data()}
+          values={props.filters.purpose || undefined}
+          onInputChange={purposeFetch.trigger}
           onChange={handleFilterChange("purpose")}
           allowSubstr={true}
-        ></MultiFilterAsync>
+        />
         <MultiFilter
           label={t.filters.labels.country()!}
           name="country"
           placeholder={t.filters.placeholders.country()}
-          values={props.filters.country}
+          values={props.filters.country || undefined}
           onChange={handleFilterChange("country")}
           options={countryOptions()}
-        ></MultiFilter>
+        />
         <MultiFilterAsync
           label={t.filters.labels.trade_name()!}
           name="wrp_id"
           placeholder={t.filters.placeholders.trade_name()}
-          options={wrpOptions()}
-          values={toArray(props.filters.trade_name)}
-          onInputChange={onUpdateWRPinput}
+          options={wrpFetch.data()}
+          values={props.filters.trade_name || undefined}
+          onInputChange={wrpFetch.trigger}
           onChange={handleFilterChange("trade_name")}
           allowSubstr={true}
-        ></MultiFilterAsync>
+        />
         <BooleanFilter
           label={t.filters.labels.is_psb()!}
           name="is_psb"
           value={props.filters.is_psb}
-          onChange={handleFilterChange("is_psb")}
+          onChange={(value) => handleFilterChange("is_psb")(value)}
           trueLabel={t.filters.values.is_psb.true()}
           falseLabel={t.filters.values.is_psb.false()}
           allLabel={t.filters.values.is_psb.all()}
@@ -167,17 +143,17 @@ export const Filters: Component<FiltersProps> = (props) => {
           label={t.filters.labels.entitlement()!}
           name="entitlement"
           placeholder={t.filters.placeholders.entitlement()}
-          options={entitlementOptions()}
-          values={toArray(props.filters.entitlement)}
-          onInputChange={onUpdateEntitlementInput}
+          options={entitlementFetch.data()}
+          values={props.filters.entitlement || undefined}
+          onInputChange={entitlementFetch.trigger}
           onChange={handleFilterChange("entitlement")}
           allowSubstr={true}
-        ></MultiFilterAsync>
+        />
         <BooleanFilter
           label={t.filters.labels.is_intermediary()!}
           name="is_intermediary"
           value={props.filters.is_intermediary}
-          onChange={handleFilterChange("is_intermediary")}
+          onChange={(value) => handleFilterChange("is_intermediary")(value)}
           trueLabel={t.filters.values.is_intermediary.true()}
           falseLabel={t.filters.values.is_intermediary.false()}
           allLabel={t.filters.values.is_intermediary.all()}
@@ -186,7 +162,7 @@ export const Filters: Component<FiltersProps> = (props) => {
           label={t.filters.labels.uses_intermediary()!}
           name="uses_intermediary"
           value={props.filters.uses_intermediary}
-          onChange={handleFilterChange("uses_intermediary")}
+          onChange={(value) => handleFilterChange("uses_intermediary")(value)}
           trueLabel={t.filters.values.uses_intermediary.true()}
           falseLabel={t.filters.values.uses_intermediary.false()}
           allLabel={t.filters.values.uses_intermediary.all()}

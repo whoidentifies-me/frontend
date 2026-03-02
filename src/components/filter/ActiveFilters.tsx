@@ -1,18 +1,24 @@
 import { Component, For, Show } from "solid-js";
 import { TbX } from "solid-icons/tb";
-import type { BaseFilters } from "~/api/types";
+import type { UIFilters, FilterValue } from "~/types/filters";
 import { useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
 
 interface ActiveFiltersProps {
-  filters: BaseFilters;
-  onRemoveFilter: (key: keyof BaseFilters, value?: string) => void;
+  filters: UIFilters;
+  onRemoveFilter: (
+    key: keyof UIFilters,
+    value?: string,
+    mode?: FilterValue["type"]
+  ) => void;
+  onClearAll?: () => void;
 }
 
 interface FilterBadge {
-  key: keyof BaseFilters;
+  key: keyof UIFilters;
   label: string;
   value?: string;
+  mode?: FilterValue["type"];
 }
 
 export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
@@ -20,7 +26,7 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
 
   const addBooleanFilter = (
     badges: FilterBadge[],
-    key: keyof BaseFilters,
+    key: keyof UIFilters,
     value: boolean | undefined,
     translations: {
       true?: () => string | undefined;
@@ -37,16 +43,37 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
     }
   };
 
-  const addMultiValueFilter = (
+  const addFilterValueFilter = (
     badges: FilterBadge[],
-    key: keyof BaseFilters,
-    value: string | string[] | undefined,
+    key: keyof UIFilters,
+    values: FilterValue[] | null | undefined
+  ) => {
+    if (!values || values.length === 0) return;
+
+    const filterLabel = t.filters.labels[key]?.();
+    values.forEach((fv) => {
+      const displayLabel =
+        fv.type === "like"
+          ? `${filterLabel || key} contains "${fv.value}"`
+          : fv.value;
+      badges.push({
+        key,
+        label: displayLabel,
+        value: fv.value,
+        mode: fv.type,
+      });
+    });
+  };
+
+  const addStringArrayFilter = (
+    badges: FilterBadge[],
+    key: keyof UIFilters,
+    value: string[] | null | undefined,
     labelTransform?: (val: string) => string
   ) => {
-    if (!value) return;
+    if (!value || value.length === 0) return;
 
-    const values = Array.isArray(value) ? value : [value];
-    values.forEach((val) => {
+    value.forEach((val) => {
       badges.push({
         key,
         label: labelTransform ? labelTransform(val) : val,
@@ -60,18 +87,18 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
     const { filters } = props;
 
     // Match the order from Filters.tsx
-    addMultiValueFilter(badges, "claim_path", filters.claim_path);
-    addMultiValueFilter(badges, "purpose", filters.purpose);
-    addMultiValueFilter(
+    addFilterValueFilter(badges, "claim_path", filters.claim_path);
+    addFilterValueFilter(badges, "purpose", filters.purpose);
+    addStringArrayFilter(
       badges,
       "country",
       filters.country,
       (countryCode) =>
         t.countries[countryCode as CountryCode]?.() || countryCode
     );
-    addMultiValueFilter(badges, "trade_name", filters.trade_name);
+    addFilterValueFilter(badges, "trade_name", filters.trade_name);
     addBooleanFilter(badges, "is_psb", filters.is_psb, t.filters.values.is_psb);
-    addMultiValueFilter(badges, "entitlement", filters.entitlement);
+    addFilterValueFilter(badges, "entitlement", filters.entitlement);
     addBooleanFilter(
       badges,
       "is_intermediary",
@@ -89,14 +116,14 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
   };
 
   const handleRemove = (badge: FilterBadge) => {
-    props.onRemoveFilter(badge.key, badge.value);
+    props.onRemoveFilter(badge.key, badge.value, badge.mode);
   };
 
   const activeBadges = () => getActiveFilters();
 
   return (
     <Show when={activeBadges().length > 0}>
-      <div class="flex flex-wrap gap-2 my-4">
+      <div class="flex flex-wrap items-center gap-2 mb-4 mt-8">
         <For each={activeBadges()}>
           {(badge) => (
             <div class="inline-flex items-center gap-2 p-2 pe-4 border border-primary rounded-full text-sm">
@@ -107,10 +134,21 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
               >
                 <TbX size="1.125rem" />
               </button>
-              <span>{badge.label}</span>
+              <span class="line-clamp-2" title={badge.label}>
+                {badge.label}
+              </span>
             </div>
           )}
         </For>
+        <Show when={activeBadges().length > 1 && props.onClearAll}>
+          <button
+            onClick={() => props.onClearAll?.()}
+            class="btn btn-ghost"
+            aria-label={t.filters.clear_all()}
+          >
+            {t.filters.clear_all()}
+          </button>
+        </Show>
       </div>
     </Show>
   );

@@ -1,3 +1,33 @@
+/* Filter collapse animation */
+.filter-collapse-container {
+  display: grid;
+  transition: grid-template-rows 300ms ease;
+  overflow-y: hidden;
+}
+
+.filter-collapse-container[data-expanded="true"] {
+  grid-template-rows: 1fr;
+}
+
+.filter-collapse-container[data-expanded="false"] {
+  grid-template-rows: 0fr;
+}
+
+.filter-collapse-inner {
+  overflow-y: hidden;
+  min-height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filter-collapse-container {
+    transition: none;
+  }
+
+  .filter-collapse-container[data-expanded="false"] {
+    display: none;
+  }
+}
+
 .wim-attributes span:not(:last-child)::after {
   content: "";
   display: inline-block;

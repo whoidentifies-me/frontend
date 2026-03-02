@@ -11,7 +11,7 @@ interface HeaderCardProps {
 
 export const HeaderCard: ParentComponent<HeaderCardProps> = (props) => {
   return (
-    <div class="mb-20 wim-container">
+    <div class="mb-20">
       <div
         class="!pb-32 pt-8 md:pt-14 md:px-14 px-4 header-card header-card-with-overlay"
         style={{

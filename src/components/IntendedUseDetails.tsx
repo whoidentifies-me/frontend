@@ -20,11 +20,11 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
       : undefined;
 
   const purposes = createMemo(() => {
-    return getLocalizeText(props.data?.purposes, locale());
+    return getLocalizeText(props.data?.purposes || undefined, locale());
   });
 
   const credentials = createMemo(() => {
-    return props.data?.credentials.flatMap((c) => c.claims) || [];
+    return props.data?.credentials?.flatMap((c) => c.claims || []) || [];
   });
 
   return (
@@ -43,7 +43,7 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
                   <li class="flex flex-col gap-2">
                     <TbInfoCircle size="2rem" class="text-primary" />
                     <span class="font-semibold font-mono text-sm">
-                      {item.path}
+                      {item?.path}
                     </span>
                   </li>
                 )}
