@@ -4,7 +4,7 @@ import { ErrorBoundary, For } from "solid-js";
 import { RelyingParties } from "~/api";
 import { CategoryTabs } from "~/components/CategoryTabs";
 import { SearchAndFilter } from "~/components/SearchAndFilter";
-import { useSearchFilters } from "~/composables/useSearchFilters";
+import { useSearchFilters } from "~/providers/FilterProvider";
 import { InfiniteList } from "~/components/InfiniteList";
 import { RelyingPartyItem } from "~/components/RelyingPartyItem";
 import { createInfiniteScroll } from "~/utils/createInfiniteScroll";

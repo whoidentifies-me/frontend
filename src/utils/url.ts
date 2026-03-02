@@ -7,10 +7,10 @@ export function buildUrlWithFilters(
   const urlParams = new URLSearchParams();
 
   Object.entries(filters).forEach(([key, value]) => {
-    if (value !== undefined) {
+    if (value !== undefined && value !== "") {
       if (Array.isArray(value) && value.length > 0) {
         value.forEach((v) => urlParams.append(key, String(v)));
-      } else {
+      } else if (!Array.isArray(value)) {
         urlParams.set(key, String(value));
       }
     }

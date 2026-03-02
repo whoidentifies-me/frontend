@@ -2,7 +2,7 @@ import { Component, For, Show } from "solid-js";
 import { RelyingParty } from "~/api";
 import { RelyingPartyItem } from "./RelyingPartyItem";
 import { A } from "@solidjs/router";
-import { useSearchFilters } from "~/composables/useSearchFilters";
+import { useSearchFilters } from "~/providers/FilterProvider";
 import { buildUrlWithFilters } from "~/utils/url";
 import { routes } from "~/config/routes";
 import { useTranslate } from "~/i18n/dict";

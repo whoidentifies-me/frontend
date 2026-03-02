@@ -8,6 +8,7 @@ import "@fontsource-variable/open-sans";
 import "@fontsource-variable/montserrat";
 import { I18nProvider } from "~/i18n/dict";
 import { Footer } from "./sections/Footer";
+import { FilterProvider } from "./providers/FilterProvider";
 
 export default function App() {
   return (
@@ -20,11 +21,11 @@ export default function App() {
       <I18nProvider initialLocale="en">
         <Router
           root={(props) => (
-            <>
+            <FilterProvider>
               <Header />
               <Suspense>{props.children}</Suspense>
               <Footer />
-            </>
+            </FilterProvider>
           )}
         >
           <FileRoutes />

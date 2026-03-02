@@ -17,7 +17,7 @@ export function uiFiltersToSearchParams(
   const entitlement = filterValueToExactAndLike(uiFilters.entitlement);
 
   return {
-    q: uiFilters.q,
+    q: uiFilters.q || undefined,
     trade_name: tradeName.exact,
     trade_name_like: tradeName.like,
     purpose: purpose.exact,

@@ -42,9 +42,10 @@
 }
 
 .ark-combobox-item [data-scope="combobox"][data-part="item-text"] {
-  overflow: hidden;
+  overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  padding-block: 4px;
 }
 
 .ark-combobox-item[data-disabled] {

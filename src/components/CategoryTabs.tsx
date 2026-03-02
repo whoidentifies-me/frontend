@@ -1,7 +1,7 @@
 import { Component } from "solid-js";
 import { A } from "@solidjs/router";
 import { buildUrlWithFilters } from "~/utils/url";
-import { useSearchFilters } from "~/composables/useSearchFilters";
+import { useSearchFilters } from "~/providers/FilterProvider";
 import { routes } from "~/config/routes";
 import { useTranslate } from "~/i18n/dict";
 import { uiFiltersToSearchParams } from "~/utils/filter-url";

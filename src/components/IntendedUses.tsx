@@ -1,7 +1,7 @@
 import { Component, For, Show } from "solid-js";
 import { IntendedUse } from "~/api";
 import { IntendedUseItem } from "./IntendedUseItem";
-import { useSearchFilters } from "~/composables/useSearchFilters";
+import { useSearchFilters } from "~/providers/FilterProvider";
 import { A } from "@solidjs/router";
 import { buildUrlWithFilters } from "~/utils/url";
 import { routes } from "~/config/routes";

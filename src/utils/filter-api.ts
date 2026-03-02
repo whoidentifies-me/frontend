@@ -28,7 +28,7 @@ export function uiFiltersToApiParams(filters: UIFilters): ApiFilterParams {
   const entitlement = filterValuesToApiStrings(filters.entitlement);
   if (entitlement) result.entitlement = entitlement;
 
-  if (filters.country.length > 0) result.country = filters.country;
+  if (filters.country?.length > 0) result.country = filters.country;
 
   const isPsb = booleanToStringLiteral(filters.is_psb);
   if (isPsb) result.is_psb = isPsb;

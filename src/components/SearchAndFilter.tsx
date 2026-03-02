@@ -2,7 +2,7 @@ import { Component, createSignal } from "solid-js";
 import { SearchBar } from "./SearchBar";
 import { Filters } from "./filter/Filters";
 import { ActiveFilters } from "./filter/ActiveFilters";
-import { useSearchFilters } from "~/composables/useSearchFilters";
+import { useSearchFilters } from "~/providers/FilterProvider";
 import type { UIFilters, FilterValue } from "~/types/filters";
 import { LIKE_FILTER_KEYS, type LikeFilterKey } from "~/types/filters";
 
@@ -15,9 +15,8 @@ export const SearchAndFilter: Component<{
   );
   const toggleFilterCollapsed = () => setFilterCollapsed((state) => !state);
 
-  const { formAction, filters, handleFiltersChange } = useSearchFilters(
-    params.searchCategory
-  );
+  const { formAction, filters, handleFiltersChange, clearFilters } =
+    useSearchFilters(params.searchCategory);
 
   const handleRemoveFilter = (
     key: keyof UIFilters,
@@ -37,16 +36,12 @@ export const SearchAndFilter: Component<{
         const newArray = filterValues.filter(
           (fv) => !(fv.value === value && fv.type === (mode || "exact"))
         );
-        handleFiltersChange({
-          [key]: newArray.length > 0 ? newArray : undefined,
-        });
+        handleFiltersChange({ [key]: newArray });
       }
     } else if (Array.isArray(currentValue)) {
       // string[] filter (country)
       const newArray = (currentValue as string[]).filter((v) => v !== value);
-      handleFiltersChange({
-        [key]: newArray.length > 0 ? newArray : undefined,
-      });
+      handleFiltersChange({ [key]: newArray });
     } else {
       handleFiltersChange({ [key]: undefined });
     }
@@ -86,18 +81,7 @@ export const SearchAndFilter: Component<{
         <ActiveFilters
           filters={filters()}
           onRemoveFilter={handleRemoveFilter}
-          onClearAll={() =>
-            handleFiltersChange({
-              claim_path: undefined,
-              purpose: undefined,
-              country: undefined,
-              trade_name: undefined,
-              is_psb: undefined,
-              entitlement: undefined,
-              is_intermediary: undefined,
-              uses_intermediary: undefined,
-            })
-          }
+          onClearAll={clearFilters}
         />
       </form>
     </search>
