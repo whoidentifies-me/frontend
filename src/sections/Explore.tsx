@@ -21,7 +21,7 @@ export const Explore: Component = () => {
         leftContent={
           <>
             <h2>{t.home.explore.title()}</h2>
-            <p class="mb-0">{t.home.explore.description()}</p>
+            {t.home.explore.description()}
           </>
         }
         rightColumnClass="flex flex-col gap-3 justify-center"
@@ -32,7 +32,7 @@ export const Explore: Component = () => {
             </For>
             <div class="flex flex-row justify-center">
               <A
-                href={routes.search.index}
+                href={routes.search.results}
                 class="btn btn-primary no-underline"
               >
                 {t.components.generic.viewMore()}

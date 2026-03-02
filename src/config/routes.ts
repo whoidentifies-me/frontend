@@ -1,7 +1,14 @@
 export const routes = {
   home: "/",
+  sections: {
+    explore: "/#explore",
+    status: "/#status",
+    how: "/#how",
+    help: "/#help",
+  },
   search: {
     index: "/search",
+    results: "/search#results",
     relyingParties: "/search/relying-parties",
     intendedUses: "/search/intended-uses",
   },

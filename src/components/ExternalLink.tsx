@@ -7,7 +7,7 @@ interface ExternalLinkProps
 }
 
 export const ExternalLink: Component<ExternalLinkProps> = (props) => {
-  const { showIcon = true, ...anchorProps } = props;
+  const { showIcon = false, ...anchorProps } = props;
 
   return (
     <a
