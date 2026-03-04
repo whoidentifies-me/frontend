@@ -5,6 +5,7 @@ import {
   createSignal,
   on,
   useContext,
+  useTransition,
   type Accessor,
   type ParentComponent,
 } from "solid-js";
@@ -19,6 +20,7 @@ import { buildUrlWithFilters } from "~/utils/url";
 
 interface FilterContextValue {
   filters: Accessor<UIFilters>;
+  isPending: Accessor<boolean>;
   handleFiltersChange: (newFilters: Partial<UIFilters>) => void;
   clearFilters: () => void;
 }
@@ -29,6 +31,7 @@ export const FilterProvider: ParentComponent = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation<SearchParams>();
   const navigate = useNavigate();
+  const [isPending, startTransition] = useTransition();
 
   // Initialize from URL
   const [filters, setFilters] = createSignal<UIFilters>(
@@ -39,40 +42,48 @@ export const FilterProvider: ParentComponent = (props) => {
   createEffect(
     on(
       () => JSON.stringify(searchParams),
-      () => setFilters(searchParamsToUIfilters(searchParams))
+      () =>
+        startTransition(() => setFilters(searchParamsToUIfilters(searchParams)))
     )
   );
 
   const clearFilters = () => {
-    setFilters({
-      q: filters().q,
-      trade_name: [],
-      purpose: [],
-      claim_path: [],
-      entitlement: [],
-      country: [],
+    startTransition(() => {
+      setFilters({
+        q: filters().q,
+        trade_name: [],
+        purpose: [],
+        claim_path: [],
+        entitlement: [],
+        country: [],
+      });
+      setSearchParams(uiFiltersToSearchParams(filters()), { scroll: false });
     });
-    setSearchParams(uiFiltersToSearchParams(filters()));
   };
 
   const handleFiltersChange = (newFilters: Partial<UIFilters>) => {
     const mergedFilters: UIFilters = { ...filters(), ...newFilters };
-    setFilters(mergedFilters);
+
+    startTransition(() => {
+      setFilters(mergedFilters);
+    });
 
     // Signal → URL
     const stringParams = uiFiltersToSearchParams(mergedFilters);
-    const shouldNavigate = !location.pathname.startsWith(routes.search.index);
+    const shouldNavigate = !location.pathname.startsWith(routes.search.results);
 
     if (shouldNavigate) {
-      navigate(buildUrlWithFilters(routes.search.index, stringParams));
+      navigate(
+        buildUrlWithFilters(routes.search.index, stringParams, "#results")
+      );
     } else {
-      setSearchParams(stringParams);
+      setSearchParams(stringParams, { scroll: false });
     }
   };
 
   return (
     <FilterContext.Provider
-      value={{ filters, handleFiltersChange, clearFilters }}
+      value={{ filters, isPending, handleFiltersChange, clearFilters }}
     >
       {props.children}
     </FilterContext.Provider>
@@ -95,6 +106,7 @@ export function useSearchFilters(
   return {
     formAction,
     filters: context.filters,
+    isPending: context.isPending,
     handleFiltersChange: context.handleFiltersChange,
     clearFilters: context.clearFilters,
   };

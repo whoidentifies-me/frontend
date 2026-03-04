@@ -1,5 +1,8 @@
-import { createAsync, useParams } from "@solidjs/router";
+import { createAsync, revalidate, useParams } from "@solidjs/router";
+import { ErrorBoundary, Suspense } from "solid-js";
 import { RelyingParties, IntendedUses } from "~/api";
+import { DetailSkeleton } from "~/components/DetailSkeleton";
+import { ErrorCard } from "~/components/ErrorCard";
 import { RelyingPartyDescription } from "~/components/RelyingPartyDescription";
 import { RelyingPartyEntitlements } from "~/components/RelyingPartyEntitlements";
 import { RelyingPartyHeader } from "~/components/RelyingPartyHeader";
@@ -15,17 +18,28 @@ export default function RelyingParty() {
   );
 
   return (
-    <div class="space-y-14">
-      <RelyingPartyHeader data={relyingParty()} />
-
-      <RelyingPartyDescription data={relyingParty()} />
-
-      <RelyingPartyEntitlements data={relyingParty()} />
-
-      <RelyingPartyIntendedUses
-        relyingParty={relyingParty()}
-        intendedUses={intendedUses()?.data || []}
-      />
-    </div>
+    <ErrorBoundary
+      fallback={(err, reset) => (
+        <ErrorCard
+          error={err}
+          retry={() => {
+            revalidate();
+            reset();
+          }}
+        />
+      )}
+    >
+      <Suspense fallback={<DetailSkeleton />}>
+        <div class="space-y-14">
+          <RelyingPartyHeader data={relyingParty()} />
+          <RelyingPartyDescription data={relyingParty()} />
+          <RelyingPartyEntitlements data={relyingParty()} />
+          <RelyingPartyIntendedUses
+            relyingParty={relyingParty()}
+            intendedUses={intendedUses()?.data || []}
+          />
+        </div>
+      </Suspense>
+    </ErrorBoundary>
   );
 }

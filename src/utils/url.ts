@@ -2,7 +2,8 @@ import { SearchParams } from "~/types/search-params";
 
 export function buildUrlWithFilters(
   basePath: string,
-  filters: Partial<SearchParams>
+  filters: Partial<SearchParams>,
+  anchor?: string
 ): string {
   const urlParams = new URLSearchParams();
 
@@ -16,6 +17,13 @@ export function buildUrlWithFilters(
     }
   });
 
+  let result = basePath;
   const searchString = urlParams.toString();
-  return searchString ? `${basePath}?${searchString}` : basePath;
+  if (searchString) {
+    basePath += `?${searchString}`;
+  }
+  if (anchor) {
+    basePath += `#${anchor}`;
+  }
+  return result;
 }
