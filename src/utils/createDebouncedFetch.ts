@@ -42,7 +42,7 @@ export function createDebouncedFetch<T>(
           // Expected when a newer request supersedes this one
           return;
         }
-        throw e;
+        console.error("Filter fetch failed:", e);
       }
     }, delay);
   };

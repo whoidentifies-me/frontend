@@ -1,4 +1,4 @@
-import { createAsync, revalidate, useParams } from "@solidjs/router";
+import { createAsync, useParams } from "@solidjs/router";
 import { ErrorBoundary, Suspense } from "solid-js";
 import { RelyingParties, IntendedUses } from "~/api";
 import { DetailSkeleton } from "~/components/DetailSkeleton";
@@ -18,17 +18,7 @@ export default function RelyingParty() {
   );
 
   return (
-    <ErrorBoundary
-      fallback={(err, reset) => (
-        <ErrorCard
-          error={err}
-          retry={() => {
-            revalidate();
-            reset();
-          }}
-        />
-      )}
-    >
+    <ErrorBoundary fallback={() => <ErrorCard />}>
       <Suspense fallback={<DetailSkeleton />}>
         <div class="space-y-14">
           <RelyingPartyHeader data={relyingParty()} />

@@ -1,9 +1,7 @@
 import type { Component } from "solid-js";
 import { TbAlertCircle } from "solid-icons/tb";
 
-export const ErrorCard: Component<{ error?: unknown; retry?: () => void }> = (
-  props
-) => {
+export const ErrorCard: Component<{ error?: unknown }> = () => {
   return (
     <div
       role="alert"
@@ -11,11 +9,9 @@ export const ErrorCard: Component<{ error?: unknown; retry?: () => void }> = (
     >
       <TbAlertCircle class="h-6 w-6 shrink-0" />
       <span class="flex-grow">Something went wrong.</span>
-      {props.retry && (
-        <button class="btn btn-sm" onClick={props.retry}>
-          Retry
-        </button>
-      )}
+      <button class="btn btn-sm" onClick={() => location.reload()}>
+        Reload Page
+      </button>
     </div>
   );
 };

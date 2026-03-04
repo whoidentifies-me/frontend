@@ -1,4 +1,4 @@
-import { createAsync, revalidate } from "@solidjs/router";
+import { createAsync } from "@solidjs/router";
 import { ErrorBoundary, Suspense } from "solid-js";
 import {
   RelyingParties as RelyingPartiesAPI,
@@ -20,17 +20,17 @@ import { Hero } from "~/components/Hero";
 export default function SearchAll() {
   const t = useTranslate();
   const limit = 5;
-  const { filters, isPending } = useSearchFilters();
+  const { deferredFilters, isPending } = useSearchFilters();
 
   const relyingParties = createAsync(() =>
     RelyingPartiesAPI.listRelyingParties({
-      ...uiFiltersToApiParams(filters()),
+      ...uiFiltersToApiParams(deferredFilters()),
       limit,
     })
   );
   const intendedUses = createAsync(() =>
     IntendedUsesAPI.listIntendedUses({
-      ...uiFiltersToApiParams(filters()),
+      ...uiFiltersToApiParams(deferredFilters()),
       limit,
     })
   );
@@ -48,17 +48,7 @@ export default function SearchAll() {
 
         <div classList={{ "opacity-60 pointer-events-none": isPending() }}>
           <h2>{t.searchResults.relyingParties()}</h2>
-          <ErrorBoundary
-            fallback={(err, reset) => (
-              <ErrorCard
-                error={err}
-                retry={() => {
-                  revalidate();
-                  reset();
-                }}
-              />
-            )}
-          >
+          <ErrorBoundary fallback={() => <ErrorCard />}>
             <Suspense fallback={<SkeletonList count={3} />}>
               <RelyingParties
                 items={relyingParties()?.data || []}
@@ -70,17 +60,7 @@ export default function SearchAll() {
           <div class="h-10"></div>
 
           <h2>{t.searchResults.intendedUses()}</h2>
-          <ErrorBoundary
-            fallback={(err, reset) => (
-              <ErrorCard
-                error={err}
-                retry={() => {
-                  revalidate();
-                  reset();
-                }}
-              />
-            )}
-          >
+          <ErrorBoundary fallback={() => <ErrorCard />}>
             <Suspense fallback={<SkeletonList count={3} />}>
               <IntendedUses
                 items={intendedUses()?.data || []}

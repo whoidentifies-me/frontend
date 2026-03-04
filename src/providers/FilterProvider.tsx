@@ -20,6 +20,7 @@ import { buildUrlWithFilters } from "~/utils/url";
 
 interface FilterContextValue {
   filters: Accessor<UIFilters>;
+  deferredFilters: Accessor<UIFilters>;
   isPending: Accessor<boolean>;
   handleFiltersChange: (newFilters: Partial<UIFilters>) => void;
   clearFilters: () => void;
@@ -33,44 +34,52 @@ export const FilterProvider: ParentComponent = (props) => {
   const navigate = useNavigate();
   const [isPending, startTransition] = useTransition();
 
-  // Initialize from URL
-  const [filters, setFilters] = createSignal<UIFilters>(
-    searchParamsToUIfilters(searchParams)
-  );
+  const initial = searchParamsToUIfilters(searchParams);
+  const [filters, setFilters] = createSignal<UIFilters>(initial);
+  const [deferredFilters, setDeferredFilters] =
+    createSignal<UIFilters>(initial);
 
-  // URL → signal: when URL changes externally (back/forward, link click)
+  // URL → signals: only for external URL changes (back/forward navigation).
+  // Skips when signal already matches URL to avoid a feedback loop with
+  // handleFiltersChange, which would cause an unwanted scroll-to-top.
   createEffect(
     on(
       () => JSON.stringify(searchParams),
-      () =>
-        startTransition(() => setFilters(searchParamsToUIfilters(searchParams)))
+      () => {
+        const urlFilters = searchParamsToUIfilters(searchParams);
+        if (JSON.stringify(urlFilters) !== JSON.stringify(filters())) {
+          setFilters(urlFilters);
+          startTransition(() => setDeferredFilters(urlFilters));
+        }
+      }
     )
   );
 
+  const applyFilters = (newFilters: UIFilters) => {
+    // Update immediately for responsive filter UI
+    setFilters(newFilters);
+    // Update inside transition so results keep old content with pending overlay
+    startTransition(() => setDeferredFilters(newFilters));
+  };
+
   const clearFilters = () => {
-    startTransition(() => {
-      setFilters({
-        q: filters().q,
-        trade_name: [],
-        purpose: [],
-        claim_path: [],
-        entitlement: [],
-        country: [],
-      });
-      setSearchParams(uiFiltersToSearchParams(filters()), { scroll: false });
+    applyFilters({
+      q: filters().q,
+      trade_name: [],
+      purpose: [],
+      claim_path: [],
+      entitlement: [],
+      country: [],
     });
+    setSearchParams(uiFiltersToSearchParams(filters()), { scroll: false });
   };
 
   const handleFiltersChange = (newFilters: Partial<UIFilters>) => {
     const mergedFilters: UIFilters = { ...filters(), ...newFilters };
-
-    startTransition(() => {
-      setFilters(mergedFilters);
-    });
-
-    // Signal → URL
     const stringParams = uiFiltersToSearchParams(mergedFilters);
     const shouldNavigate = !location.pathname.startsWith(routes.search.results);
+
+    applyFilters(mergedFilters);
 
     if (shouldNavigate) {
       navigate(
@@ -83,7 +92,13 @@ export const FilterProvider: ParentComponent = (props) => {
 
   return (
     <FilterContext.Provider
-      value={{ filters, isPending, handleFiltersChange, clearFilters }}
+      value={{
+        filters,
+        deferredFilters,
+        isPending,
+        handleFiltersChange,
+        clearFilters,
+      }}
     >
       {props.children}
     </FilterContext.Provider>
@@ -106,6 +121,7 @@ export function useSearchFilters(
   return {
     formAction,
     filters: context.filters,
+    deferredFilters: context.deferredFilters,
     isPending: context.isPending,
     handleFiltersChange: context.handleFiltersChange,
     clearFilters: context.clearFilters,

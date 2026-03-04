@@ -28,9 +28,7 @@ export const Explore: Component = () => {
         }
         rightColumnClass="flex flex-col gap-3 justify-center"
         rightContent={
-          <ErrorBoundary
-            fallback={(err, reset) => <ErrorCard error={err} retry={reset} />}
-          >
+          <ErrorBoundary fallback={() => <ErrorCard />}>
             <Suspense fallback={<SkeletonList count={3} />}>
               <For each={exploreItems()?.data || []}>
                 {(item) => <RelyingPartyItem data={item}></RelyingPartyItem>}

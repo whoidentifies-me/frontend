@@ -1,5 +1,5 @@
 import { Title } from "@solidjs/meta";
-import { createAsync, revalidate, useSearchParams } from "@solidjs/router";
+import { createAsync, useSearchParams } from "@solidjs/router";
 import { ErrorBoundary, For, Suspense } from "solid-js";
 import { RelyingParties } from "~/api";
 import { CategoryTabs } from "~/components/CategoryTabs";
@@ -18,16 +18,16 @@ import { Hero } from "~/components/Hero";
 export default function SearchRelyingParties() {
   const t = useTranslate();
   const [searchParams] = useSearchParams<{ q: string }>();
-  const { filters, isPending } = useSearchFilters("relying-parties");
+  const { deferredFilters, isPending } = useSearchFilters("relying-parties");
   const relyingPartiesInitial = createAsync(() =>
-    RelyingParties.listRelyingParties(uiFiltersToApiParams(filters()))
+    RelyingParties.listRelyingParties(uiFiltersToApiParams(deferredFilters()))
   );
 
   const relyingPartiesInfinite = createInfiniteScroll({
     initialResult: relyingPartiesInitial,
     fetcher: (cursor) =>
       RelyingParties.listRelyingParties({
-        ...uiFiltersToApiParams(filters()),
+        ...uiFiltersToApiParams(deferredFilters()),
         cursor,
       }),
   });
@@ -54,17 +54,7 @@ export default function SearchRelyingParties() {
 
         <div classList={{ "opacity-60 pointer-events-none": isPending() }}>
           <h2>{t.searchResults.relyingParties()}</h2>
-          <ErrorBoundary
-            fallback={(err, reset) => (
-              <ErrorCard
-                error={err}
-                retry={() => {
-                  revalidate();
-                  reset();
-                }}
-              />
-            )}
-          >
+          <ErrorBoundary fallback={() => <ErrorCard />}>
             <Suspense fallback={<SkeletonList />}>
               <InfiniteList
                 class="space-y-4"

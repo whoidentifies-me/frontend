@@ -1,5 +1,5 @@
 import { Title } from "@solidjs/meta";
-import { createAsync, revalidate, useSearchParams } from "@solidjs/router";
+import { createAsync, useSearchParams } from "@solidjs/router";
 import { ErrorBoundary, For, Suspense } from "solid-js";
 import { IntendedUses } from "~/api";
 import { CategoryTabs } from "~/components/CategoryTabs";
@@ -18,16 +18,16 @@ import { Hero } from "~/components/Hero";
 export default function SearchIntendedUses() {
   const t = useTranslate();
   const [searchParams] = useSearchParams<{ q: string }>();
-  const { filters, isPending } = useSearchFilters("intended-uses");
+  const { deferredFilters, isPending } = useSearchFilters("intended-uses");
 
   const intendedUsesInitial = createAsync(() =>
-    IntendedUses.listIntendedUses(uiFiltersToApiParams(filters()))
+    IntendedUses.listIntendedUses(uiFiltersToApiParams(deferredFilters()))
   );
   const intendedUsesInfinite = createInfiniteScroll({
     initialResult: intendedUsesInitial,
     fetcher: (cursor) =>
       IntendedUses.listIntendedUses({
-        ...uiFiltersToApiParams(filters()),
+        ...uiFiltersToApiParams(deferredFilters()),
         cursor,
       }),
   });
@@ -54,17 +54,7 @@ export default function SearchIntendedUses() {
 
         <div classList={{ "opacity-60 pointer-events-none": isPending() }}>
           <h2>{t.searchResults.intendedUses()}</h2>
-          <ErrorBoundary
-            fallback={(err, reset) => (
-              <ErrorCard
-                error={err}
-                retry={() => {
-                  revalidate();
-                  reset();
-                }}
-              />
-            )}
-          >
+          <ErrorBoundary fallback={() => <ErrorCard />}>
             <Suspense fallback={<SkeletonList />}>
               <InfiniteList
                 class="space-y-4"
