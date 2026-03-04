@@ -28,8 +28,10 @@ interface FilterContextValue {
 
 const FilterContext = createContext<FilterContextValue>();
 
+const defaultFilters = searchParamsToUIfilters({});
+
 export const FilterProvider: ParentComponent = (props) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const location = useLocation<SearchParams>();
   const navigate = useNavigate();
   const [isPending, startTransition] = useTransition();
@@ -63,15 +65,7 @@ export const FilterProvider: ParentComponent = (props) => {
   };
 
   const clearFilters = () => {
-    applyFilters({
-      q: filters().q,
-      trade_name: [],
-      purpose: [],
-      claim_path: [],
-      entitlement: [],
-      country: [],
-    });
-    setSearchParams(uiFiltersToSearchParams(filters()), { scroll: false });
+    handleFiltersChange(defaultFilters);
   };
 
   const handleFiltersChange = (newFilters: Partial<UIFilters>) => {
@@ -82,12 +76,19 @@ export const FilterProvider: ParentComponent = (props) => {
     applyFilters(mergedFilters);
 
     if (shouldNavigate) {
+      console.log(
+        `search or filter change triggered navigation to '${routes.search.index}'!`
+      );
       navigate(buildUrlWithFilters(routes.search.index, stringParams), {
         scroll: false,
         state: { scrollToResults: true },
       });
     } else {
-      setSearchParams(stringParams, { scroll: false });
+      // simply apply search params
+      navigate(buildUrlWithFilters(location.pathname, stringParams), {
+        scroll: false,
+        replace: true,
+      });
     }
   };
 

@@ -27,6 +27,7 @@ export default function Header() {
                 <A
                   href={isHomePage() && item.anchor ? item.anchor : item.href}
                   class="no-underline font-bold text-base-content hover:text-primary focus:text-primary transition-colors"
+                  target={item.external ? "_blank" : undefined}
                 >
                   {item.label()}
                 </A>
