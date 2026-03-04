@@ -20,10 +20,10 @@ export function buildUrlWithFilters(
   let result = basePath;
   const searchString = urlParams.toString();
   if (searchString) {
-    basePath += `?${searchString}`;
+    result += `?${searchString}`;
   }
   if (anchor) {
-    basePath += `#${anchor}`;
+    result += `#${anchor}`;
   }
   return result;
 }

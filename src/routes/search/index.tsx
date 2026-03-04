@@ -1,5 +1,5 @@
-import { createAsync } from "@solidjs/router";
-import { ErrorBoundary, Suspense } from "solid-js";
+import { createAsync, useLocation } from "@solidjs/router";
+import { ErrorBoundary, onMount, Suspense } from "solid-js";
 import {
   RelyingParties as RelyingPartiesAPI,
   IntendedUses as IntendedUsesAPI,
@@ -20,7 +20,16 @@ import { Hero } from "~/components/Hero";
 export default function SearchAll() {
   const t = useTranslate();
   const limit = 5;
+  const location = useLocation<{ scrollToResults?: boolean }>();
   const { deferredFilters, isPending } = useSearchFilters();
+
+  onMount(() => {
+    if (location.state?.scrollToResults) {
+      document
+        .getElementById("results")
+        ?.scrollIntoView({ behavior: "smooth" });
+    }
+  });
 
   const relyingParties = createAsync(() =>
     RelyingPartiesAPI.listRelyingParties({

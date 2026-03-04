@@ -77,14 +77,15 @@ export const FilterProvider: ParentComponent = (props) => {
   const handleFiltersChange = (newFilters: Partial<UIFilters>) => {
     const mergedFilters: UIFilters = { ...filters(), ...newFilters };
     const stringParams = uiFiltersToSearchParams(mergedFilters);
-    const shouldNavigate = !location.pathname.startsWith(routes.search.results);
+    const shouldNavigate = !location.pathname.startsWith(routes.search.index);
 
     applyFilters(mergedFilters);
 
     if (shouldNavigate) {
-      navigate(
-        buildUrlWithFilters(routes.search.index, stringParams, "#results")
-      );
+      navigate(buildUrlWithFilters(routes.search.index, stringParams), {
+        scroll: false,
+        state: { scrollToResults: true },
+      });
     } else {
       setSearchParams(stringParams, { scroll: false });
     }
