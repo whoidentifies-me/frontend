@@ -49,7 +49,7 @@ export default function SearchIntendedUses() {
 
       <CategoryTabs />
 
-      <div id="results" class="my-6 relative">
+      <div id="results" class="my-6 relative" data-search-tab="intended-uses">
         {isPending() && <PendingOverlay />}
 
         <div classList={{ "opacity-60 pointer-events-none": isPending() }}>

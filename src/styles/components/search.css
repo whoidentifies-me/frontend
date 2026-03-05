@@ -1,0 +1,25 @@
+@media (prefers-reduced-motion: no-preference) {
+  html[data-search-tab-direction="forward"]
+    #results[data-search-tab="intended-uses"] {
+    animation: tab-results-slide-in-left 220ms ease both;
+  }
+
+  html[data-search-tab-direction="backward"]
+    #results[data-search-tab="relying-parties"] {
+    animation: tab-results-slide-in-right 220ms ease both;
+  }
+
+  @keyframes tab-results-slide-in-left {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+  }
+
+  @keyframes tab-results-slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+  }
+}
