@@ -24,6 +24,7 @@ export const RelyingPartyItem: Component<{ data: RelyingParty }> = (props) => {
       title={props.data.trade_name || ""}
       attributes={attributes()}
       description={description() || undefined}
+      isPSB={props.data.is_psb}
       href={routes.rp(props.data.id)}
     />
   );

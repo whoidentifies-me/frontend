@@ -1,10 +1,12 @@
 import { A } from "@solidjs/router";
 import { Component, For, Show } from "solid-js";
 import { useTranslate } from "~/i18n/dict";
+import { RelyingPartyIcon } from "./RelyingPartyIcon";
 
 export interface RelyingPartyCardProps {
   id: string;
   title: string;
+  isPSB?: boolean;
   attributes: string[];
   description?: string;
   href: string;
@@ -19,16 +21,25 @@ export const RelyingPartyCard: Component<RelyingPartyCardProps> = (props) => {
       aria-labelledby={props.id}
     >
       <div class="flex flex-col flex-grow min-w-0">
-        <span id={props.id} class="wim-font-title line-clamp-1">
-          {props.title}
-        </span>
-        <Show when={props.attributes.length > 0}>
-          <p class="wim-attributes my-0 text-accent/80 line-clamp-1">
-            <For each={props.attributes}>
-              {(item) => <span class="">{item}</span>}
-            </For>
-          </p>
-        </Show>
+        <div class="flex flex-row items-center gap-2">
+          <RelyingPartyIcon
+            isPSB={props.isPSB}
+            class="text-primary/80 text-3xl"
+          />
+          <div>
+            <span id={props.id} class="wim-font-title line-clamp-1">
+              {props.title}
+            </span>
+            <Show when={props.attributes.length > 0}>
+              <p class="wim-attributes my-0 text-accent/80 line-clamp-1">
+                <For each={props.attributes}>
+                  {(item) => <span class="">{item}</span>}
+                </For>
+              </p>
+            </Show>
+          </div>
+        </div>
+
         <Show when={props.description}>
           <p class="mt-2 mb-0 line-clamp-2">{props.description || ""}</p>
         </Show>
