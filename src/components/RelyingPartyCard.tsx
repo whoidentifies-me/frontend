@@ -2,7 +2,7 @@ import { A } from "@solidjs/router";
 import { Component, For, Show } from "solid-js";
 import { useTranslate } from "~/i18n/dict";
 
-export interface ItemCardProps {
+export interface RelyingPartyCardProps {
   id: string;
   title: string;
   attributes: string[];
@@ -10,17 +10,16 @@ export interface ItemCardProps {
   href: string;
 }
 
-export const ItemCard: Component<ItemCardProps> = (props) => {
+export const RelyingPartyCard: Component<RelyingPartyCardProps> = (props) => {
   const t = useTranslate();
-  const titleId = () => `wim-item-title-${props.id}`;
 
   return (
     <article
       class="wim-card wim-card-outline-accent flex sm:flex-row flex-col gap-2 items-center"
-      aria-labelledby={titleId()}
+      aria-labelledby={props.id}
     >
       <div class="flex flex-col flex-grow min-w-0">
-        <span id={titleId()} class="wim-font-title line-clamp-1">
+        <span id={props.id} class="wim-font-title line-clamp-1">
           {props.title}
         </span>
         <Show when={props.attributes.length > 0}>

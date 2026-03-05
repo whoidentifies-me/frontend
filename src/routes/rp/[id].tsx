@@ -18,7 +18,13 @@ export default function RelyingParty() {
   );
 
   return (
-    <ErrorBoundary fallback={() => <ErrorCard />}>
+    <ErrorBoundary
+      fallback={() => (
+        <div class="wim-container">
+          <ErrorCard />
+        </div>
+      )}
+    >
       <Suspense fallback={<DetailSkeleton />}>
         <div class="space-y-14">
           <RelyingPartyHeader data={relyingParty()} />

@@ -28,20 +28,6 @@ export const CategoryTabs: Component = () => {
         end
         noScroll
       >
-        {t.searchResults.all()}
-      </A>
-      <span>|</span>
-      <A
-        href={buildUrlWithFilters(
-          routes.search.relyingParties,
-          uiFiltersToSearchParams(filters())
-        )}
-        class={tabClass}
-        activeClass={activeTabClass}
-        inactiveClass={inactiveTabClass}
-        role="tab"
-        noScroll
-      >
         {t.searchResults.relyingParties()}
       </A>
       <span>|</span>

@@ -144,7 +144,7 @@ export const en = {
   },
   searchResults: {
     all: "All",
-    relyingParties: "Companies",
+    relyingParties: "Service Providers",
     intendedUses: "Use Cases",
   },
   relyingParties: {
@@ -183,8 +183,8 @@ export const en = {
   filters: {
     labels: {
       q: "Search",
-      trade_name: "Company Name",
-      purpose: "Requested Information Purpose",
+      trade_name: "Service Provider Name",
+      purpose: "Purpose",
       claim_path: "Requested Information",
       country: "Country",
       is_psb: "Public or Private Entity",
@@ -247,6 +247,8 @@ export const en = {
       details: "Details",
       viewMore: "View more",
       loadMore: "Load more",
+      noResults: "No results",
+      contains: "Contains:",
     },
     searchAndFilter: {
       search: "Search",

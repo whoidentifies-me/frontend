@@ -2,6 +2,7 @@ import { Component, createMemo, createSignal, For, Show } from "solid-js";
 import { Combobox, createListCollection } from "@ark-ui/solid/combobox";
 import { Portal } from "solid-js/web";
 import { TbCheck } from "solid-icons/tb";
+import { useTranslate } from "~/i18n/dict";
 
 interface MultiFilterOption {
   value: string;
@@ -20,6 +21,7 @@ interface MultiFilterProps {
 const REOPEN_GUARD_MS = 350;
 
 export const MultiFilter: Component<MultiFilterProps> = (props) => {
+  const t = useTranslate();
   const [inputValue, setInputValue] = createSignal("");
   const [lastCloseTime, setLastCloseTime] = createSignal(0);
 
@@ -53,6 +55,7 @@ export const MultiFilter: Component<MultiFilterProps> = (props) => {
       <Combobox.Root
         value={value()}
         collection={collection()}
+        selectionBehavior="preserve"
         multiple
         openOnClick
         onOpenChange={(details) => {
@@ -71,6 +74,11 @@ export const MultiFilter: Component<MultiFilterProps> = (props) => {
       >
         <Combobox.Label class="font-semibold text-sm mb-2">
           {props.label}
+          <Show when={value().length > 0}>
+            <span class="ml-1.5 text-xs bg-primary text-white rounded-full px-1.5 py-0.5 inline-flex items-center justify-center leading-none">
+              {value().length}
+            </span>
+          </Show>
         </Combobox.Label>
         <Combobox.Control
           on:click={(e: MouseEvent) => {
@@ -100,7 +108,9 @@ export const MultiFilter: Component<MultiFilterProps> = (props) => {
                 </For>
               </Combobox.ItemGroup>
               <Show when={filteredOptions().length === 0}>
-                <div class="ark-combobox-no-result">No results</div>
+                <div class="ark-combobox-no-result">
+                  {t.components.generic.noResults()}
+                </div>
               </Show>
             </Combobox.Content>
           </Combobox.Positioner>

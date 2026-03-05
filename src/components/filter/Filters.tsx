@@ -98,6 +98,7 @@ export const Filters: Component<FiltersProps> = (props) => {
           name="claim_path"
           placeholder={t.filters.placeholders.claim_path()}
           options={claimFetch.data()}
+          loading={claimFetch.loading()}
           values={props.filters.claim_path || undefined}
           onInputChange={claimFetch.trigger}
           onChange={handleFilterChange("claim_path")}
@@ -108,6 +109,7 @@ export const Filters: Component<FiltersProps> = (props) => {
           name="purpose"
           placeholder={t.filters.placeholders.purpose()}
           options={purposeFetch.data()}
+          loading={purposeFetch.loading()}
           values={props.filters.purpose || undefined}
           onInputChange={purposeFetch.trigger}
           onChange={handleFilterChange("purpose")}
@@ -126,6 +128,7 @@ export const Filters: Component<FiltersProps> = (props) => {
           name="wrp_id"
           placeholder={t.filters.placeholders.trade_name()}
           options={wrpFetch.data()}
+          loading={wrpFetch.loading()}
           values={props.filters.trade_name || undefined}
           onInputChange={wrpFetch.trigger}
           onChange={handleFilterChange("trade_name")}
@@ -145,6 +148,7 @@ export const Filters: Component<FiltersProps> = (props) => {
           name="entitlement"
           placeholder={t.filters.placeholders.entitlement()}
           options={entitlementFetch.data()}
+          loading={entitlementFetch.loading()}
           values={props.filters.entitlement || undefined}
           onInputChange={entitlementFetch.trigger}
           onChange={handleFilterChange("entitlement")}

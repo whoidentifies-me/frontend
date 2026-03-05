@@ -3,6 +3,8 @@ import { createSignal } from "solid-js";
 interface DebouncedFetch<T> {
   /** Reactive accessor for the latest result */
   data: () => T | undefined;
+  /** Reactive accessor for loading state */
+  loading: () => boolean;
   /** Call to trigger a debounced fetch. Aborts any in-flight request. */
   trigger: (input?: string) => void;
 }
@@ -21,11 +23,13 @@ export function createDebouncedFetch<T>(
   delay = 300
 ): DebouncedFetch<T> {
   const [data, setData] = createSignal<T>();
+  const [loading, setLoading] = createSignal(false);
   let timer: ReturnType<typeof setTimeout> | undefined;
   let controller: AbortController | undefined;
 
   const trigger = (input?: string) => {
     clearTimeout(timer);
+    setLoading(true);
     timer = setTimeout(async () => {
       // Abort previous in-flight request
       controller?.abort();
@@ -36,16 +40,18 @@ export function createDebouncedFetch<T>(
         const result = await fetchFn(input, signal);
         if (!signal.aborted) {
           setData(() => result);
+          setLoading(false);
         }
       } catch (e) {
         if (e instanceof DOMException && e.name === "AbortError") {
           // Expected when a newer request supersedes this one
           return;
         }
+        setLoading(false);
         console.error("Filter fetch failed:", e);
       }
     }, delay);
   };
 
-  return { data, trigger };
+  return { data, loading, trigger };
 }

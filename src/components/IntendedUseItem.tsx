@@ -1,12 +1,13 @@
-import { Component, createMemo } from "solid-js";
+import { Component, createMemo, For, Show } from "solid-js";
 import { IntendedUse } from "~/api";
 import { defaultLocale, useI18n } from "~/i18n/dict";
-import { ItemCard } from "./ItemCard";
 import { getRelyingPartyAttributes } from "~/utils/relyingPartyAttributes";
 import { routes } from "~/config/routes";
+import { A } from "@solidjs/router";
 
 export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
   const { locale, t } = useI18n();
+  const titleId = () => `wim-item-title-${props.data.id}`;
 
   const purpose = createMemo((): string => {
     const purposes = (props.data.purposes || [])
@@ -47,11 +48,28 @@ export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
     props.data?.id ? routes.intendedUse(props.data.wrp_id, props.data.id) : "";
 
   return (
-    <ItemCard
-      id={props.data.id}
-      title={purpose()}
-      attributes={attributes()}
-      href={href()}
-    />
+    <article
+      class="wim-card wim-card-outline-accent flex sm:flex-row flex-col gap-2 items-center"
+      aria-labelledby={titleId()}
+    >
+      <div class="flex flex-col flex-grow min-w-0">
+        <span id={titleId()} class="wim-font-title line-clamp-1">
+          {purpose()}
+        </span>
+        <Show when={attributes().length > 0}>
+          <p class="wim-attributes my-0 text-accent/80 line-clamp-1">
+            <For each={attributes()}>
+              {(item) => <span class="">{item}</span>}
+            </For>
+          </p>
+        </Show>
+      </div>
+      <A
+        class="btn btn-primary btn-outline no-underline shrink-0"
+        href={href()}
+      >
+        {t.components.generic.details()}
+      </A>
+    </article>
   );
 };

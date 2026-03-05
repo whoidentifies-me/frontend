@@ -134,7 +134,7 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
               >
                 <TbX size="1.125rem" />
               </button>
-              <span class="line-clamp-2" title={badge.label}>
+              <span class="line-clamp-1" title={badge.label}>
                 {badge.label}
               </span>
             </div>

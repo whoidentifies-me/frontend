@@ -2,7 +2,7 @@ import type { Component } from "solid-js";
 
 export const DetailSkeleton: Component = () => {
   return (
-    <div class="space-y-14 animate-pulse">
+    <div class="space-y-14 animate-pulse wim-container">
       <div class="space-y-4">
         <div class="skeleton h-8 w-64" />
         <div class="skeleton h-4 w-48" />
