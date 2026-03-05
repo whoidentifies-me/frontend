@@ -1,5 +1,5 @@
 import { TbBuilding, TbBuildingBank } from "solid-icons/tb";
-import { Component, Switch } from "solid-js";
+import { Component, Show } from "solid-js";
 
 interface RelyingPartyIconProps {
   isPSB?: boolean;
@@ -8,8 +8,8 @@ interface RelyingPartyIconProps {
 
 export const RelyingPartyIcon: Component<RelyingPartyIconProps> = (props) => {
   return (
-    <Switch fallback={<TbBuildingBank class={props.class} />}>
-      <TbBuilding class={props.class} />
-    </Switch>
+    <Show when={props.isPSB} fallback={<TbBuilding class={props.class} />}>
+      <TbBuildingBank class={props.class} />
+    </Show>
   );
 };

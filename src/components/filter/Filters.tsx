@@ -93,28 +93,6 @@ export const Filters: Component<FiltersProps> = (props) => {
           "grid-template-columns": "repeat(auto-fit, minmax(250px, 1fr))",
         }}
       >
-        <MultiFilterAsync
-          label={t.filters.labels.claim_path()!}
-          name="claim_path"
-          placeholder={t.filters.placeholders.claim_path()}
-          options={claimFetch.data()}
-          loading={claimFetch.loading()}
-          values={props.filters.claim_path || undefined}
-          onInputChange={claimFetch.trigger}
-          onChange={handleFilterChange("claim_path")}
-          allowSubstr={true}
-        />
-        <MultiFilterAsync
-          label={t.filters.labels.purpose()!}
-          name="purpose"
-          placeholder={t.filters.placeholders.purpose()}
-          options={purposeFetch.data()}
-          loading={purposeFetch.loading()}
-          values={props.filters.purpose || undefined}
-          onInputChange={purposeFetch.trigger}
-          onChange={handleFilterChange("purpose")}
-          allowSubstr={true}
-        />
         <MultiFilter
           label={t.filters.labels.country()!}
           name="country"
@@ -142,6 +120,28 @@ export const Filters: Component<FiltersProps> = (props) => {
           trueLabel={t.filters.values.is_psb.true()}
           falseLabel={t.filters.values.is_psb.false()}
           allLabel={t.filters.values.is_psb.all()}
+        />
+        <MultiFilterAsync
+          label={t.filters.labels.claim_path()!}
+          name="claim_path"
+          placeholder={t.filters.placeholders.claim_path()}
+          options={claimFetch.data()}
+          loading={claimFetch.loading()}
+          values={props.filters.claim_path || undefined}
+          onInputChange={claimFetch.trigger}
+          onChange={handleFilterChange("claim_path")}
+          allowSubstr={true}
+        />
+        <MultiFilterAsync
+          label={t.filters.labels.purpose()!}
+          name="purpose"
+          placeholder={t.filters.placeholders.purpose()}
+          options={purposeFetch.data()}
+          loading={purposeFetch.loading()}
+          values={props.filters.purpose || undefined}
+          onInputChange={purposeFetch.trigger}
+          onChange={handleFilterChange("purpose")}
+          allowSubstr={true}
         />
         <MultiFilterAsync
           label={t.filters.labels.entitlement()!}
