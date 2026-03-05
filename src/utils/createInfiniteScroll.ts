@@ -1,4 +1,4 @@
-import { createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal, on } from "solid-js";
 import type {
   ListRelyingPartiesOutputBody,
   ListIntendedUsesOutputBody,
@@ -11,17 +11,30 @@ type ApiResponseType =
 type InfiniteScrollOptions<T extends ApiResponseType> = {
   fetcher: (cursor: string | undefined) => Promise<T>;
   initialResult?: () => T | undefined;
+  resetKey?: () => string;
 };
 
 export function createInfiniteScroll<T extends ApiResponseType>(
   options: InfiniteScrollOptions<T>
 ) {
-  const { fetcher, initialResult } = options;
+  const { fetcher, initialResult, resetKey } = options;
 
-  const [cursor, setCursor] = createSignal<string | undefined>(undefined);
-  const [items, setItems] = createSignal<any[]>([]);
+  const [appendedItems, setAppendedItems] = createSignal<any[]>([]);
+  const [paginationOverride, setPaginationOverride] = createSignal<
+    | {
+        nextCursor: string | undefined;
+        hasMore: boolean;
+      }
+    | undefined
+  >(undefined);
   const [loading, setLoading] = createSignal(false);
-  const [hasMore, setHasMore] = createSignal(false);
+
+  const initialPage = () => initialResult?.();
+
+  const cursor = () =>
+    paginationOverride()?.nextCursor ?? initialPage()?.next_cursor;
+  const hasMore = () =>
+    paginationOverride()?.hasMore ?? initialPage()?.has_more ?? false;
 
   const loadMore = async () => {
     if (loading() || !hasMore()) return;
@@ -31,32 +44,33 @@ export function createInfiniteScroll<T extends ApiResponseType>(
       const result = await fetcher(cursor());
 
       if (result.data && result.data.length > 0) {
-        setItems((items) => [...items, ...result.data!]);
+        setAppendedItems((items) => [...items, ...(result.data ?? [])]);
       }
 
-      setCursor(result.next_cursor);
-      setHasMore(result.has_more);
+      setPaginationOverride({
+        nextCursor: result.next_cursor,
+        hasMore: result.has_more,
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  // whenever initial results is updated (due to a filter change for example)
-  // we want to reset the items we loaded
-  createEffect(() => {
-    const newResult = initialResult?.();
-    if (newResult) {
-      setItems(newResult.data || []);
-      setCursor(newResult.next_cursor);
-      setHasMore(newResult.has_more);
-    }
-  });
+  createEffect(
+    on(
+      () => resetKey?.(),
+      () => {
+        setAppendedItems([]);
+        setPaginationOverride(undefined);
+      }
+    )
+  );
 
   // Wrap items so that reading it inside a <Suspense> boundary
   // triggers suspension while the initial resource is loading
   const suspenseAwareItems = () => {
-    initialResult?.();
-    return items();
+    const result = initialPage();
+    return [...(result?.data || []), ...appendedItems()];
   };
 
   return {

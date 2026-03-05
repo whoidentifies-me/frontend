@@ -25,6 +25,7 @@ export default function SearchIntendedUses() {
   );
   const intendedUsesInfinite = createInfiniteScroll({
     initialResult: intendedUsesInitial,
+    resetKey: () => JSON.stringify(uiFiltersToApiParams(deferredFilters())),
     fetcher: (cursor) =>
       IntendedUses.listIntendedUses({
         ...uiFiltersToApiParams(deferredFilters()),

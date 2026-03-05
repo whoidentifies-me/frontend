@@ -25,6 +25,7 @@ export default function SearchRelyingParties() {
 
   const relyingPartiesInfinite = createInfiniteScroll({
     initialResult: relyingPartiesInitial,
+    resetKey: () => JSON.stringify(uiFiltersToApiParams(deferredFilters())),
     fetcher: (cursor) =>
       RelyingParties.listRelyingParties({
         ...uiFiltersToApiParams(deferredFilters()),
