@@ -23,14 +23,20 @@ export const fetchInstance = async <T>({
   headers?: Record<string, string>;
   signal?: AbortSignal;
 }): Promise<T> => {
-  const queryString = params
-    ? "?" +
-      new URLSearchParams(
-        Object.entries(params)
-          .filter(([, v]) => v != null)
-          .map(([k, v]) => [k, String(v)])
-      ).toString()
-    : "";
+  const normalizedParams = new URLSearchParams();
+  if (params) {
+    for (const [key, value] of Object.entries(params)) {
+      if (value == null) continue;
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          normalizedParams.append(key, String(item));
+        }
+      } else {
+        normalizedParams.append(key, String(value));
+      }
+    }
+  }
+  const queryString = normalizedParams.size ? `?${normalizedParams}` : "";
 
   const response = await withRetry(
     async () => {

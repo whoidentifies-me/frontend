@@ -1,7 +1,7 @@
 import { Component, createMemo } from "solid-js";
 import { RelyingParty } from "~/api";
 import { useI18n } from "~/i18n/dict";
-import { ItemCard } from "./ItemCard";
+import { RelyingPartyCard } from "./RelyingPartyCard";
 import {
   getRelyingPartyAttributes,
   getFirstDescription,
@@ -10,6 +10,7 @@ import { routes } from "~/config/routes";
 
 export const RelyingPartyItem: Component<{ data: RelyingParty }> = (props) => {
   const { locale, t } = useI18n();
+  const titleId = () => `wim-item-title-${props.data.id}`;
 
   const attributes = createMemo(() => getRelyingPartyAttributes(props.data, t));
 
@@ -18,11 +19,12 @@ export const RelyingPartyItem: Component<{ data: RelyingParty }> = (props) => {
   );
 
   return (
-    <ItemCard
-      id={props.data.id}
+    <RelyingPartyCard
+      id={titleId()}
       title={props.data.trade_name || ""}
       attributes={attributes()}
-      description={description() ?? undefined}
+      description={description() || undefined}
+      isPSB={props.data.is_psb}
       href={routes.rp(props.data.id)}
     />
   );
