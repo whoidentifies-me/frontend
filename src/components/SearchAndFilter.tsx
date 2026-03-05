@@ -1,5 +1,6 @@
-import { Component, createSignal } from "solid-js";
+import { Component, createSignal, ErrorBoundary } from "solid-js";
 import { SearchBar } from "./SearchBar";
+import { ErrorCard } from "./ErrorCard";
 import { Filters } from "./filter/Filters";
 import { ActiveFilters } from "./filter/ActiveFilters";
 import { useSearchFilters } from "~/providers/FilterProvider";
@@ -72,10 +73,12 @@ export const SearchAndFilter: Component<{
           inert={filterCollapsed()}
         >
           <div class="filter-collapse-inner">
-            <Filters
-              filters={filters()}
-              onFiltersChange={handleFiltersChange}
-            ></Filters>
+            <ErrorBoundary fallback={() => <ErrorCard />}>
+              <Filters
+                filters={filters()}
+                onFiltersChange={handleFiltersChange}
+              ></Filters>
+            </ErrorBoundary>
           </div>
         </div>
         <ActiveFilters

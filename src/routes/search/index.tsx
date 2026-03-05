@@ -1,11 +1,15 @@
-import { createAsync } from "@solidjs/router";
-import { ErrorBoundary, Suspense } from "solid-js";
+import { createAsync, useLocation } from "@solidjs/router";
+import { ErrorBoundary, onMount, Suspense } from "solid-js";
 import {
   RelyingParties as RelyingPartiesAPI,
   IntendedUses as IntendedUsesAPI,
 } from "~/api";
+import { ErrorCard } from "~/components/ErrorCard";
 import { IntendedUses } from "~/components/IntendedUses";
+import { LoadingSpinner } from "~/components/LoadingSpinner";
+import { SkeletonList } from "~/components/SkeletonList";
 import { RelyingParties } from "~/components/RelyingParties";
+
 import { CategoryTabs } from "~/components/CategoryTabs";
 import { SearchAndFilter } from "~/components/SearchAndFilter";
 import { useSearchFilters } from "~/providers/FilterProvider";
@@ -16,17 +20,26 @@ import { Hero } from "~/components/Hero";
 export default function SearchAll() {
   const t = useTranslate();
   const limit = 5;
-  const { filters } = useSearchFilters();
+  const location = useLocation<{ scrollToResults?: boolean }>();
+  const { deferredFilters, isPending } = useSearchFilters();
+
+  onMount(() => {
+    if (location.state?.scrollToResults) {
+      document
+        .getElementById("results")
+        ?.scrollIntoView({ behavior: "smooth" });
+    }
+  });
 
   const relyingParties = createAsync(() =>
     RelyingPartiesAPI.listRelyingParties({
-      ...uiFiltersToApiParams(filters()),
+      ...uiFiltersToApiParams(deferredFilters()),
       limit,
     })
   );
   const intendedUses = createAsync(() =>
     IntendedUsesAPI.listIntendedUses({
-      ...uiFiltersToApiParams(filters()),
+      ...uiFiltersToApiParams(deferredFilters()),
       limit,
     })
   );
@@ -39,27 +52,41 @@ export default function SearchAll() {
 
       <CategoryTabs />
 
-      <div id="results" class="my-6">
-        <Suspense>
+      <div id="results" class="my-6 relative">
+        {isPending() && <PendingOverlay />}
+
+        <div classList={{ "opacity-60 pointer-events-none": isPending() }}>
           <h2>{t.searchResults.relyingParties()}</h2>
-          <ErrorBoundary fallback={<div>Something went wrong!</div>}>
-            <RelyingParties
-              items={relyingParties()?.data || []}
-              hasMore={relyingParties()?.has_more}
-            />
+          <ErrorBoundary fallback={() => <ErrorCard />}>
+            <Suspense fallback={<SkeletonList count={3} />}>
+              <RelyingParties
+                items={relyingParties()?.data || []}
+                hasMore={relyingParties()?.has_more}
+              />
+            </Suspense>
           </ErrorBoundary>
 
           <div class="h-10"></div>
 
           <h2>{t.searchResults.intendedUses()}</h2>
-          <ErrorBoundary fallback={<div>Something went wrong!</div>}>
-            <IntendedUses
-              items={intendedUses()?.data || []}
-              hasMore={intendedUses()?.has_more}
-            />
+          <ErrorBoundary fallback={() => <ErrorCard />}>
+            <Suspense fallback={<SkeletonList count={3} />}>
+              <IntendedUses
+                items={intendedUses()?.data || []}
+                hasMore={intendedUses()?.has_more}
+              />
+            </Suspense>
           </ErrorBoundary>
-        </Suspense>
+        </div>
       </div>
     </>
+  );
+}
+
+function PendingOverlay() {
+  return (
+    <div class="absolute inset-0 flex items-center justify-center z-10">
+      <LoadingSpinner />
+    </div>
   );
 }

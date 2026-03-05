@@ -2,6 +2,7 @@ import { Router } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
 import { Suspense, Show } from "solid-js";
 import Header from "~/components/Header";
+import { LoadingSpinner } from "~/components/LoadingSpinner";
 import "./app.css";
 import { MetaProvider, Link, Meta } from "@solidjs/meta";
 import "@fontsource-variable/open-sans";
@@ -22,9 +23,15 @@ export default function App() {
         <Router
           root={(props) => (
             <FilterProvider>
-              <Header />
-              <Suspense>{props.children}</Suspense>
-              <Footer />
+              <div class="min-h-screen grid grid-cols-1 grid-rows-[auto_1fr_auto]">
+                <Header />
+                <div>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    {props.children}
+                  </Suspense>
+                </div>
+                <Footer />
+              </div>
             </FilterProvider>
           )}
         >

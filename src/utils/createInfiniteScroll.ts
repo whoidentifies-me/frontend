@@ -52,8 +52,15 @@ export function createInfiniteScroll<T extends ApiResponseType>(
     }
   });
 
+  // Wrap items so that reading it inside a <Suspense> boundary
+  // triggers suspension while the initial resource is loading
+  const suspenseAwareItems = () => {
+    initialResult?.();
+    return items();
+  };
+
   return {
-    items,
+    items: suspenseAwareItems,
     loading,
     hasMore,
     loadMore,

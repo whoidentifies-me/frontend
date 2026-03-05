@@ -5,6 +5,7 @@ import {
   createSignal,
   on,
   useContext,
+  useTransition,
   type Accessor,
   type ParentComponent,
 } from "solid-js";
@@ -19,60 +20,87 @@ import { buildUrlWithFilters } from "~/utils/url";
 
 interface FilterContextValue {
   filters: Accessor<UIFilters>;
+  deferredFilters: Accessor<UIFilters>;
+  isPending: Accessor<boolean>;
   handleFiltersChange: (newFilters: Partial<UIFilters>) => void;
   clearFilters: () => void;
 }
 
 const FilterContext = createContext<FilterContextValue>();
 
+const defaultFilters = searchParamsToUIfilters({});
+
 export const FilterProvider: ParentComponent = (props) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const location = useLocation<SearchParams>();
   const navigate = useNavigate();
+  const [isPending, startTransition] = useTransition();
 
-  // Initialize from URL
-  const [filters, setFilters] = createSignal<UIFilters>(
-    searchParamsToUIfilters(searchParams)
-  );
+  const initial = searchParamsToUIfilters(searchParams);
+  const [filters, setFilters] = createSignal<UIFilters>(initial);
+  const [deferredFilters, setDeferredFilters] =
+    createSignal<UIFilters>(initial);
 
-  // URL → signal: when URL changes externally (back/forward, link click)
+  // URL → signals: only for external URL changes (back/forward navigation).
+  // Skips when signal already matches URL to avoid a feedback loop with
+  // handleFiltersChange, which would cause an unwanted scroll-to-top.
   createEffect(
     on(
       () => JSON.stringify(searchParams),
-      () => setFilters(searchParamsToUIfilters(searchParams))
+      () => {
+        const urlFilters = searchParamsToUIfilters(searchParams);
+        if (JSON.stringify(urlFilters) !== JSON.stringify(filters())) {
+          setFilters(urlFilters);
+          startTransition(() => setDeferredFilters(urlFilters));
+        }
+      }
     )
   );
 
+  const applyFilters = (newFilters: UIFilters) => {
+    // Update immediately for responsive filter UI
+    setFilters(newFilters);
+    // Update inside transition so results keep old content with pending overlay
+    startTransition(() => setDeferredFilters(newFilters));
+  };
+
   const clearFilters = () => {
-    setFilters({
-      q: filters().q,
-      trade_name: [],
-      purpose: [],
-      claim_path: [],
-      entitlement: [],
-      country: [],
-    });
-    setSearchParams(uiFiltersToSearchParams(filters()));
+    handleFiltersChange(defaultFilters);
   };
 
   const handleFiltersChange = (newFilters: Partial<UIFilters>) => {
     const mergedFilters: UIFilters = { ...filters(), ...newFilters };
-    setFilters(mergedFilters);
-
-    // Signal → URL
     const stringParams = uiFiltersToSearchParams(mergedFilters);
     const shouldNavigate = !location.pathname.startsWith(routes.search.index);
 
+    applyFilters(mergedFilters);
+
     if (shouldNavigate) {
-      navigate(buildUrlWithFilters(routes.search.index, stringParams));
+      console.log(
+        `search or filter change triggered navigation to '${routes.search.index}'!`
+      );
+      navigate(buildUrlWithFilters(routes.search.index, stringParams), {
+        scroll: false,
+        state: { scrollToResults: true },
+      });
     } else {
-      setSearchParams(stringParams);
+      // simply apply search params
+      navigate(buildUrlWithFilters(location.pathname, stringParams), {
+        scroll: false,
+        replace: true,
+      });
     }
   };
 
   return (
     <FilterContext.Provider
-      value={{ filters, handleFiltersChange, clearFilters }}
+      value={{
+        filters,
+        deferredFilters,
+        isPending,
+        handleFiltersChange,
+        clearFilters,
+      }}
     >
       {props.children}
     </FilterContext.Provider>
@@ -95,6 +123,8 @@ export function useSearchFilters(
   return {
     formAction,
     filters: context.filters,
+    deferredFilters: context.deferredFilters,
+    isPending: context.isPending,
     handleFiltersChange: context.handleFiltersChange,
     clearFilters: context.clearFilters,
   };

@@ -8,6 +8,7 @@ export const routes = {
   },
   search: {
     index: "/search",
+    filters: "/search#filters",
     results: "/search#results",
     relyingParties: "/search/relying-parties",
     intendedUses: "/search/intended-uses",

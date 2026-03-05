@@ -11,7 +11,7 @@ export default function Header() {
   const navigationItems = createNavigationItems();
 
   return (
-    <div class="wim-container pt-3 pb-6 md:px-10 px-4">
+    <div class="wim-container w-full pt-3 pb-6 md:px-10 px-4">
       <nav class="grid md:grid-cols-[1fr_auto_1fr] grid-cols-[1fr_1fr] items-center">
         <A
           href={routes.home}
@@ -27,6 +27,7 @@ export default function Header() {
                 <A
                   href={isHomePage() && item.anchor ? item.anchor : item.href}
                   class="no-underline font-bold text-base-content hover:text-primary focus:text-primary transition-colors"
+                  target={item.external ? "_blank" : undefined}
                 >
                   {item.label()}
                 </A>

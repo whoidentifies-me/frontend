@@ -4,6 +4,7 @@ import { routes } from "~/config/routes";
 export interface NavigationItem {
   href: string;
   anchor?: string;
+  external?: boolean;
   label: () => string | undefined;
 }
 
@@ -30,8 +31,8 @@ export const createNavigationItems = (): NavigationItem[] => {
       label: () => t.navigation.howItWorks(),
     },
     {
-      href: routes.sections.help,
-      anchor: "#help",
+      href: "https://github.com/whoidentifies-me/help/blob/main/README.md",
+      external: true,
       label: () => t.navigation.help(),
     },
   ];

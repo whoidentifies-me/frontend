@@ -64,13 +64,14 @@ export const Filters: Component<FiltersProps> = (props) => {
   purposeFetch.trigger();
 
   const entitlementFetch = createDebouncedFetch(async (input) => {
-    const result = await RelyingParties.listRelyingParties(
-      input?.length ? { entitlement: [`%${input}%`] } : undefined
+    const result = await FiltersAPI.getFilterValues(
+      "entitlement",
+      input?.length ? { q: `%${input}%` } : undefined
     );
-    const entitlements =
-      result?.data?.flatMap((o) => o.entitlements || []) || [];
-    return [...new Set(entitlements)].map(
-      (entitlement): FilterValue => ({ value: entitlement, type: "exact" })
+    return (
+      result?.data?.map(
+        (o): FilterValue => ({ value: o.value, type: "exact" })
+      ) || []
     );
   });
   entitlementFetch.trigger();
