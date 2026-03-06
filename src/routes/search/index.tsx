@@ -1,6 +1,6 @@
 import { Title } from "@solidjs/meta";
-import { createAsync, useSearchParams } from "@solidjs/router";
-import { ErrorBoundary, For, Suspense } from "solid-js";
+import { createAsync, useLocation, useSearchParams } from "@solidjs/router";
+import { ErrorBoundary, For, onMount, Suspense } from "solid-js";
 import { RelyingParties } from "~/api";
 import { CategoryTabs } from "~/components/CategoryTabs";
 import { ErrorCard } from "~/components/ErrorCard";
@@ -18,10 +18,19 @@ import { Hero } from "~/components/Hero";
 export default function SearchRelyingParties() {
   const t = useTranslate();
   const [searchParams] = useSearchParams<{ q: string }>();
+  const location = useLocation<{ scrollToResults?: boolean }>();
   const { deferredFilters, isPending } = useSearchFilters("relying-parties");
   const relyingPartiesInitial = createAsync(() =>
     RelyingParties.listRelyingParties(uiFiltersToApiParams(deferredFilters()))
   );
+
+  onMount(() => {
+    if (location.state?.scrollToResults) {
+      document
+        .getElementById("results")
+        ?.scrollIntoView({ behavior: "smooth" });
+    }
+  });
 
   const relyingPartiesInfinite = createInfiniteScroll({
     initialResult: relyingPartiesInitial,

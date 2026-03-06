@@ -77,7 +77,7 @@ export const FilterProvider: ParentComponent = (props) => {
 
     if (shouldNavigate) {
       console.log(
-        `search or filter change triggered navigation to '${routes.search.index}'!`
+        `search or filter change triggered navigation to '${routes.search.index}'`
       );
       navigate(buildUrlWithFilters(routes.search.index, stringParams), {
         scroll: false,
