@@ -1,5 +1,5 @@
 import { Component, For, Show } from "solid-js";
-import { TbX } from "solid-icons/tb";
+import { TbOutlineX } from "solid-icons/tb";
 import type { UIFilters, FilterValue } from "~/types/filters";
 import { useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
@@ -132,7 +132,7 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
                 class="flex items-center justify-center btn btn-ghost btn-circle btn-primary btn-sm -m-1"
                 aria-label={`Remove filter: ${badge.label}`}
               >
-                <TbX size="1.125rem" />
+                <TbOutlineX size="1.125rem" />
               </button>
               <span class="line-clamp-1" title={badge.label}>
                 {badge.label}

@@ -1,6 +1,6 @@
 import { A, useLocation } from "@solidjs/router";
 import { For } from "solid-js";
-import { TbMenu2 } from "solid-icons/tb";
+import { TbOutlineMenu2 } from "solid-icons/tb";
 import { createNavigationItems } from "~/config/navigation";
 import { routes } from "~/config/routes";
 import logo from "../assets/img/logo-primary.png?w=48&quality=60&format=webp&imagetools";
@@ -39,7 +39,7 @@ export default function Header() {
         <div class="flex justify-self-end">
           <div class="dropdown dropdown-end md:hidden">
             <div tabindex="0" role="button" class="btn btn-ghost">
-              <TbMenu2 class="h-5 w-5" />
+              <TbOutlineMenu2 class="h-5 w-5" />
             </div>
             <ul
               tabindex="0"

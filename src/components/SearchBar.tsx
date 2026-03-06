@@ -1,4 +1,4 @@
-import { TbFilter, TbSearch } from "solid-icons/tb";
+import { TbOutlineFilter, TbOutlineSearch } from "solid-icons/tb";
 import { Component } from "solid-js";
 import { useTranslate } from "~/i18n/dict";
 
@@ -36,7 +36,7 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
         for={id}
       >
         <span class="sr-only">{t.filters.labels.q()}</span>
-        <TbSearch />
+        <TbOutlineSearch />
         <input
           class="mx-0 grow overflow-ellipsis"
           ref={searchEl}
@@ -63,7 +63,7 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
         aria-controls={props["aria-controls"]}
         aria-label={`${props["aria-expanded"] ? "Hide" : "Show"} search filters`}
       >
-        <TbFilter />
+        <TbOutlineFilter />
       </button>
     </div>
   );

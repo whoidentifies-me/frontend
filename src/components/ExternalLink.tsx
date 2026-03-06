@@ -1,5 +1,5 @@
 import { Component, JSX, Show } from "solid-js";
-import { TbExternalLink } from "solid-icons/tb";
+import { TbOutlineExternalLink } from "solid-icons/tb";
 
 interface ExternalLinkProps
   extends JSX.AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -17,7 +17,7 @@ export const ExternalLink: Component<ExternalLinkProps> = (props) => {
       class={props.class}
     >
       <Show when={showIcon}>
-        <TbExternalLink class="me-1 inline align-middle -translate-y-0.5" />
+        <TbOutlineExternalLink class="me-1 inline align-middle -translate-y-0.5" />
       </Show>
       {props.children}
     </a>

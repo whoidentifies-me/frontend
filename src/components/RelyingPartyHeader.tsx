@@ -2,7 +2,7 @@ import { Component, Show, For, createMemo } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { RelyingParty } from "~/api";
 import { useI18n } from "~/i18n/dict";
-import { TbArrowLeft } from "solid-icons/tb";
+import { TbOutlineArrowLeft } from "solid-icons/tb";
 import { ExternalLink } from "./ExternalLink";
 import {
   getRelyingPartyAttributes,
@@ -36,7 +36,7 @@ export const RelyingPartyHeader: Component<RelyingPartyHeaderProps> = (
           class="px-0 btn btn-link btn-primary text-primary-content no-underline"
           onClick={handleBack}
         >
-          <TbArrowLeft />
+          <TbOutlineArrowLeft />
           {t.relyingPartyDetails.backToResults()}
         </button>
       </p>

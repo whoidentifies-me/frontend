@@ -2,7 +2,7 @@ import { Component, For } from "solid-js";
 import { RelyingParty } from "~/api";
 import { useTranslate } from "~/i18n/dict";
 import { TwoColumnLayout } from "./layout/TwoColumnLayout";
-import { TbInfoCircle } from "solid-icons/tb";
+import { TbOutlineInfoCircle } from "solid-icons/tb";
 
 export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
   props
@@ -33,7 +33,7 @@ export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
             >
               {(item) => (
                 <li class="flex flex-col gap-2">
-                  <TbInfoCircle class="text-primary" size="2rem" />
+                  <TbOutlineInfoCircle class="text-primary" size="2rem" />
                   <span class="font-semibold text-sm font-mono">{item}</span>
                 </li>
               )}
