@@ -9,68 +9,49 @@ import {
 import { JSX } from "solid-js";
 
 export interface Entitlement {
-  uri: string;
-  shortDescription: string;
+  name: string;
   icon: () => JSX.Element;
 }
 
-export const entitlements: Entitlement[] = [
-  {
-    uri: "https://uri.etsi.org/19475/Entitlement/Service_Provider",
-    shortDescription: "Service Provider",
+export const entitlements: Record<string, Entitlement> = {
+  "https://uri.etsi.org/19475/Entitlement/Service_Provider": {
+    name: "Service Provider",
     icon: () => <TbOutlineBuildingStore />,
   },
-  {
-    uri: "https://uri.etsi.org/19475/Entitlement/QEAA_Provider",
-    shortDescription: "Issue trusted Attributes",
+  "https://uri.etsi.org/19475/Entitlement/QEAA_Provider": {
+    name: "Issue trusted Attributes",
     icon: () => <TbOutlineUserCheck />,
   },
-  {
-    uri: "https://uri.etsi.org/19475/Entitlement/Non_Q_EAA_Provider",
-    shortDescription: "Issue Attributes",
+  "https://uri.etsi.org/19475/Entitlement/Non_Q_EAA_Provider": {
+    name: "Issue Attributes",
     icon: () => <TbOutlineUserPlus />,
   },
-  {
-    uri: "https://uri.etsi.org/19475/Entitlement/PUB_EAA_Provider",
-    shortDescription: "Issue Attributes from public Sources",
+  "https://uri.etsi.org/19475/Entitlement/PUB_EAA_Provider": {
+    name: "Issue Attributes from public Sources",
     icon: () => <TbOutlineUserShield />,
   },
-  {
-    uri: "https://uri.etsi.org/19475/Entitlement/PID_Provider",
-    shortDescription: "Issue Digital Identities",
+  "https://uri.etsi.org/19475/Entitlement/PID_Provider": {
+    name: "Issue Digital Identities",
     icon: () => <TbOutlineUserScan />,
   },
-  {
-    uri: "https://uri.etsi.org/19475/Entitlement/QCert_for_ESeal_Provider",
-    shortDescription: "Issue Seals (companies)",
+  "https://uri.etsi.org/19475/Entitlement/QCert_for_ESeal_Provider": {
+    name: "Issue Seals (companies)",
     icon: () => <TbOutlineRubberStamp />,
   },
-  {
-    uri: "https://uri.etsi.org/19475/Entitlement/QCert_for_ESig_Provider",
-    shortDescription: "Issue Signatures (people)",
+  "https://uri.etsi.org/19475/Entitlement/QCert_for_ESig_Provider": {
+    name: "Issue Signatures (people)",
     icon: () => <TbOutlineRubberStamp />,
   },
-  {
-    uri: "https://uri.etsi.org/19475/Entitlement/rQSealCDs_Provider",
-    shortDescription: "Issue remote Seals (companies)",
+  "https://uri.etsi.org/19475/Entitlement/rQSealCDs_Provider": {
+    name: "Issue remote Seals (companies)",
     icon: () => <TbOutlineRubberStamp />,
   },
-  {
-    uri: "https://uri.etsi.org/19475/Entitlement/rQSigCDs_Provider",
-    shortDescription: "Issue remote Signatures (people)",
+  "https://uri.etsi.org/19475/Entitlement/rQSigCDs_Provider": {
+    name: "Issue remote Signatures (people)",
     icon: () => <TbOutlineRubberStamp />,
   },
-  {
-    uri: "https://uri.etsi.org/19475/Entitlement/ESig_ESeal_Creation_Provider",
-    shortDescription: "Issue remote Seals & Signatures",
+  "https://uri.etsi.org/19475/Entitlement/ESig_ESeal_Creation_Provider": {
+    name: "Issue remote Seals & Signatures",
     icon: () => <TbOutlineRubberStamp />,
   },
-];
-
-const entitlementsMap = new Map<string, Entitlement>(
-  entitlements.map((e) => [e.uri, e])
-);
-
-export function getEntitlement(uri: string): Entitlement | undefined {
-  return entitlementsMap.get(uri);
-}
+};
