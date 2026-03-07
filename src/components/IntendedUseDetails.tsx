@@ -47,7 +47,7 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
                   const icon = getClaimPathIcon(path);
                   return (
                     <li class="flex flex-col gap-2">
-                      <span class="text-primary [&>svg]:size-8">
+                      <span class="text-primary text-3xl">
                         {icon() || <TbOutlineInfoCircle size="2rem" />}
                       </span>
                       <span class="font-semibold text-sm">{name ?? path}</span>

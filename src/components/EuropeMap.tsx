@@ -24,16 +24,16 @@ export const EuropeMap: Component<EuropeMapProps> = (props) => {
     for (const id of props.countriesActive ?? [])
       rules.push(`#${id} { fill: var(--color-success); }`);
     for (const id of props.countriesPending ?? [])
-      rules.push(`#${id} { fill: var(--color-primary); }`);
+      rules.push(`#${id} { fill: var(--color-primary); opacity: 0.8; }`);
     for (const id of props.countriesInactive ?? [])
-      rules.push(`#${id} { fill: var(--color-error); }`);
+      rules.push(`#${id} { fill: var(--color-error); opacity: 0.6; }`);
     if (all.length > 0) {
       const selector = all.map((id) => `#${id}`).join(", ");
       rules.push(
-        `${selector} { stroke: var(--color-base-content); opacity: 0.6; stroke-width: 0.5; cursor: pointer; }`
+        `${selector} { stroke: var(--color-base-content); stroke-width: 0.5; cursor: pointer; transition-property: opacity, stroke-width; transition-duration: 0.3s; transition-easing: ease-out; }`
       );
       const hoverSelector = all.map((id) => `#${id}:hover`).join(", ");
-      rules.push(`${hoverSelector} { opacity: 0.8; stroke-width: 1; }`);
+      rules.push(`${hoverSelector} { opacity: 0.8; stroke-width: 1.5; }`);
     }
     return rules.join("\n");
   });
@@ -296,7 +296,7 @@ export const EuropeMap: Component<EuropeMapProps> = (props) => {
           </Show>
           <Show when={(props.countriesPending ?? []).length > 0}>
             <span class="flex items-center gap-1.5">
-              <span class="inline-block w-3 h-3 rounded-sm bg-primary/60" />
+              <span class="inline-block w-3 h-3 rounded-sm bg-primary" />
               {t.home.status.legend.pending()}: (
               {(props.countriesPending ?? [])
                 .map((c) => countryName(c))

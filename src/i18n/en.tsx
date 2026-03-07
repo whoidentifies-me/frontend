@@ -58,6 +58,23 @@ export const en = {
         pending: "Pending",
         inactive: "Not yet active",
       },
+      timeline: [
+        {
+          date: "11 April 2024",
+          label: "eIDAS Regulation adopted",
+          completed: true,
+        },
+        {
+          date: "December 2026",
+          label: "Each EU Member State must provide at least one EUDI Wallet",
+          completed: false,
+        },
+        {
+          date: "December 2027",
+          label: "Major private service providers must accept the EUDI Wallet",
+          completed: false,
+        },
+      ] as { date: string; label: string; completed: boolean }[],
       mapAttribution: () => (
         <>
           Map data ©{" "}

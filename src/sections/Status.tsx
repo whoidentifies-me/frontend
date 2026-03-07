@@ -1,6 +1,7 @@
 import { Component } from "solid-js";
 import { EuropeMap } from "~/components/EuropeMap";
 import { TwoColumnLayout } from "~/components/layout/TwoColumnLayout";
+import { StatusTimeline } from "~/components/StatusTimeline";
 import { useTranslate } from "~/i18n/dict";
 
 export const Status: Component = () => {
@@ -54,6 +55,10 @@ export const Status: Component = () => {
           />
         }
       ></TwoColumnLayout>
+
+      <div class="wim-container mt-8 flex flex-col items-center justify-center">
+        <StatusTimeline class="wim-container mt-8" />
+      </div>
     </section>
   );
 };

@@ -36,7 +36,7 @@ export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
                 const mapped = entitlementMap[item];
                 return (
                   <li class="flex flex-col gap-2">
-                    <span class="text-primary [&>svg]:size-8">
+                    <span class="text-primary text-3xl">
                       {mapped ? (
                         mapped.icon()
                       ) : (
