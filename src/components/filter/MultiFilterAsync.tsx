@@ -1,9 +1,24 @@
-import { Component, createMemo, createSignal, For, Show } from "solid-js";
+import { Component, createMemo, createSignal, For, JSX, Show } from "solid-js";
 import { Combobox, createListCollection } from "@ark-ui/solid/combobox";
 import { Portal } from "solid-js/web";
 import { TbOutlineCheck } from "solid-icons/tb";
 import type { FilterValue } from "~/types/filters";
 import { useTranslate } from "~/i18n/dict";
+
+export function highlightMatch(text: string, query: string): JSX.Element {
+  if (!query) return text;
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return text;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <mark class="bg-primary/20 text-inherit rounded-sm">
+        {text.slice(idx, idx + query.length)}
+      </mark>
+      {text.slice(idx + query.length)}
+    </>
+  );
+}
 
 function toCompositeKey(fv: FilterValue): string {
   return `${fv.type}:${fv.value}`;
@@ -18,6 +33,7 @@ interface MultiFilterAsyncProps {
   loading?: boolean;
   allowSubstr?: boolean;
   getLabel?: (fv: FilterValue) => string;
+  renderOption?: (item: FilterValue, query: string) => JSX.Element;
   onChange?: (val: FilterValue[]) => void;
   onInputChange?: (val: string) => void;
 }
@@ -153,7 +169,9 @@ export const MultiFilterAsync: Component<MultiFilterAsyncProps> = (props) => {
                           {getLabel(option)}"
                         </Show>
                         <Show when={option.type === "exact"}>
-                          {getLabel(option)}
+                          {props.renderOption
+                            ? props.renderOption(option, input())
+                            : highlightMatch(getLabel(option), input())}
                         </Show>
                       </Combobox.ItemText>
                       <Combobox.ItemIndicator class="ark-combobox-item-indicator text-primary">

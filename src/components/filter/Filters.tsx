@@ -4,10 +4,13 @@ import { BooleanFilter } from "./BooleanFilter";
 import { MultiFilter } from "./MultiFilter";
 import { createAsync } from "@solidjs/router";
 import { Filters as FiltersAPI, RelyingParties, IntendedUses } from "~/api";
-import { MultiFilterAsync } from "./MultiFilterAsync";
+import { MultiFilterAsync, highlightMatch } from "./MultiFilterAsync";
 import { useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
 import { createDebouncedFetch } from "~/utils/createDebouncedFetch";
+import { entitlements } from "~/data/entitlements";
+import { claimPathNames } from "~/data/claimPathNames";
+import { getClaimPathIcon } from "~/data/claimPathIcons";
 
 interface FiltersProps {
   filters: UIFilters;
@@ -131,6 +134,26 @@ export const Filters: Component<FiltersProps> = (props) => {
           onInputChange={claimFetch.trigger}
           onChange={handleFilterChange("claim_path")}
           allowSubstr={true}
+          getLabel={(item) => claimPathNames[item.value] ?? item.value}
+          renderOption={(item, query) => {
+            const name = claimPathNames[item.value];
+            const icon = getClaimPathIcon(item.value);
+            return (
+              <span class="flex items-center gap-2">
+                {icon()}
+                {name ? (
+                  <span class="flex flex-col">
+                    <span>{name}</span>
+                    <span class="text-xs opacity-80">
+                      {highlightMatch(item.value, query)}
+                    </span>
+                  </span>
+                ) : (
+                  <span>{highlightMatch(item.value, query)}</span>
+                )}
+              </span>
+            );
+          }}
         />
         <MultiFilterAsync
           label={t.filters.labels.purpose()!}
@@ -153,6 +176,23 @@ export const Filters: Component<FiltersProps> = (props) => {
           onInputChange={entitlementFetch.trigger}
           onChange={handleFilterChange("entitlement")}
           allowSubstr={true}
+          getLabel={(item) => entitlements[item.value]?.name ?? item.value}
+          renderOption={(item, query) => {
+            const ent = entitlements[item.value];
+            return (
+              <span class="flex items-center gap-2">
+                {ent?.icon()}
+                <span class="flex flex-col">
+                  <span>{ent?.name ?? highlightMatch(item.value, query)}</span>
+                  {ent?.name && (
+                    <span class="text-xs opacity-80">
+                      {highlightMatch(item.value, query)}
+                    </span>
+                  )}
+                </span>
+              </span>
+            );
+          }}
         />
         <BooleanFilter
           label={t.filters.labels.is_intermediary()!}

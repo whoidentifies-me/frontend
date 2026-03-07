@@ -3,6 +3,8 @@ import { TbOutlineX } from "solid-icons/tb";
 import type { UIFilters, FilterValue } from "~/types/filters";
 import { useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
+import { entitlements } from "~/data/entitlements";
+import { claimPathNames } from "~/data/claimPathNames";
 
 interface ActiveFiltersProps {
   filters: UIFilters;
@@ -46,7 +48,8 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
   const addFilterValueFilter = (
     badges: FilterBadge[],
     key: keyof UIFilters,
-    values: FilterValue[] | null | undefined
+    values: FilterValue[] | null | undefined,
+    labelTransform?: (val: string) => string
   ) => {
     if (!values || values.length === 0) return;
 
@@ -55,7 +58,9 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
       const displayLabel =
         fv.type === "like"
           ? `${filterLabel || key} contains "${fv.value}"`
-          : fv.value;
+          : labelTransform
+            ? labelTransform(fv.value)
+            : fv.value;
       badges.push({
         key,
         label: displayLabel,
@@ -87,7 +92,12 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
     const { filters } = props;
 
     // Match the order from Filters.tsx
-    addFilterValueFilter(badges, "claim_path", filters.claim_path);
+    addFilterValueFilter(
+      badges,
+      "claim_path",
+      filters.claim_path,
+      (val) => claimPathNames[val] ?? val
+    );
     addFilterValueFilter(badges, "purpose", filters.purpose);
     addStringArrayFilter(
       badges,
@@ -98,7 +108,12 @@ export const ActiveFilters: Component<ActiveFiltersProps> = (props) => {
     );
     addFilterValueFilter(badges, "trade_name", filters.trade_name);
     addBooleanFilter(badges, "is_psb", filters.is_psb, t.filters.values.is_psb);
-    addFilterValueFilter(badges, "entitlement", filters.entitlement);
+    addFilterValueFilter(
+      badges,
+      "entitlement",
+      filters.entitlement,
+      (val) => entitlements[val]?.name ?? val
+    );
     addBooleanFilter(
       badges,
       "is_intermediary",
