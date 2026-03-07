@@ -50,14 +50,14 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
 
       <button
         type="submit"
-        class="col-start-2 row-start-2 sm:col-start-3 sm:row-start-1 justify-self-end btn btn-primary"
+        class="col-start-2 row-start-2 sm:col-start-3 sm:row-start-1 justify-self-stretch btn btn-primary"
         onClick={onSearchSubmit}
       >
         {t.components.searchAndFilter.search()}
       </button>
 
       <button
-        class="col-start-1 row-start-2 sm:col-start-2 sm:row-start-1 btn btn-circle btn-primary sm:ml-1.5"
+        class="col-start-1 row-start-2 sm:col-start-2 sm:row-start-1 btn sm:btn-circle justify-self-stretch btn-primary sm:ml-1.5"
         onClick={onFiltersClick}
         aria-expanded={props["aria-expanded"]}
         aria-controls={props["aria-controls"]}
