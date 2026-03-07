@@ -3,6 +3,8 @@ import { IntendedUse } from "~/api";
 import { TbOutlineInfoCircle } from "solid-icons/tb";
 import { getLocalizeText } from "~/utils/relyingPartyAttributes";
 import { useI18n } from "~/i18n/dict";
+import { claimPathNames } from "~/data/claimPathNames";
+import { getClaimPathIcon } from "~/data/claimPathIcons";
 
 interface IntendedUseDetailsProps {
   data?: IntendedUse;
@@ -39,14 +41,24 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
 
             <ul class="mt-6 list-none grid gap-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
               <For each={credentials()}>
-                {(item) => (
-                  <li class="flex flex-col gap-2">
-                    <TbOutlineInfoCircle size="2rem" class="text-primary" />
-                    <span class="font-semibold font-mono text-sm">
-                      {item?.path}
-                    </span>
-                  </li>
-                )}
+                {(item) => {
+                  const path = item?.path ?? "";
+                  const name = claimPathNames[path];
+                  const icon = getClaimPathIcon(path);
+                  return (
+                    <li class="flex flex-col gap-2">
+                      <span class="text-primary [&>svg]:size-8">
+                        {icon() || <TbOutlineInfoCircle size="2rem" />}
+                      </span>
+                      <span class="font-semibold text-sm">{name ?? path}</span>
+                      {name && (
+                        <span class="text-xs text-base-content/50 font-mono break-all">
+                          {path}
+                        </span>
+                      )}
+                    </li>
+                  );
+                }}
               </For>
             </ul>
           </div>
