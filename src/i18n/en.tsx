@@ -49,6 +49,45 @@ export const en = {
         </>
       ),
     },
+    status: {
+      title: "Status",
+      mapAria:
+        "Map of Europe showing EUDI Wallet implementation status by country",
+      legend: {
+        active: "Active",
+        pending: "Pending",
+        inactive: "Not yet active",
+      },
+      mapAttribution: () => (
+        <>
+          Map data ©{" "}
+          <ExternalLink href="https://simplemaps.com/resources/svg-europe">
+            simplemaps.com
+          </ExternalLink>
+        </>
+      ),
+      description: () => (
+        <>
+          This prototype uses test data, with the exception of Austria.{" "}
+          <ExternalLink href="https://eidas.ec.europa.eu/efda/wallet/lists-of-trusted-entities/registrars-registers">
+            Currently
+          </ExternalLink>
+          , no EU member state has launched their EUDI Wallet ecosystem. We
+          obtained a snapshot of the Austrian eID ecosystem through FOIA
+          requests (
+          <ExternalLink href="https://fragdenstaat.at/anfrage/id-austria-service-provider/">
+            1
+          </ExternalLink>
+          ,&#32;
+          <ExternalLink href="https://fragdenstaat.at/anfrage/id-austria-service-provider-privatwirtschaft/">
+            2
+          </ExternalLink>
+          ). If you have further information, tips, leaks, or are interested in
+          collaborating, we would be glad to{" "}
+          <a href="mailto:team@epicenter.works">hear from you</a>.
+        </>
+      ),
+    },
     howItWorks: {
       title: "How does it work?",
       items: [
