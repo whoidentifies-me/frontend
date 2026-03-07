@@ -2,7 +2,8 @@ import { Component, For } from "solid-js";
 import { RelyingParty } from "~/api";
 import { useTranslate } from "~/i18n/dict";
 import { TwoColumnLayout } from "./layout/TwoColumnLayout";
-import { TbInfoCircle } from "solid-icons/tb";
+import { TbOutlineInfoCircle } from "solid-icons/tb";
+import { entitlements as entitlementMap } from "~/data/entitlements";
 
 export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
   props
@@ -31,12 +32,28 @@ export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
                 </p>
               }
             >
-              {(item) => (
-                <li class="flex flex-col gap-2">
-                  <TbInfoCircle class="text-primary" size="2rem" />
-                  <span class="font-semibold text-sm font-mono">{item}</span>
-                </li>
-              )}
+              {(item) => {
+                const mapped = entitlementMap[item];
+                return (
+                  <li class="flex flex-col gap-2">
+                    <span class="text-primary text-3xl">
+                      {mapped ? (
+                        mapped.icon()
+                      ) : (
+                        <TbOutlineInfoCircle size="2rem" />
+                      )}
+                    </span>
+                    <span class="font-semibold text-sm">
+                      {mapped?.name ?? item}
+                    </span>
+                    {mapped && (
+                      <span class="text-xs text-base-content/50 font-mono break-all">
+                        {item}
+                      </span>
+                    )}
+                  </li>
+                );
+              }}
             </For>
           </ul>
         }

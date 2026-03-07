@@ -3,6 +3,7 @@ import { FAQ } from "~/sections/FAQ";
 import { Newsletter } from "~/sections/Newsletter";
 import { Explore } from "~/sections/Explore";
 import { Hero } from "~/components/Hero";
+import { Status } from "~/sections/Status";
 
 export default function Home() {
   return (
@@ -16,6 +17,8 @@ export default function Home() {
       <Explore />
 
       <Newsletter />
+
+      <Status />
 
       <FAQ />
     </main>

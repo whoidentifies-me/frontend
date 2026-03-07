@@ -1,4 +1,4 @@
-import { TbFilter, TbSearch } from "solid-icons/tb";
+import { TbOutlineFilter, TbOutlineSearch } from "solid-icons/tb";
 import { Component } from "solid-js";
 import { useTranslate } from "~/i18n/dict";
 
@@ -36,7 +36,7 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
         for={id}
       >
         <span class="sr-only">{t.filters.labels.q()}</span>
-        <TbSearch />
+        <TbOutlineSearch />
         <input
           class="mx-0 grow overflow-ellipsis"
           ref={searchEl}
@@ -50,20 +50,20 @@ export const SearchBar: Component<SearchBarProps> = (props) => {
 
       <button
         type="submit"
-        class="col-start-2 row-start-2 sm:col-start-3 sm:row-start-1 justify-self-end btn btn-primary"
+        class="col-start-2 row-start-2 sm:col-start-3 sm:row-start-1 justify-self-stretch btn btn-primary"
         onClick={onSearchSubmit}
       >
         {t.components.searchAndFilter.search()}
       </button>
 
       <button
-        class="col-start-1 row-start-2 sm:col-start-2 sm:row-start-1 btn btn-circle btn-primary sm:ml-1.5"
+        class="col-start-1 row-start-2 sm:col-start-2 sm:row-start-1 btn sm:btn-circle justify-self-stretch btn-primary sm:ml-1.5"
         onClick={onFiltersClick}
         aria-expanded={props["aria-expanded"]}
         aria-controls={props["aria-controls"]}
         aria-label={`${props["aria-expanded"] ? "Hide" : "Show"} search filters`}
       >
-        <TbFilter />
+        <TbOutlineFilter />
       </button>
     </div>
   );

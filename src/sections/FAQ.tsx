@@ -8,16 +8,16 @@ export const FAQ: Component = () => {
   const name = "wim-faq-items";
 
   return (
-    <section id="how" class="wim-section">
+    <section id="how" class="wim-section bg-primary text-primary-content">
       <div class="wim-container">
         <TwoColumnLayout
-          largerCol="right"
-          leftContent={
+          largerCol="left"
+          rightContent={
             <div>
               <h2>{t.home.howItWorks.title()}</h2>
             </div>
           }
-          rightContent={
+          leftContent={
             <div class="space-y-4">
               <For each={t.home.howItWorks.items()}>
                 {(item) => (

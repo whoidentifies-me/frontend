@@ -1,6 +1,6 @@
 import { Title } from "@solidjs/meta";
-import { createAsync, useSearchParams } from "@solidjs/router";
-import { ErrorBoundary, For, Suspense } from "solid-js";
+import { createAsync, useLocation, useSearchParams } from "@solidjs/router";
+import { ErrorBoundary, For, onMount, Suspense } from "solid-js";
 import { IntendedUses } from "~/api";
 import { CategoryTabs } from "~/components/CategoryTabs";
 import { ErrorCard } from "~/components/ErrorCard";
@@ -19,6 +19,7 @@ export default function SearchIntendedUses() {
   const t = useTranslate();
   const [searchParams] = useSearchParams<{ q: string }>();
   const { deferredFilters, isPending } = useSearchFilters("intended-uses");
+  const location = useLocation<{ scrollToResults?: boolean }>();
 
   const intendedUsesInitial = createAsync(() =>
     IntendedUses.listIntendedUses(uiFiltersToApiParams(deferredFilters()))
@@ -39,6 +40,14 @@ export default function SearchIntendedUses() {
     }
     return "Search Intended Uses";
   };
+
+  onMount(() => {
+    if (location.state?.scrollToResults) {
+      document
+        .getElementById("results")
+        ?.scrollIntoView({ behavior: "smooth" });
+    }
+  });
 
   return (
     <>

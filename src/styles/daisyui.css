@@ -22,11 +22,11 @@
   --color-neutral-content: oklch(98% 0 0deg);
   --color-info: oklch(71% 0.143 215.221deg);
   --color-info-content: oklch(98% 0.019 200.873deg);
-  --color-success: oklch(72% 0.219 149.579deg);
+  --color-success: #2f6b3f;
   --color-success-content: oklch(98% 0.018 155.826deg);
   --color-warning: oklch(70% 0.213 47.604deg);
   --color-warning-content: oklch(98% 0.016 73.684deg);
-  --color-error: oklch(63% 0.237 25.331deg);
+  --color-error: #a4243b;
   --color-error-content: oklch(97% 0.013 17.38deg);
   --radius-box: 1rem;
   --radius-field: 2rem;

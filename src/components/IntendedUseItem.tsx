@@ -52,11 +52,11 @@ export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
       class="wim-card wim-card-outline-accent flex sm:flex-row flex-col gap-2 items-center"
       aria-labelledby={titleId()}
     >
-      <div class="flex flex-col flex-grow min-w-0">
-        <span class="flex flex-row gap-1 items-center">
-          <RelyingPartyIcon isPSB={isPSB()} class="text-primary/80" />
-          {tradeName()}
-        </span>
+      <div class="flex flex-col flex-grow min-w-0 self-start">
+        <div class="flex flex-row gap-1 items-center">
+          <RelyingPartyIcon isPSB={isPSB()} class="text-primary/80 shrink-0" />
+          <span class="line-clamp-1">{tradeName()}</span>
+        </div>
         <span id={titleId()} class="wim-font-title line-clamp-1">
           {purpose()}
         </span>

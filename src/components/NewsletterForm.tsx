@@ -1,4 +1,4 @@
-import { TbCircleArrowRightFilled } from "solid-icons/tb";
+import { TbFillCircleArrowRight } from "solid-icons/tb";
 import { Component } from "solid-js";
 import { useTranslate } from "~/i18n/dict";
 import { newsletterConfig } from "~/config/newsletter";
@@ -48,7 +48,7 @@ export const NewsletterForm: Component = () => {
 
         <button type="submit" class="btn btn-sm btn-primary btn-outline pe-1">
           {t.components.newsletter.subscribeBtn()}
-          <TbCircleArrowRightFilled size="2em" />
+          <TbFillCircleArrowRight size="2em" />
         </button>
       </div>
     </form>
