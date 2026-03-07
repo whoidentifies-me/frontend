@@ -15,14 +15,14 @@ export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
   return (
     <section class="wim-container mt-10">
       <TwoColumnLayout
-        largerCol="right"
-        leftContent={
+        largerCol="last"
+        firstContent={
           <>
             <h2>{t.relyingPartyDetails.entitlements.title()}</h2>
             <p>{t.relyingPartyDetails.entitlements.description()}</p>
           </>
         }
-        rightContent={
+        lastContent={
           <ul class="grid sm:grid-cols-2 grid-cols-1 gap-6 list-none">
             <For
               each={entitlements()}

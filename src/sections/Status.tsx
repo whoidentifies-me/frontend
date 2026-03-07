@@ -11,15 +11,15 @@ export const Status: Component = () => {
     <section id="status" class="wim-section">
       <TwoColumnLayout
         class="wim-container"
-        largerCol="right"
-        rightColumnClass="flex flex-col justify-center items-center"
-        leftContent={
+        largerCol="last"
+        lastColumnClass="flex flex-col justify-center items-center"
+        firstContent={
           <>
             <h2>{t.home.status.title()}</h2>
             <p class="mb-0">{t.home.status.description()}</p>
           </>
         }
-        rightContent={
+        lastContent={
           <EuropeMap
             class="max-w-md"
             ariaLabel={t.home.status.mapAria()}
@@ -56,7 +56,7 @@ export const Status: Component = () => {
         }
       ></TwoColumnLayout>
 
-      <div class="wim-container mt-8 flex flex-col items-center justify-center">
+      <div class="wim-container sm:mt-8 flex flex-col items-center justify-center">
         <StatusTimeline class="wim-container mt-8" />
       </div>
     </section>

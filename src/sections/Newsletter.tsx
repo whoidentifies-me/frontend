@@ -12,16 +12,17 @@ export const Newsletter: Component = () => {
       class="wim-section bg-primary text-primary-content"
     >
       <TwoColumnLayout
+        reverseDesktop
         class="wim-container"
-        largerCol="left"
-        leftColumnClass="flex flex-col justify-center"
-        leftContent={<NewsletterForm />}
-        rightContent={
+        largerCol="last"
+        firstContent={
           <>
             <h2>{t.home.newsletter.title()}</h2>
             <p class="mb-0">{t.home.newsletter.description()}</p>
           </>
         }
+        lastContent={<NewsletterForm />}
+        lastColumnClass="flex flex-col justify-center"
       ></TwoColumnLayout>
     </section>
   );

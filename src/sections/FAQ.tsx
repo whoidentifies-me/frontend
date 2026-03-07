@@ -11,13 +11,14 @@ export const FAQ: Component = () => {
     <section id="how" class="wim-section bg-primary text-primary-content">
       <div class="wim-container">
         <TwoColumnLayout
-          largerCol="left"
-          rightContent={
+          reverseDesktop
+          largerCol="last"
+          firstContent={
             <div>
               <h2>{t.home.howItWorks.title()}</h2>
             </div>
           }
-          leftContent={
+          lastContent={
             <div class="space-y-4">
               <For each={t.home.howItWorks.items()}>
                 {(item) => (
