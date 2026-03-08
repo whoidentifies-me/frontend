@@ -37,6 +37,7 @@ export const IntendedUseDetailsList: Component<IntendedUseDetailsListProps> = (
               data={featured()}
               title={t.relyingPartyDetails.intendedUses.useCaseX(1)}
               highlighted
+              scrollTo
             />
           )}
         </Show>
@@ -53,7 +54,7 @@ export const IntendedUseDetailsList: Component<IntendedUseDetailsListProps> = (
             fallback={
               <Show when={!props.featuredUse}>
                 <p class="text-base-content/75">
-                  <em>There are no use cases reportet at the moment.</em>
+                  <em>There are no use cases reported at the moment.</em>
                 </p>
               </Show>
             }

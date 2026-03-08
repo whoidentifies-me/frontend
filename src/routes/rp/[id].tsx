@@ -1,9 +1,10 @@
+import { Title } from "@solidjs/meta";
 import { createAsync, useParams, useSearchParams } from "@solidjs/router";
 import { ErrorBoundary, Suspense } from "solid-js";
 import { RelyingParties, IntendedUses } from "~/api";
 import { DetailSkeleton } from "~/components/DetailSkeleton";
 import { ErrorCard } from "~/components/ErrorCard";
-import { RelyingPartyDescription } from "~/components/RelyingPartyDescription";
+import { RelyingPartyContact } from "~/components/RelyingPartyContact";
 import { RelyingPartyEntitlements } from "~/components/RelyingPartyEntitlements";
 import { RelyingPartyHeader } from "~/components/RelyingPartyHeader";
 import { IntendedUseDetailsList } from "~/components/IntendedUseDetailsList";
@@ -42,9 +43,12 @@ export default function RelyingParty() {
       )}
     >
       <Suspense fallback={<DetailSkeleton />}>
+        <Title>
+          {relyingParty()?.trade_name ?? "Details"} — Who identifies me?
+        </Title>
         <div class="space-y-14">
           <RelyingPartyHeader data={relyingParty()} />
-          <RelyingPartyDescription data={relyingParty()} />
+          <RelyingPartyContact data={relyingParty()} />
           <RelyingPartyEntitlements data={relyingParty()} />
           <ErrorBoundary fallback={<ErrorCard />}>
             <Suspense fallback={<SkeletonList />}>

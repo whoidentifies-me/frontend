@@ -1,4 +1,4 @@
-import { Component, createEffect, createMemo, For } from "solid-js";
+import { Component, createEffect, createMemo, For, Show } from "solid-js";
 import { IntendedUse } from "~/api";
 import { TbOutlineInfoCircle } from "solid-icons/tb";
 import { getLocalizeText } from "~/utils/relyingPartyAttributes";
@@ -10,6 +10,7 @@ interface IntendedUseDetailsProps {
   data?: IntendedUse;
   title?: string;
   highlighted?: boolean;
+  scrollTo?: boolean;
 }
 
 export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
@@ -36,7 +37,11 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
   createEffect(() => {
     if (props.highlighted) {
       detailsRef.open = true;
-      sectionRef.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    if (props.scrollTo) {
+      requestAnimationFrame(() => {
+        sectionRef.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
     }
   });
 
@@ -52,23 +57,35 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
         <div class="collapse-content">
           <For each={purposes()}>{(item) => <p class="">{item}</p>}</For>
 
-          <ul class="mt-6 list-none grid gap-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
+          <h4 class="mt-6">Requested Attributes:</h4>
+          <ul class="mt-6 list-none grid gap-y-8 gap-x-5 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
             <For each={credentials()}>
               {(item) => {
                 const path = item?.path ?? "";
                 const name = claimPathNames[path];
                 const icon = getClaimPathIcon(path);
                 return (
-                  <li class="flex flex-col gap-2">
+                  <li class="flex flex-row items-center gap-2">
                     <span class="text-primary text-3xl">
-                      {icon() || <TbOutlineInfoCircle size="2rem" />}
+                      {icon() || <TbOutlineInfoCircle />}
                     </span>
-                    <span class="font-semibold text-sm">{name ?? path}</span>
-                    {name && (
-                      <span class="text-xs text-base-content/50 font-mono break-all">
-                        {path}
-                      </span>
-                    )}
+                    <div class="flex-col">
+                      <Show
+                        when={name}
+                        fallback={
+                          <span class="font-semibold text-sm line-clamp-2">
+                            {name}
+                          </span>
+                        }
+                      >
+                        <span class="font-semibold text-sm line-clamp-2">
+                          {name}
+                        </span>
+                        <span class="text-xs text-base-content/50 font-mono break-all line-clamp-2">
+                          {path}
+                        </span>
+                      </Show>
+                    </div>
                   </li>
                 );
               }}

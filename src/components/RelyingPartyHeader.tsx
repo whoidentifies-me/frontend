@@ -1,12 +1,13 @@
 import { Component, Show, For, createMemo } from "solid-js";
-import { useNavigate } from "@solidjs/router";
+import { A, useLocation } from "@solidjs/router";
 import { RelyingParty } from "~/api";
+import { routes } from "~/config/routes";
 import { useI18n } from "~/i18n/dict";
 import { TbOutlineArrowLeft } from "solid-icons/tb";
 import { ExternalLink } from "./ExternalLink";
 import {
   getRelyingPartyAttributes,
-  getFirstDescription,
+  getAllDescriptions,
 } from "~/utils/relyingPartyAttributes";
 
 interface RelyingPartyHeaderProps {
@@ -17,28 +18,27 @@ export const RelyingPartyHeader: Component<RelyingPartyHeaderProps> = (
   props
 ) => {
   const { locale, t } = useI18n();
-  const navigate = useNavigate();
+  const location = useLocation();
+  const backUrl = () =>
+    (location.state as { backUrl?: string } | undefined)?.backUrl ||
+    routes.search.index;
 
   const attributes = createMemo(() => getRelyingPartyAttributes(props.data, t));
 
-  const description = createMemo(() =>
-    getFirstDescription(props.data?.service_descriptions || undefined, locale())
+  const descriptions = createMemo(() =>
+    getAllDescriptions(props.data?.service_descriptions || undefined, locale())
   );
-
-  const handleBack = () => {
-    navigate(-1);
-  };
 
   return (
     <div class="wim-container pb-6 pt-2! md:py-2! bx-8! wim-card wim-card-lg bg-primary text-primary-content grid gap-x-4 gap-y-2 md:grid-rows-[1fr_auto_1fr] md:grid-cols-[1fr_auto] grid-rows-[1fr_auto] grid-cols-1">
       <p class="m-0  row-start-1">
-        <button
+        <A
           class="px-0 btn btn-link btn-primary text-primary-content no-underline"
-          onClick={handleBack}
+          href={backUrl()}
         >
           <TbOutlineArrowLeft />
           {t.relyingPartyDetails.backToResults()}
-        </button>
+        </A>
       </p>
 
       <div class="row-start-2 col-start-1">
@@ -46,16 +46,16 @@ export const RelyingPartyHeader: Component<RelyingPartyHeaderProps> = (
           {props.data?.trade_name}
         </h1>
         <Show when={attributes().length > 0}>
-          <div class="wim-attributes font-semibold">
+          <div class="wim-attributes font-semibold mb-2">
             <For each={attributes()}>
               {(attribute) => <span class="">{attribute}</span>}
             </For>
           </div>
         </Show>
-        <Show when={description()}>
-          <p class="mt-2 mb-0 text-sm opacity-90 line-clamp-2">
-            {description()}
-          </p>
+        <Show when={descriptions()?.length}>
+          <For each={descriptions()}>
+            {(description) => <p class="mt-2 mb-0 text-sm">{description}</p>}
+          </For>
         </Show>
       </div>
 

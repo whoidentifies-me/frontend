@@ -3,11 +3,13 @@ import { IntendedUse } from "~/api";
 import { defaultLocale, useI18n } from "~/i18n/dict";
 import { getRelyingPartyAttributes } from "~/utils/relyingPartyAttributes";
 import { routes } from "~/config/routes";
-import { A } from "@solidjs/router";
+import { A, useLocation } from "@solidjs/router";
 import { RelyingPartyIcon } from "./RelyingPartyIcon";
 
 export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
   const { locale, t } = useI18n();
+  const location = useLocation();
+  const backUrl = () => location.pathname + location.search;
   const titleId = () => `wim-item-title-${props.data.id}`;
 
   const purpose = createMemo((): string => {
@@ -71,6 +73,7 @@ export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
       <A
         class="btn btn-primary btn-outline no-underline shrink-0"
         href={href()}
+        state={{ backUrl: backUrl() }}
       >
         {t.components.generic.details()}
       </A>

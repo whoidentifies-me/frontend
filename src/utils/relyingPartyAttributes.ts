@@ -19,6 +19,10 @@ export function getRelyingPartyAttributes(
     attributes.push(t.relyingParties.nonPublic() || "");
   }
 
+  if (data.is_intermediary === true) {
+    attributes.push(t.relyingParties.intermediary() || "");
+  }
+
   // Add country
   const country =
     t.countries[data.legal_entity?.country as CountryCode]?.() ||
