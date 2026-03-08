@@ -3,7 +3,7 @@ import { ExternalLink } from "~/components/ExternalLink";
 
 export const Footer: Component = () => {
   return (
-    <footer class="bg-primary text-primary-content text-sm py-6">
+    <footer class="bg-primary text-primary-content text-sm py-6 border-t-2 border-t-base-100">
       <div class="wim-container flex justify-between md:flex-row flex-col">
         <p class="text-center">
           This is an open source{" "}

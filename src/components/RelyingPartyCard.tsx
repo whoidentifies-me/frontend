@@ -10,6 +10,7 @@ export interface RelyingPartyCardProps {
   attributes: string[];
   description?: string;
   href: string;
+  linkState?: Record<string, unknown>;
 }
 
 export const RelyingPartyCard: Component<RelyingPartyCardProps> = (props) => {
@@ -47,6 +48,7 @@ export const RelyingPartyCard: Component<RelyingPartyCardProps> = (props) => {
       <A
         class="btn btn-primary btn-outline no-underline shrink-0"
         href={props.href}
+        state={props.linkState}
       >
         {t.components.generic.details()}
       </A>

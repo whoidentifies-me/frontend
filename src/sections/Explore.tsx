@@ -19,15 +19,15 @@ export const Explore: Component = () => {
     <section id="explore" class="wim-section">
       <TwoColumnLayout
         class="wim-container"
-        largerCol="right"
-        leftContent={
+        largerCol="last"
+        firstContent={
           <>
             <h2>{t.home.explore.title()}</h2>
             {t.home.explore.description()}
           </>
         }
-        rightColumnClass="flex flex-col gap-3 justify-center"
-        rightContent={
+        lastColumnClass="flex flex-col gap-3 justify-center"
+        lastContent={
           <ErrorBoundary fallback={() => <ErrorCard />}>
             <Suspense fallback={<SkeletonList count={3} />}>
               <For each={exploreItems()?.data || []}>

@@ -7,6 +7,7 @@ interface InfiniteListParams {
   isLoading?: boolean;
   hasMore?: boolean;
   rootMargin?: string; // triggers before reaching the end of the list
+  hideEnd?: boolean; // hide the message that is like "You have reached the end of the list"
 }
 
 export const InfiniteList: ParentComponent<InfiniteListParams> = (props) => {
@@ -65,7 +66,7 @@ export const InfiniteList: ParentComponent<InfiniteListParams> = (props) => {
           </button>
         </div>
       </Show>
-      <Show when={!props.hasMore}>
+      <Show when={!props.hasMore && !props.hideEnd}>
         <div class="text-center my-4">You reached the end of the List</div>
       </Show>
       <Show when={props.isLoading}>

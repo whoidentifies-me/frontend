@@ -10,6 +10,7 @@ import { JSX } from "solid-js";
 
 export interface Entitlement {
   name: string;
+  url?: string;
   icon: () => JSX.Element;
 }
 

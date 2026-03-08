@@ -1,3 +1,4 @@
+import { useLocation } from "@solidjs/router";
 import { Component, createMemo } from "solid-js";
 import { RelyingParty } from "~/api";
 import { useI18n } from "~/i18n/dict";
@@ -10,6 +11,8 @@ import { routes } from "~/config/routes";
 
 export const RelyingPartyItem: Component<{ data: RelyingParty }> = (props) => {
   const { locale, t } = useI18n();
+  const location = useLocation();
+  const backUrl = () => location.pathname + location.search;
   const titleId = () => `wim-item-title-${props.data.id}`;
 
   const attributes = createMemo(() => getRelyingPartyAttributes(props.data, t));
@@ -26,6 +29,7 @@ export const RelyingPartyItem: Component<{ data: RelyingParty }> = (props) => {
       description={description() || undefined}
       isPSB={props.data.is_psb}
       href={routes.rp(props.data.id)}
+      linkState={{ backUrl: backUrl() }}
     />
   );
 };
