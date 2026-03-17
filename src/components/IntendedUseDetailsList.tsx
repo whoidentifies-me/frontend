@@ -24,7 +24,7 @@ export const IntendedUseDetailsList: Component<IntendedUseDetailsListProps> = (
       : props.items();
 
   return (
-    <div class="mb-14">
+    <div class="">
       <div class="wim-container">
         <h2>{t.relyingPartyDetails.intendedUses.title()}</h2>
         <p>{t.relyingPartyDetails.intendedUses.description()}</p>
@@ -33,12 +33,7 @@ export const IntendedUseDetailsList: Component<IntendedUseDetailsListProps> = (
       <div class="space-y-8 wim-container">
         <Show when={props.featuredUse}>
           {(featured) => (
-            <IntendedUseDetails
-              data={featured()}
-              title={t.relyingPartyDetails.intendedUses.useCaseX(1)}
-              highlighted
-              scrollTo
-            />
+            <IntendedUseDetails data={featured()} highlighted scrollTo />
           )}
         </Show>
 
@@ -59,16 +54,8 @@ export const IntendedUseDetailsList: Component<IntendedUseDetailsListProps> = (
               </Show>
             }
           >
-            {(item, index) => {
-              const offset = props.featuredUse ? 2 : 1;
-              return (
-                <IntendedUseDetails
-                  data={item}
-                  title={t.relyingPartyDetails.intendedUses.useCaseX(
-                    index() + offset
-                  )}
-                />
-              );
+            {(item) => {
+              return <IntendedUseDetails data={item} />;
             }}
           </For>
         </InfiniteList>

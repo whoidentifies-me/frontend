@@ -11,6 +11,7 @@ import { createDebouncedFetch } from "~/utils/createDebouncedFetch";
 import { entitlements } from "~/data/entitlements";
 import { claimPathNames } from "~/data/claimPathNames";
 import { getClaimPathIcon } from "~/data/claimPathIcons";
+import { CountryFlag } from "~/components/CountryFlag";
 
 interface FiltersProps {
   filters: UIFilters;
@@ -103,6 +104,12 @@ export const Filters: Component<FiltersProps> = (props) => {
           values={props.filters.country || undefined}
           onChange={handleFilterChange("country")}
           options={countryOptions()}
+          renderOption={(option) => (
+            <span class="flex items-center gap-2">
+              <CountryFlag code={option.value} />
+              <span>{option.label}</span>
+            </span>
+          )}
         />
         <MultiFilterAsync
           label={t.filters.labels.trade_name()!}

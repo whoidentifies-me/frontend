@@ -1,10 +1,10 @@
-import { Component, createMemo, createSignal, For, Show } from "solid-js";
+import { Component, createMemo, createSignal, For, JSX, Show } from "solid-js";
 import { Combobox, createListCollection } from "@ark-ui/solid/combobox";
 import { Portal } from "solid-js/web";
 import { TbOutlineCheck } from "solid-icons/tb";
 import { useTranslate } from "~/i18n/dict";
 
-interface MultiFilterOption {
+export interface MultiFilterOption {
   value: string;
   label: string;
 }
@@ -16,6 +16,7 @@ interface MultiFilterProps {
   values?: string | string[];
   placeholder?: string;
   onChange?: (val: string[]) => void;
+  renderOption?: (option: MultiFilterOption) => JSX.Element;
 }
 
 const REOPEN_GUARD_MS = 350;
@@ -99,7 +100,11 @@ export const MultiFilter: Component<MultiFilterProps> = (props) => {
                 <For each={filteredOptions()}>
                   {(option) => (
                     <Combobox.Item item={option} class="ark-combobox-item">
-                      <Combobox.ItemText>{option.label}</Combobox.ItemText>
+                      <Combobox.ItemText>
+                        {props.renderOption
+                          ? props.renderOption(option)
+                          : option.label}
+                      </Combobox.ItemText>
                       <Combobox.ItemIndicator class="ark-combobox-item-indicator">
                         <TbOutlineCheck />
                       </Combobox.ItemIndicator>

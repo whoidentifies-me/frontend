@@ -52,7 +52,14 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
         class="wim-card-outline collapse border shadow-md collapse-plus bg-secondary text-secondary-content !rounded-4xl px-4 py-2"
       >
         <summary class="collapse-title">
-          <h3 class="my-0">{props.title}</h3>
+          <h3 class="my-0 line-clamp-1">
+            <Show
+              when={props.title}
+              fallback={purposes()?.length ? purposes()[0] : "Intended Use"}
+            >
+              {props.title}
+            </Show>
+          </h3>
         </summary>
         <div class="collapse-content">
           <For each={purposes()}>{(item) => <p class="">{item}</p>}</For>

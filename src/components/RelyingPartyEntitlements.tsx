@@ -4,7 +4,6 @@ import { useTranslate } from "~/i18n/dict";
 import { TwoColumnLayout } from "./layout/TwoColumnLayout";
 import { TbOutlineInfoCircle } from "solid-icons/tb";
 import { entitlements as entitlementMap } from "~/data/entitlements";
-import { ExternalLink } from "./ExternalLink";
 
 export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
   props
@@ -52,25 +51,15 @@ export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
                           </span>
                         }
                       >
-                        <Show
-                          when={mapped.url}
-                          fallback={
-                            <span class="font-semibold text-sm line-clamp-2">
-                              {mapped?.name}
-                            </span>
-                          }
-                        >
-                          <ExternalLink
-                            class="font-semibold text-sm line-clamp-2"
-                            href={mapped.url}
+                        <div class="tooltip" data-tip={item}>
+                          <span
+                            class="font-semibold line-clamp-2 cursor-pointer"
+                            tabindex="0"
                           >
                             {mapped?.name}
-                          </ExternalLink>
-                        </Show>
+                          </span>
+                        </div>
                       </Show>
-                      <span class="text-xs text-base-content/50 font-mono break-all line-clamp-2">
-                        {item}
-                      </span>
                     </div>
                   </li>
                 );
