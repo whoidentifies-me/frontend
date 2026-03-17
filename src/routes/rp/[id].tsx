@@ -8,8 +8,10 @@ import { RelyingPartyContact } from "~/components/RelyingPartyContact";
 import { RelyingPartyEntitlements } from "~/components/RelyingPartyEntitlements";
 import { RelyingPartyHeader } from "~/components/RelyingPartyHeader";
 import { IntendedUseDetailsList } from "~/components/IntendedUseDetailsList";
+import { SupervisoryAuthority } from "~/components/SupervisoryAuthority";
 import { SkeletonList } from "~/components/SkeletonList";
 import { createInfiniteScroll } from "~/utils/createInfiniteScroll";
+import { For } from "solid-js";
 
 export default function RelyingParty() {
   const params = useParams<{ id: string }>();
@@ -34,6 +36,13 @@ export default function RelyingParty() {
       IntendedUses.listIntendedUses({ wrp_id: params.id, cursor }),
   });
 
+  const commingSoonButtons = () => [
+    "IPFS",
+    "Report to Regulator",
+    "Public Registry",
+    "Versions",
+  ];
+
   return (
     <ErrorBoundary
       fallback={() => (
@@ -46,7 +55,7 @@ export default function RelyingParty() {
         <Title>
           {relyingParty()?.trade_name ?? "Details"} — Who identifies me?
         </Title>
-        <div class="space-y-14">
+        <div class="space-y-14 mb-14">
           <RelyingPartyHeader data={relyingParty()} />
           <RelyingPartyContact data={relyingParty()} />
           <RelyingPartyEntitlements data={relyingParty()} />
@@ -62,6 +71,22 @@ export default function RelyingParty() {
               />
             </Suspense>
           </ErrorBoundary>
+
+          <SupervisoryAuthority data={relyingParty()} />
+
+          <div class="wim-container grid grid-cols-2 md:grid-cols-4 gap-4">
+            <For each={commingSoonButtons()}>
+              {(item) => (
+                <button
+                  disabled
+                  class="btn !btn-primary !bg-primary"
+                  title="Coming soon"
+                >
+                  {item}
+                </button>
+              )}
+            </For>
+          </div>
         </div>
       </Suspense>
     </ErrorBoundary>

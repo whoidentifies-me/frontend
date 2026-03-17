@@ -7,6 +7,7 @@ export interface RelyingPartyCardProps {
   id: string;
   title: string;
   isPSB?: boolean;
+  providerType?: string;
   attributes: string[];
   description?: string;
   href: string;
@@ -25,6 +26,7 @@ export const RelyingPartyCard: Component<RelyingPartyCardProps> = (props) => {
         <div class="flex flex-row items-center gap-2">
           <RelyingPartyIcon
             isPSB={props.isPSB}
+            providerType={props.providerType}
             class="text-primary/80 text-3xl"
           />
           <div>

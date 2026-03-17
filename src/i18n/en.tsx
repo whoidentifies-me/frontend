@@ -207,6 +207,14 @@ export const en = {
     public: "Public Sector",
     nonPublic: "Company",
     intermediary: "Intermediary",
+    providerTypes: {
+      WRPRegistrar: "Relying Party Register",
+      WalletProvider: "Wallet Provider",
+      PIDProvider: "Identity Provider",
+      PubEEAProvider: "Public Attribute Provider",
+      WRPAccCertProvider: "Access Certificate Provider",
+      WalletRelyingParty: "Service Provider",
+    },
   },
   countries: {
     AT: "Austria",
@@ -295,7 +303,16 @@ export const en = {
     intendedUses: {
       title: "Use Cases",
       description: undefined,
+      policies: "Policies",
       useCaseX: (number: number) => `Use Case ${number}`,
+    },
+    supervisoryAuthority: {
+      title: "Responsible Regulator",
+      country: "Country",
+      postalAddress: "Postal Address",
+      email: "Email",
+      phone: "Phone",
+      infoUri: "Info",
     },
   },
   components: {

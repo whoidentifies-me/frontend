@@ -28,6 +28,7 @@ export const RelyingPartyItem: Component<{ data: RelyingParty }> = (props) => {
       attributes={attributes()}
       description={description() || undefined}
       isPSB={props.data.is_psb}
+      providerType={props.data.provider_type}
       href={routes.rp(props.data.id)}
       linkState={{ backUrl: backUrl() }}
     />
