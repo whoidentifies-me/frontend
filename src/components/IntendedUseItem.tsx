@@ -56,7 +56,11 @@ export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
     >
       <div class="flex flex-col flex-grow min-w-0 self-start">
         <div class="flex flex-row gap-1 items-center">
-          <RelyingPartyIcon isPSB={isPSB()} class="text-primary/80 shrink-0" />
+          <RelyingPartyIcon
+            isPSB={isPSB()}
+            providerType={props.data.relying_party?.provider_type}
+            class="text-primary/80 shrink-0"
+          />
           <span class="line-clamp-1">{tradeName()}</span>
         </div>
         <span id={titleId()} class="wim-font-title line-clamp-1">

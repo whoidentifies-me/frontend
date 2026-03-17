@@ -8,6 +8,7 @@ import { RelyingPartyContact } from "~/components/RelyingPartyContact";
 import { RelyingPartyEntitlements } from "~/components/RelyingPartyEntitlements";
 import { RelyingPartyHeader } from "~/components/RelyingPartyHeader";
 import { IntendedUseDetailsList } from "~/components/IntendedUseDetailsList";
+import { SupervisoryAuthority } from "~/components/SupervisoryAuthority";
 import { SkeletonList } from "~/components/SkeletonList";
 import { createInfiniteScroll } from "~/utils/createInfiniteScroll";
 import { For } from "solid-js";
@@ -70,6 +71,8 @@ export default function RelyingParty() {
               />
             </Suspense>
           </ErrorBoundary>
+
+          <SupervisoryAuthority data={relyingParty()} />
 
           <div class="wim-container grid grid-cols-2 md:grid-cols-4 gap-4">
             <For each={commingSoonButtons()}>

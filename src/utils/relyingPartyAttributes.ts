@@ -12,8 +12,16 @@ export function getRelyingPartyAttributes(
 
   const attributes: string[] = [];
 
-  // Only add public/private if is_psb is explicitly defined
-  if (data.is_psb === true) {
+  // Use provider_type translation if available, otherwise fall back to is_psb
+  const providerTypeLabel =
+    data.provider_type &&
+    t.relyingParties.providerTypes[
+      data.provider_type as keyof typeof t.relyingParties.providerTypes
+    ]?.();
+
+  if (providerTypeLabel) {
+    attributes.push(providerTypeLabel);
+  } else if (data.is_psb === true) {
     attributes.push(t.relyingParties.public() || "");
   } else if (data.is_psb === false) {
     attributes.push(t.relyingParties.nonPublic() || "");
