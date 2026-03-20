@@ -56,7 +56,11 @@ export const RelyingPartyHeader: Component<RelyingPartyHeaderProps> = (
         <Show when={attributes().length > 0}>
           <div class="wim-attributes font-semibold mb-2">
             <For each={attributes()}>
-              {(attribute) => <span class="">{attribute}</span>}
+              {(attribute) => (
+                <span class="">
+                  {typeof attribute === "function" ? attribute() : attribute}
+                </span>
+              )}
             </For>
           </div>
         </Show>

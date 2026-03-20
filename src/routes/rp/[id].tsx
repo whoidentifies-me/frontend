@@ -59,8 +59,8 @@ export default function RelyingParty() {
           <RelyingPartyHeader data={relyingParty()} />
           <RelyingPartyContact data={relyingParty()} />
           <RelyingPartyEntitlements data={relyingParty()} />
-          <ErrorBoundary fallback={<ErrorCard />}>
-            <Suspense fallback={<SkeletonList />}>
+          <ErrorBoundary fallback={<ErrorCard class="wim-container" />}>
+            <Suspense fallback={<SkeletonList class="wim-container" />}>
               <IntendedUseDetailsList
                 relyingParty={relyingParty()}
                 featuredUse={featuredUse()}

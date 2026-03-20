@@ -10,6 +10,7 @@ import {
   TbOutlineMapPin,
   TbOutlineFlag,
 } from "solid-icons/tb";
+import { CountryFlag } from "./CountryFlag";
 
 export const SupervisoryAuthority: Component<{ data?: RelyingParty }> = (
   props
@@ -84,7 +85,9 @@ export const SupervisoryAuthority: Component<{ data?: RelyingParty }> = (
                     <TbOutlineFlag class="text-lg text-primary" />
                     {t.relyingPartyDetails.supervisoryAuthority.country()}
                   </h3>
-                  <p>{country()}</p>
+                  <p class="flex items-center gap-2">
+                    <CountryFlag code={authority()?.country} /> {country()}
+                  </p>
                 </div>
               </Show>
               <Show when={postalAddress()}>

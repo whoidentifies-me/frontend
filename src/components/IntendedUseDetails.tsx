@@ -1,6 +1,11 @@
 import { Component, createEffect, createMemo, For, Show } from "solid-js";
 import { IntendedUse } from "~/api";
-import { TbOutlineInfoCircle, TbOutlineLink } from "solid-icons/tb";
+import {
+  TbOutlineInfoCircle,
+  TbOutlineLink,
+  TbOutlineCalendar,
+  TbOutlineBan,
+} from "solid-icons/tb";
 import { getLocalizeText } from "~/utils/relyingPartyAttributes";
 import { useI18n } from "~/i18n/dict";
 import { claimPathNames } from "~/data/claimPathNames";
@@ -143,6 +148,30 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
               </For>
             </ul>
           </Show>
+
+          <div class="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+            <div>
+              <Show when={props.data?.created_at}>
+                <span class="flex items-center gap-1 font-semibold">
+                  <TbOutlineCalendar class="text-primary text-xl -translate-y-[0.5px]" />
+                  Created:{" "}
+                  {new Date(props.data!.created_at!).toLocaleDateString()}
+                </span>
+              </Show>
+            </div>
+
+            <div>
+              <Show when={(props.data as any)?.revoked_at}>
+                <span class="flex items-center gap-1 font-semibold">
+                  <TbOutlineBan class="text-primary text-xl -translate-y-[0.5px]" />
+                  Revoked:{" "}
+                  {new Date(
+                    (props.data as any).revoked_at
+                  ).toLocaleDateString()}
+                </span>
+              </Show>
+            </div>
+          </div>
         </div>
       </details>
     </section>

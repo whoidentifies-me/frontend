@@ -7,7 +7,7 @@ export default defineConfig({
       mode: "tags-split",
       target: "src/api/generated/index.ts",
       client: "solid-start",
-      baseUrl: process.env.VITE_API_URL || "http://localhost:8080",
+      baseUrl: process.env.VITE_API_URL || "",
       mock: false,
       clean: true,
       prettier: true,

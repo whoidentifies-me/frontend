@@ -1,10 +1,11 @@
-import { Component, createMemo, For, Show } from "solid-js";
+import { Component, createMemo } from "solid-js";
 import { IntendedUse } from "~/api";
 import { defaultLocale, useI18n } from "~/i18n/dict";
 import { getRelyingPartyAttributes } from "~/utils/relyingPartyAttributes";
 import { routes } from "~/config/routes";
 import { A, useLocation } from "@solidjs/router";
 import { RelyingPartyIcon } from "./RelyingPartyIcon";
+import { InlineList } from "./ui/InlineList";
 
 export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
   const { locale, t } = useI18n();
@@ -37,7 +38,7 @@ export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
     return "";
   });
 
-  const attributes = createMemo((): string[] => {
+  const attributes = createMemo(() => {
     return getRelyingPartyAttributes(props.data.relying_party, t).filter(
       (a) => !!a
     );
@@ -66,13 +67,7 @@ export const IntendedUseItem: Component<{ data: IntendedUse }> = (props) => {
         <span id={titleId()} class="wim-font-title line-clamp-1">
           {purpose()}
         </span>
-        <Show when={attributes().length > 0}>
-          <p class="wim-attributes my-0 text-accent/80 line-clamp-1">
-            <For each={attributes()}>
-              {(item) => <span class="">{item}</span>}
-            </For>
-          </p>
-        </Show>
+        <InlineList items={attributes()} />
       </div>
       <A
         class="btn btn-primary btn-outline no-underline shrink-0"
