@@ -3,7 +3,7 @@ import type { FilterValue, UIFilters } from "~/types/filters";
 import { BooleanFilter } from "./BooleanFilter";
 import { MultiFilter } from "./MultiFilter";
 import { createAsync } from "@solidjs/router";
-import { Filters as FiltersAPI, RelyingParties, IntendedUses } from "~/api";
+import { Filtering, RelyingParties, IntendedUses } from "~/api";
 import { MultiFilterAsync, highlightMatch } from "./MultiFilterAsync";
 import { useTranslate } from "~/i18n/dict";
 import { CountryCode } from "~/i18n/en";
@@ -26,7 +26,7 @@ export const Filters: Component<FiltersProps> = (props) => {
   };
 
   const countries = createAsync(() =>
-    FiltersAPI.getFilterValues("country", { limit: 50 })
+    Filtering.getFilterValues("country", { limit: 50 })
   );
 
   const wrpFetch = createDebouncedFetch(async (input) => {
@@ -42,7 +42,7 @@ export const Filters: Component<FiltersProps> = (props) => {
   wrpFetch.trigger();
 
   const claimFetch = createDebouncedFetch(async (input) => {
-    const result = await FiltersAPI.getFilterValues(
+    const result = await Filtering.getFilterValues(
       "claim_path",
       input?.length ? { q: `%${input}%` } : undefined
     );
@@ -68,7 +68,7 @@ export const Filters: Component<FiltersProps> = (props) => {
   purposeFetch.trigger();
 
   const entitlementFetch = createDebouncedFetch(async (input) => {
-    const result = await FiltersAPI.getFilterValues(
+    const result = await Filtering.getFilterValues(
       "entitlement",
       input?.length ? { q: `%${input}%` } : undefined
     );
