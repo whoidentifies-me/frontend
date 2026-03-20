@@ -255,7 +255,7 @@ export const en = {
       is_psb: "Public or Private Entity",
       is_intermediary: "Is Intermediary",
       uses_intermediary: "Uses Intermediaries",
-      entitlement: "Permissions",
+      entitlement: "Roles",
     },
     clear_all: "Clear all filters",
     placeholders: {
@@ -264,7 +264,7 @@ export const en = {
       purpose: "Select purpose...",
       claim_path: "Enter requested information URI...",
       country: "Select country...",
-      entitlement: "Enter permission URI...",
+      entitlement: "Enter role Name/URI...",
     },
     values: {
       is_psb: {
@@ -297,7 +297,7 @@ export const en = {
       support: "Support",
     },
     entitlements: {
-      title: "Permissions",
+      title: "Roles",
       description: undefined,
     },
     intendedUses: {
