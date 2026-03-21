@@ -18,11 +18,34 @@ function patchRelyingParty(data: RelyingPartyAPIResponse) {
 
   data.provider_type = "WalletRelyingParty";
 
+  /*
+  data.provided_attestations = [
+    {
+      id: "att-001",
+      format: "vc+sd-jwt",
+      claims: [
+        { id: 1, path: "eu.europa.ec.eudi.pid.given_name.1" },
+        { id: 2, path: "eu.europa.ec.eudi.pid.family_name.1" },
+        { id: 3, path: "eu.europa.ec.eudi.pid.date_of_birth.1" },
+      ],
+    },
+    {
+      id: "att-002",
+      format: "mso_mdoc",
+      claims: [
+        { id: 4, path: "eu.europa.ec.eudi.pid.given_name.1" },
+        { id: 5, path: "eu.europa.ec.eudi.pid.nationality.1" },
+        { id: 6, path: "eu.europa.ec.eudi.pid.current_address.1" },
+      ],
+    },
+  ];
+
   data.uses_intermediaries = [
     "87ab155e-69d9-4559-ad9b-34809a189493",
     "f5230490-fac2-47b2-8c7a-2dbd89713f3e",
     "ed5ade96-994f-40da-8c59-a92867368a1c",
   ];
+  */
 }
 
 function patchIntendedUse(data: IntendedUseAPIResponse) {

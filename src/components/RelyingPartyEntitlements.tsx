@@ -13,6 +13,7 @@ import {
 import { entitlements as entitlementMap } from "~/data/entitlements";
 import { getProviderType } from "~/data/providerTypes";
 import { routes } from "~/config/routes";
+import { ProvidedAttestations } from "./ProvidedAttestations";
 
 export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
   props
@@ -25,6 +26,7 @@ export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
     props.data?.is_psb === true || props.data?.is_psb === false;
   const hasIntermediaryInfo = () =>
     props.data?.is_intermediary || !!props.data?.uses_intermediaries?.length;
+  const providedAttestations = () => props.data?.provided_attestations || [];
 
   return (
     <section class="wim-container mt-10">
@@ -81,43 +83,58 @@ export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
                 }}
               </For>
             </ul>
-            <Show when={hasProviderType()}>
+
+            <Show when={hasProviderType() || hasPsbInfo()}>
               <div class="divider my-4" />
-              {(() => {
-                const pt = getProviderType(props.data?.provider_type)!;
-                return (
-                  <div class="flex flex-row items-center gap-2">
-                    <span class="text-primary text-3xl leading-0">
-                      {pt.icon()}
-                    </span>
-                    <span class="font-semibold">{pt.name}</span>
-                  </div>
-                );
-              })()}
+              <h3 class="text-sm">Type</h3>
             </Show>
-            <Show when={hasPsbInfo()}>
+            <div class="grid sm:grid-cols-2 grid-cols-1 gap-6">
+              <Show when={hasProviderType()}>
+                {(() => {
+                  const pt = getProviderType(props.data?.provider_type)!;
+                  return (
+                    <div class="flex flex-row items-center gap-2">
+                      <span class="text-primary text-3xl leading-0">
+                        {pt.icon()}
+                      </span>
+                      <span class="font-semibold">{pt.name}</span>
+                    </div>
+                  );
+                })()}
+              </Show>
+              <Show when={hasPsbInfo()}>
+                <div class="flex flex-row items-center gap-2">
+                  <span class="text-primary text-3xl leading-0">
+                    <Show
+                      when={props.data?.is_psb}
+                      fallback={<TbOutlineBuilding />}
+                    >
+                      <TbOutlineBuildingBank />
+                    </Show>
+                  </span>
+                  <span class="font-semibold">
+                    <Show
+                      when={props.data?.is_psb}
+                      fallback={t.relyingParties.nonPublic()}
+                    >
+                      {t.relyingParties.public()}
+                    </Show>
+                  </span>
+                </div>
+              </Show>
+            </div>
+
+            <Show when={providedAttestations().length}>
               <div class="divider my-4" />
-              <div class="flex flex-row items-center gap-2">
-                <span class="text-primary text-3xl leading-0">
-                  <Show
-                    when={props.data?.is_psb}
-                    fallback={<TbOutlineBuilding />}
-                  >
-                    <TbOutlineBuildingBank />
-                  </Show>
-                </span>
-                <span class="font-semibold">
-                  <Show
-                    when={props.data?.is_psb}
-                    fallback={t.relyingParties.nonPublic()}
-                  >
-                    {t.relyingParties.public()}
-                  </Show>
-                </span>
-              </div>
+              <h3 class="text-sm">Provides</h3>
+              <ProvidedAttestations
+                attestations={props.data?.provided_attestations}
+              />
             </Show>
+
             <Show when={hasIntermediaryInfo()}>
               <div class="divider my-4" />
+              <h3 class="text-sm">Intermediary</h3>
               <Show when={props.data?.is_intermediary}>
                 <div class="flex flex-row items-center gap-2">
                   <span class="text-primary text-3xl leading-0">

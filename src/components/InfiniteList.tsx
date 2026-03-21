@@ -56,22 +56,24 @@ export const InfiniteList: ParentComponent<InfiniteListParams> = (props) => {
   };
 
   return (
-    <div class={`${props.class}`}>
-      {props.children}
+    <div>
+      <div class={`${props.class}`}>
+        {props.children}
+        <Show when={props.hasMore && !props.isLoading}>
+          <div class="flex flex-row justify-center my-4">
+            <button class="btn btn-primary" onClick={onLoadMoreClick}>
+              {t.components.generic.loadMore()}
+            </button>
+          </div>
+        </Show>
+        <Show when={!props.hasMore && !props.hideEnd}>
+          <div class="text-center my-4">You reached the end of the List</div>
+        </Show>
+        <Show when={props.isLoading}>
+          <div class="text-center my-4">Loading more...</div>
+        </Show>
+      </div>
       <div style={{ height: "1px", width: "100%" }} ref={triggerElRef}></div>
-      <Show when={props.hasMore && !props.isLoading}>
-        <div class="flex flex-row justify-center my-4">
-          <button class="btn btn-primary" onClick={onLoadMoreClick}>
-            {t.components.generic.loadMore()}
-          </button>
-        </div>
-      </Show>
-      <Show when={!props.hasMore && !props.hideEnd}>
-        <div class="text-center my-4">You reached the end of the List</div>
-      </Show>
-      <Show when={props.isLoading}>
-        <div class="text-center my-4">Loading more...</div>
-      </Show>
     </div>
   );
 };

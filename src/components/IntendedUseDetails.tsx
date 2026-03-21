@@ -1,19 +1,12 @@
 import { Component, createEffect, createMemo, For, Show } from "solid-js";
-import { A } from "@solidjs/router";
 import { IntendedUse } from "~/api";
-import {
-  TbOutlineInfoCircle,
-  TbOutlineLink,
-  TbOutlineCalendar,
-  TbOutlineBan,
-} from "solid-icons/tb";
+import { TbOutlineLink, TbOutlineCalendar, TbOutlineBan } from "solid-icons/tb";
 import { getLocalizeText } from "~/utils/relyingPartyAttributes";
 import { useI18n } from "~/i18n/dict";
-import { claimPathNames } from "~/data/claimPathNames";
-import { getClaimPathIcon } from "~/data/claimPathIcons";
 import { getPolicy } from "~/data/policies";
 import { routes } from "~/config/routes";
 import { buildUrlWithFilters } from "~/utils/url";
+import { ClaimItem } from "./ClaimItem";
 
 interface IntendedUseDetailsProps {
   data?: IntendedUse;
@@ -83,57 +76,29 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
           </h3>
         </summary>
         <div class="collapse-content">
-          <For each={purposes()}>{(item) => <p class="">{item}</p>}</For>
+          <For
+            each={purposes()}
+            fallback={<span class="">No description available</span>}
+          >
+            {(item) => <p class="">{item}</p>}
+          </For>
 
           <h4 class="mt-6">Requested Attributes:</h4>
           <ul class="mt-6 list-none grid gap-y-8 gap-x-5 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
             <For
               each={credentials()}
-              fallback={<span>No requested Attributes</span>}
+              fallback={<span>No requested Attributes available</span>}
             >
               {(item) => {
                 const path = item?.path ?? "";
-                const name = claimPathNames[path];
-                const icon = getClaimPathIcon(path);
                 return (
-                  <li class="flex flex-row items-center gap-2">
-                    <span class="text-primary text-3xl">
-                      {icon() || <TbOutlineInfoCircle />}
-                    </span>
-                    <div class="flex-col">
-                      <Show
-                        when={name}
-                        fallback={
-                          <A
-                            href={buildUrlWithFilters(
-                              routes.search.intendedUses,
-                              { claim_path: path }
-                            )}
-                            state={{ scrollToResults: true }}
-                          >
-                            <span class="font-semibold text-sm line-clamp-2 hover:underline">
-                              {path}
-                            </span>
-                          </A>
-                        }
-                      >
-                        <A
-                          href={buildUrlWithFilters(
-                            routes.search.intendedUses,
-                            { claim_path: path }
-                          )}
-                          state={{ scrollToResults: true }}
-                        >
-                          <span class="font-semibold text-sm line-clamp-2">
-                            {name}
-                          </span>
-                        </A>
-                        <span class="text-xs text-base-content/50 font-mono break-all line-clamp-2">
-                          {path}
-                        </span>
-                      </Show>
-                    </div>
-                  </li>
+                  <ClaimItem
+                    path={path}
+                    href={buildUrlWithFilters(routes.search.intendedUses, {
+                      claim_path: path,
+                    })}
+                    hrefState={{ scrollToResults: true }}
+                  />
                 );
               }}
             </For>
@@ -165,7 +130,7 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
                           {name}
                         </a>
                         <Show when={policy}>
-                          <span class="text-xs text-base-content/50 font-mono break-all line-clamp-2">
+                          <span class="text-xs text-base-content/80 font-mono break-all line-clamp-2">
                             {item.policy_uri}
                           </span>
                         </Show>

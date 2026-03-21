@@ -44,51 +44,53 @@ export default function RelyingParty() {
   ];
 
   return (
-    <ErrorBoundary
-      fallback={() => (
-        <div class="wim-container">
-          <ErrorCard />
-        </div>
-      )}
-    >
-      <Suspense fallback={<DetailSkeleton />}>
-        <Title>
-          {relyingParty()?.trade_name ?? "Details"} — Who identifies me?
-        </Title>
-        <div class="space-y-14 mb-14">
-          <RelyingPartyHeader data={relyingParty()} />
-          <RelyingPartyContact data={relyingParty()} />
-          <RelyingPartyEntitlements data={relyingParty()} />
-          <ErrorBoundary fallback={<ErrorCard class="wim-container" />}>
-            <Suspense fallback={<SkeletonList class="wim-container" />}>
-              <IntendedUseDetailsList
-                relyingParty={relyingParty()}
-                featuredUse={featuredUse()}
-                items={intendedUsesInfinite.items}
-                loading={intendedUsesInfinite.loading}
-                hasMore={intendedUsesInfinite.hasMore}
-                loadMore={intendedUsesInfinite.loadMore}
-              />
-            </Suspense>
-          </ErrorBoundary>
-
-          <SupervisoryAuthority data={relyingParty()} />
-
-          <div class="wim-container grid grid-cols-2 md:grid-cols-4 gap-4">
-            <For each={commingSoonButtons()}>
-              {(item) => (
-                <button
-                  disabled
-                  class="btn !btn-primary !bg-primary"
-                  title="Coming soon"
-                >
-                  {item}
-                </button>
-              )}
-            </For>
+    <main>
+      <ErrorBoundary
+        fallback={() => (
+          <div class="wim-container">
+            <ErrorCard />
           </div>
-        </div>
-      </Suspense>
-    </ErrorBoundary>
+        )}
+      >
+        <Suspense fallback={<DetailSkeleton />}>
+          <Title>
+            {relyingParty()?.trade_name ?? "Details"} — Who identifies me?
+          </Title>
+          <div class="space-y-14 mb-14">
+            <RelyingPartyHeader data={relyingParty()} />
+            <RelyingPartyContact data={relyingParty()} />
+            <RelyingPartyEntitlements data={relyingParty()} />
+            <ErrorBoundary fallback={<ErrorCard class="wim-container" />}>
+              <Suspense fallback={<SkeletonList class="wim-container" />}>
+                <IntendedUseDetailsList
+                  relyingParty={relyingParty()}
+                  featuredUse={featuredUse()}
+                  items={intendedUsesInfinite.items}
+                  loading={intendedUsesInfinite.loading}
+                  hasMore={intendedUsesInfinite.hasMore}
+                  loadMore={intendedUsesInfinite.loadMore}
+                />
+              </Suspense>
+            </ErrorBoundary>
+
+            <SupervisoryAuthority data={relyingParty()} />
+
+            <div class="wim-container grid grid-cols-2 md:grid-cols-4 gap-4">
+              <For each={commingSoonButtons()}>
+                {(item) => (
+                  <button
+                    disabled
+                    class="btn !btn-primary !bg-primary"
+                    title="Coming soon"
+                  >
+                    {item}
+                  </button>
+                )}
+              </For>
+            </div>
+          </div>
+        </Suspense>
+      </ErrorBoundary>
+    </main>
   );
 }

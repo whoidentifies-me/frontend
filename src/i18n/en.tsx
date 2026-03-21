@@ -15,7 +15,7 @@ export const en = {
     title: "Who identifies me?",
     subtitle:
       "Discover how personal data flows through the EU's digital identity ecosystem",
-    logoAlt: `"Who Identifies Me" logo with a question mark formed from orange fingerprint patterns and dark gray text.`,
+    logoAlt: `Who Identifies Me logo`,
   },
   home: {
     explore: {
