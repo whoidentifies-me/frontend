@@ -35,4 +35,5 @@ export const policies: Record<string, Policy> = {
   },
 };
 
-export const getPolicy = (uri: string): Policy | undefined => policies[uri];
+export const getPolicy = (uri?: string): Policy | undefined =>
+  uri ? policies[uri] : undefined;

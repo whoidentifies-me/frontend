@@ -54,7 +54,8 @@ dd {
   max-inline-size: 88ch;
 }
 
-a {
+a,
+.wim-link {
   text-underline-offset: 2px;
   text-decoration-skip-ink: auto;
   font-weight: 500;

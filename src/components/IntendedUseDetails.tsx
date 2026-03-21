@@ -1,4 +1,5 @@
 import { Component, createEffect, createMemo, For, Show } from "solid-js";
+import { A } from "@solidjs/router";
 import { IntendedUse } from "~/api";
 import {
   TbOutlineInfoCircle,
@@ -11,6 +12,8 @@ import { useI18n } from "~/i18n/dict";
 import { claimPathNames } from "~/data/claimPathNames";
 import { getClaimPathIcon } from "~/data/claimPathIcons";
 import { getPolicy } from "~/data/policies";
+import { routes } from "~/config/routes";
+import { buildUrlWithFilters } from "~/utils/url";
 
 interface IntendedUseDetailsProps {
   data?: IntendedUse;
@@ -40,9 +43,9 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
     return props.data?.credentials?.flatMap((c) => c.claims || []) || [];
   });
 
-  const policyList = createMemo(() => {
+  const policyList = () => {
     return props.data?.policies || [];
-  });
+  };
 
   createEffect(() => {
     if (props.highlighted) {
@@ -59,13 +62,20 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
     <section ref={sectionRef} id={getID()}>
       <details
         ref={detailsRef}
-        class="wim-card-outline collapse border shadow-md collapse-plus bg-secondary text-secondary-content !rounded-4xl px-4 py-2"
+        class="wim-card-outline collapse border shadow-md collapse-plus bg-secondary text-secondary-content !rounded-4xl px-4 py-2 group"
       >
         <summary class="collapse-title">
-          <h3 class="my-0 line-clamp-1">
+          <h3 class="my-0">
             <Show
               when={props.title}
-              fallback={purposes()?.length ? purposes()[0] : "Intended Use"}
+              fallback={
+                <>
+                  <span class="hidden group-open:inline">Description</span>
+                  <span class="line-clamp-1 group-open:hidden">
+                    {purposes()?.length ? purposes()[0] : "Intended Use"}
+                  </span>
+                </>
+              }
             >
               {props.title}
             </Show>
@@ -93,14 +103,30 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
                       <Show
                         when={name}
                         fallback={
+                          <A
+                            href={buildUrlWithFilters(
+                              routes.search.intendedUses,
+                              { claim_path: path }
+                            )}
+                            state={{ scrollToResults: true }}
+                          >
+                            <span class="font-semibold text-sm line-clamp-2 hover:underline">
+                              {path}
+                            </span>
+                          </A>
+                        }
+                      >
+                        <A
+                          href={buildUrlWithFilters(
+                            routes.search.intendedUses,
+                            { claim_path: path }
+                          )}
+                          state={{ scrollToResults: true }}
+                        >
                           <span class="font-semibold text-sm line-clamp-2">
                             {name}
                           </span>
-                        }
-                      >
-                        <span class="font-semibold text-sm line-clamp-2">
-                          {name}
-                        </span>
+                        </A>
                         <span class="text-xs text-base-content/50 font-mono break-all line-clamp-2">
                           {path}
                         </span>
@@ -116,23 +142,24 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
             <h4 class="mt-6">
               {t.relyingPartyDetails.intendedUses.policies()}:
             </h4>
-            <ul class="mt-6 list-none flex flex-col gap-4">
+            <ul class="mt-6 mb-6 list-none flex flex-col gap-4">
               <For each={policyList()}>
                 {(item) => {
-                  const policy = getPolicy(item.policy_uri);
+                  const policy = getPolicy(item.type);
                   const name = policy?.name ?? item.policy_uri;
                   const icon = policy?.icon;
                   return (
                     <li class="flex flex-row items-center gap-2">
-                      <span class="text-primary text-3xl">
+                      <span class="text-primary text-3xl leading-0">
                         {icon ? icon() : <TbOutlineLink />}
                       </span>
-                      <div class="flex-col">
+                      <div class="flex flex-col justify-center">
                         <a
                           href={item.policy_uri}
                           target="_blank"
                           rel="noopener noreferrer"
                           class="font-semibold text-sm line-clamp-2 hover:underline"
+                          title={`Type: ${item.type}`}
                         >
                           {name}
                         </a>

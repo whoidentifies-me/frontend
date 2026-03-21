@@ -25,11 +25,13 @@ export default function SearchRelyingParties() {
   );
 
   onMount(() => {
-    if (location.state?.scrollToResults) {
-      document
-        .getElementById("results")
-        ?.scrollIntoView({ behavior: "smooth" });
-    }
+    requestAnimationFrame(() => {
+      if (location.state?.scrollToResults) {
+        document
+          .getElementById("results")
+          ?.scrollIntoView({ behavior: "smooth" });
+      }
+    });
   });
 
   const relyingPartiesInfinite = createInfiniteScroll({

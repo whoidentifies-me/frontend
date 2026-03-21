@@ -42,10 +42,7 @@ export function getRelyingPartyAttributes(
     attributes.push(() => (
       <span>
         {country}{" "}
-        <CountryFlag
-          code={data.legal_entity?.country}
-          class="ml-0.5 -translate-y-[0.5px]"
-        />
+        <CountryFlag code={data.legal_entity?.country} class="ml-0.5" />
       </span>
     ));
   }

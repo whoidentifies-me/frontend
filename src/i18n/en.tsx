@@ -207,6 +207,7 @@ export const en = {
     public: "Public Sector",
     nonPublic: "Company",
     intermediary: "Intermediary",
+    isIntermediary: "Is Intermediary",
     providerTypes: {
       WRPRegistrar: "Relying Party Register",
       WalletProvider: "Wallet Provider",
@@ -295,6 +296,8 @@ export const en = {
       email: "Email",
       phone: "Phone",
       support: "Support",
+      identifiers: "Identifiers",
+      postalAddress: "Postal Address",
     },
     entitlements: {
       title: "Roles",

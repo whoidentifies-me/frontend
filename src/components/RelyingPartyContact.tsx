@@ -5,7 +5,9 @@ import { TwoColumnLayout } from "./layout/TwoColumnLayout";
 import { ExternalLink } from "./ExternalLink";
 import {
   TbOutlineInfoSquareRounded,
+  TbOutlineKey,
   TbOutlineMail,
+  TbOutlineMapPin,
   TbOutlinePhone,
 } from "solid-icons/tb";
 
@@ -17,9 +19,20 @@ export const RelyingPartyContact: Component<{ data?: RelyingParty }> = (
   const emails = () => (props.data?.legal_entity?.email as string[]) || [];
   const phones = () => (props.data?.legal_entity?.phone as string[]) || [];
   const supportUris = () => props.data?.support_uris || [];
+  const identifiers = () => props.data?.identifiers || [];
+  const postalAddress = () => {
+    const addr = props.data?.legal_entity?.postal_address;
+    if (!addr) return undefined;
+    if (typeof addr === "string") return addr;
+    return String(addr);
+  };
 
   const hasContent = () =>
-    emails().length > 0 || phones().length > 0 || supportUris().length > 0;
+    emails().length > 0 ||
+    phones().length > 0 ||
+    supportUris().length > 0 ||
+    identifiers().length > 0 ||
+    !!postalAddress();
 
   return (
     <Show when={hasContent()}>
@@ -80,6 +93,33 @@ export const RelyingPartyContact: Component<{ data?: RelyingParty }> = (
                           <ExternalLink class="line-clamp-2" href={uri}>
                             {uri}
                           </ExternalLink>
+                        </li>
+                      )}
+                    </For>
+                  </ul>
+                </div>
+              </Show>
+              <Show when={postalAddress()}>
+                <div>
+                  <h3 class="font-semibold mb-2 flex items-center gap-1">
+                    <TbOutlineMapPin class="text-lg text-primary" />
+                    {t.relyingPartyDetails.contact.postalAddress()}
+                  </h3>
+                  <p class="whitespace-pre-line">{postalAddress()}</p>
+                </div>
+              </Show>
+              <Show when={identifiers().length > 0}>
+                <div>
+                  <h3 class="font-semibold mb-2 flex items-center gap-1">
+                    <TbOutlineKey class="text-lg text-primary" />
+                    {t.relyingPartyDetails.contact.identifiers()}
+                  </h3>
+                  <ul class="list-none space-y-1">
+                    <For each={identifiers()}>
+                      {(id) => (
+                        <li class="line-clamp-2">
+                          <span class="font-semibold">{id.type}:</span>{" "}
+                          {id.identifier}
                         </li>
                       )}
                     </For>
