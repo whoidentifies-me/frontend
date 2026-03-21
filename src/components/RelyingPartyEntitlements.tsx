@@ -1,9 +1,18 @@
 import { Component, For, Show } from "solid-js";
+import { A } from "@solidjs/router";
 import { RelyingParty } from "~/api";
 import { useTranslate } from "~/i18n/dict";
 import { TwoColumnLayout } from "./layout/TwoColumnLayout";
-import { TbOutlineInfoCircle, TbOutlineArrowsShuffle } from "solid-icons/tb";
+import {
+  TbOutlineInfoCircle,
+  TbOutlineCornerDownRightDouble,
+  TbOutlineCornerUpRightDouble,
+  TbOutlineBuilding,
+  TbOutlineBuildingBank,
+} from "solid-icons/tb";
 import { entitlements as entitlementMap } from "~/data/entitlements";
+import { getProviderType } from "~/data/providerTypes";
+import { routes } from "~/config/routes";
 
 export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
   props
@@ -11,6 +20,11 @@ export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
   const t = useTranslate();
 
   const entitlements = () => props.data?.entitlements || [];
+  const hasProviderType = () => !!getProviderType(props.data?.provider_type);
+  const hasPsbInfo = () =>
+    props.data?.is_psb === true || props.data?.is_psb === false;
+  const hasIntermediaryInfo = () =>
+    props.data?.is_intermediary || !!props.data?.uses_intermediaries?.length;
 
   return (
     <section class="wim-container mt-10">
@@ -67,15 +81,75 @@ export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
                 }}
               </For>
             </ul>
-            <Show when={props.data?.is_intermediary}>
-              <div class="mt-6 flex flex-row items-center gap-2">
+            <Show when={hasProviderType()}>
+              <div class="divider my-4" />
+              {(() => {
+                const pt = getProviderType(props.data?.provider_type)!;
+                return (
+                  <div class="flex flex-row items-center gap-2">
+                    <span class="text-primary text-3xl leading-0">
+                      {pt.icon()}
+                    </span>
+                    <span class="font-semibold">{pt.name}</span>
+                  </div>
+                );
+              })()}
+            </Show>
+            <Show when={hasPsbInfo()}>
+              <div class="divider my-4" />
+              <div class="flex flex-row items-center gap-2">
                 <span class="text-primary text-3xl leading-0">
-                  <TbOutlineArrowsShuffle />
+                  <Show
+                    when={props.data?.is_psb}
+                    fallback={<TbOutlineBuilding />}
+                  >
+                    <TbOutlineBuildingBank />
+                  </Show>
                 </span>
                 <span class="font-semibold">
-                  {t.relyingParties.isIntermediary()}
+                  <Show
+                    when={props.data?.is_psb}
+                    fallback={t.relyingParties.nonPublic()}
+                  >
+                    {t.relyingParties.public()}
+                  </Show>
                 </span>
               </div>
+            </Show>
+            <Show when={hasIntermediaryInfo()}>
+              <div class="divider my-4" />
+              <Show when={props.data?.is_intermediary}>
+                <div class="flex flex-row items-center gap-2">
+                  <span class="text-primary text-3xl leading-0">
+                    <TbOutlineCornerDownRightDouble />
+                  </span>
+                  <span class="font-semibold">
+                    {t.relyingParties.isIntermediary()}
+                  </span>
+                </div>
+              </Show>
+              <Show when={props.data?.uses_intermediaries?.length}>
+                <div class="mt-4 flex flex-row items-center gap-2">
+                  <span class="text-primary text-3xl leading-0">
+                    <TbOutlineCornerUpRightDouble />
+                  </span>
+                  <span class="font-semibold">
+                    {t.relyingParties.usesIntermediaries()}
+                  </span>
+                  <span class="flex flex-row gap-1">
+                    <For each={props.data?.uses_intermediaries}>
+                      {(id, index) => (
+                        <>
+                          <Show when={index() > 0}>, </Show>
+                          <A href={routes.rp(id)} class="link link-primary">
+                            {index() + 1}
+                          </A>
+                        </>
+                      )}
+                    </For>
+                  </span>
+                </div>
+              </Show>
             </Show>
           </>
         }

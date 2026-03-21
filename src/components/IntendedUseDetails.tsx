@@ -62,6 +62,7 @@ export const IntendedUseDetails: Component<IntendedUseDetailsProps> = (
     <section ref={sectionRef} id={getID()}>
       <details
         ref={detailsRef}
+        open
         class="wim-card-outline collapse border shadow-md collapse-plus bg-secondary text-secondary-content !rounded-4xl px-4 py-2 group"
       >
         <summary class="collapse-title">

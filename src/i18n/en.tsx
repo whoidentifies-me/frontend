@@ -208,6 +208,7 @@ export const en = {
     nonPublic: "Company",
     intermediary: "Intermediary",
     isIntermediary: "Is Intermediary",
+    usesIntermediaries: "Uses Intermediaries:",
     providerTypes: {
       WRPRegistrar: "Relying Party Register",
       WalletProvider: "Wallet Provider",
