@@ -32,7 +32,7 @@ export function createInfiniteScroll<T extends ApiResponseType>(
   const initialPage = () => initialResult?.();
 
   const cursor = () =>
-    paginationOverride()?.nextCursor ?? initialPage()?.next_cursor;
+    paginationOverride()?.nextCursor ?? initialPage()?.next_cursor ?? undefined;
   const hasMore = () =>
     paginationOverride()?.hasMore ?? initialPage()?.has_more ?? false;
 
@@ -48,7 +48,7 @@ export function createInfiniteScroll<T extends ApiResponseType>(
       }
 
       setPaginationOverride({
-        nextCursor: result.next_cursor,
+        nextCursor: result.next_cursor ?? undefined,
         hasMore: result.has_more,
       });
     } finally {

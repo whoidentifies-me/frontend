@@ -1,7 +1,7 @@
 // Export API clients
 export { RelyingParties } from "./generated/relying-parties/relying-parties";
 export { IntendedUses } from "./generated/intended-uses/intended-uses";
-export { Filters } from "./generated/filters/filters";
+export { Filtering } from "./generated/filtering/filtering";
 
 // Export types
 export type {

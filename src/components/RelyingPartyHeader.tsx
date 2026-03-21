@@ -5,7 +5,6 @@ import { routes } from "~/config/routes";
 import { useI18n } from "~/i18n/dict";
 import { TbOutlineArrowLeft } from "solid-icons/tb";
 import { ExternalLink } from "./ExternalLink";
-import { getProviderType } from "~/data/providerTypes";
 import {
   getRelyingPartyAttributes,
   getAllDescriptions,
@@ -25,13 +24,14 @@ export const RelyingPartyHeader: Component<RelyingPartyHeaderProps> = (
     routes.search.index;
 
   const attributes = createMemo(() => getRelyingPartyAttributes(props.data, t));
-  const providerType = () => getProviderType(props.data?.provider_type);
-  const providerTypeLabel = () => {
+
+  // const providerType = () => getProviderType(props.data?.provider_type);
+  /* const providerTypeLabel = () => {
     const key = props.data?.provider_type as
       | keyof typeof t.relyingParties.providerTypes
       | undefined;
     return key ? t.relyingParties.providerTypes[key]?.() : undefined;
-  };
+  }; */
 
   const descriptions = createMemo(() =>
     getAllDescriptions(props.data?.service_descriptions || undefined, locale())
@@ -53,18 +53,14 @@ export const RelyingPartyHeader: Component<RelyingPartyHeaderProps> = (
         <h1 class="mb-2 !md:text-3xl text-2xl line-clamp-2">
           {props.data?.trade_name}
         </h1>
-        <Show when={providerType()}>
-          {(pt) => (
-            <div class="flex items-center gap-1.5 mb-2 text-sm font-semibold opacity-80">
-              <span class="text-lg">{pt().icon()}</span>
-              {providerTypeLabel()}
-            </div>
-          )}
-        </Show>
         <Show when={attributes().length > 0}>
           <div class="wim-attributes font-semibold mb-2">
             <For each={attributes()}>
-              {(attribute) => <span class="">{attribute}</span>}
+              {(attribute) => (
+                <span class="">
+                  {typeof attribute === "function" ? attribute() : attribute}
+                </span>
+              )}
             </For>
           </div>
         </Show>

@@ -1,7 +1,6 @@
 import { Component, For, Show } from "solid-js";
 import { RelyingParty } from "~/api";
 import { useTranslate } from "~/i18n/dict";
-import { TwoColumnLayout } from "./layout/TwoColumnLayout";
 import { ExternalLink } from "./ExternalLink";
 import {
   TbOutlineInfoSquareRounded,
@@ -10,6 +9,7 @@ import {
   TbOutlineMapPin,
   TbOutlineFlag,
 } from "solid-icons/tb";
+import { CountryFlag } from "./CountryFlag";
 
 export const SupervisoryAuthority: Component<{ data?: RelyingParty }> = (
   props
@@ -66,96 +66,93 @@ export const SupervisoryAuthority: Component<{ data?: RelyingParty }> = (
   return (
     <Show when={hasContent()}>
       <section class="wim-container">
-        <TwoColumnLayout
-          largerCol="last"
-          firstContent={
-            <h2>{t.relyingPartyDetails.supervisoryAuthority.title()}</h2>
-          }
-          lastContent={
-            <div class="space-y-6">
-              <Show when={name()}>
-                <div>
-                  <h3 class="font-semibold mb-2">{name()}</h3>
-                </div>
-              </Show>
-              <Show when={country()}>
-                <div>
-                  <h3 class="font-semibold mb-2 flex items-center gap-1">
-                    <TbOutlineFlag class="text-lg text-primary" />
-                    {t.relyingPartyDetails.supervisoryAuthority.country()}
-                  </h3>
-                  <p>{country()}</p>
-                </div>
-              </Show>
-              <Show when={postalAddress()}>
-                <div>
-                  <h3 class="font-semibold mb-2 flex items-center gap-1">
-                    <TbOutlineMapPin class="text-lg text-primary" />
-                    {t.relyingPartyDetails.supervisoryAuthority.postalAddress()}
-                  </h3>
-                  <p>{postalAddress()}</p>
-                </div>
-              </Show>
-              <Show when={emails().length > 0}>
-                <div>
-                  <h3 class="font-semibold mb-2 flex items-center gap-1">
-                    <TbOutlineMail class="text-lg text-primary" />
-                    {t.relyingPartyDetails.supervisoryAuthority.email()}
-                  </h3>
-                  <ul class="list-none space-y-1">
-                    <For each={emails()}>
-                      {(email) => (
-                        <li>
-                          <a class="line-clamp-2" href={`mailto:${email}`}>
-                            {email}
-                          </a>
-                        </li>
-                      )}
-                    </For>
-                  </ul>
-                </div>
-              </Show>
-              <Show when={phones().length > 0}>
-                <div>
-                  <h3 class="font-semibold mb-2 flex items-center gap-1">
-                    <TbOutlinePhone class="text-lg text-primary" />
-                    {t.relyingPartyDetails.supervisoryAuthority.phone()}
-                  </h3>
-                  <ul class="list-none space-y-1">
-                    <For each={phones()}>
-                      {(phone) => (
-                        <li>
-                          <a class="line-clamp-2" href={`tel:${phone}`}>
-                            {phone}
-                          </a>
-                        </li>
-                      )}
-                    </For>
-                  </ul>
-                </div>
-              </Show>
-              <Show when={infoUris().length > 0}>
-                <div>
-                  <h3 class="font-semibold mb-2 flex items-center gap-1">
-                    <TbOutlineInfoSquareRounded class="text-lg text-primary" />
-                    {t.relyingPartyDetails.supervisoryAuthority.infoUri()}
-                  </h3>
-                  <ul class="list-none space-y-1">
-                    <For each={infoUris()}>
-                      {(uri) => (
-                        <li>
-                          <ExternalLink class="line-clamp-2" href={uri}>
-                            {uri}
-                          </ExternalLink>
-                        </li>
-                      )}
-                    </For>
-                  </ul>
-                </div>
-              </Show>
-            </div>
-          }
-        />
+        <div class="wim-card wim-card-lg wim-card-outline-primary">
+          <h2 class="mb-8">
+            {t.relyingPartyDetails.supervisoryAuthority.title()}
+          </h2>
+          <Show when={name()}>
+            <p class="font-semibold text-lg mb-4">{name()}</p>
+          </Show>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <Show when={country()}>
+              <div>
+                <h3 class="font-semibold mb-2 flex items-center gap-1">
+                  <TbOutlineFlag class="text-lg text-primary" />
+                  {t.relyingPartyDetails.supervisoryAuthority.country()}
+                </h3>
+                <p class="flex items-center gap-2">
+                  <CountryFlag code={authority()?.country} /> {country()}
+                </p>
+              </div>
+            </Show>
+            <Show when={postalAddress()}>
+              <div>
+                <h3 class="font-semibold mb-2 flex items-center gap-1">
+                  <TbOutlineMapPin class="text-lg text-primary" />
+                  {t.relyingPartyDetails.supervisoryAuthority.postalAddress()}
+                </h3>
+                <p>{postalAddress()}</p>
+              </div>
+            </Show>
+            <Show when={emails().length > 0}>
+              <div>
+                <h3 class="font-semibold mb-2 flex items-center gap-1">
+                  <TbOutlineMail class="text-lg text-primary" />
+                  {t.relyingPartyDetails.supervisoryAuthority.email()}
+                </h3>
+                <ul class="list-none space-y-1">
+                  <For each={emails()}>
+                    {(email) => (
+                      <li>
+                        <a class="line-clamp-2" href={`mailto:${email}`}>
+                          {email}
+                        </a>
+                      </li>
+                    )}
+                  </For>
+                </ul>
+              </div>
+            </Show>
+            <Show when={phones().length > 0}>
+              <div>
+                <h3 class="font-semibold mb-2 flex items-center gap-1">
+                  <TbOutlinePhone class="text-lg text-primary" />
+                  {t.relyingPartyDetails.supervisoryAuthority.phone()}
+                </h3>
+                <ul class="list-none space-y-1">
+                  <For each={phones()}>
+                    {(phone) => (
+                      <li>
+                        <a class="line-clamp-2" href={`tel:${phone}`}>
+                          {phone}
+                        </a>
+                      </li>
+                    )}
+                  </For>
+                </ul>
+              </div>
+            </Show>
+            <Show when={infoUris().length > 0}>
+              <div>
+                <h3 class="font-semibold mb-2 flex items-center gap-1">
+                  <TbOutlineInfoSquareRounded class="text-lg text-primary" />
+                  {t.relyingPartyDetails.supervisoryAuthority.infoUri()}
+                </h3>
+                <ul class="list-none space-y-1">
+                  <For each={infoUris()}>
+                    {(uri) => (
+                      <li>
+                        <ExternalLink class="line-clamp-2" href={uri}>
+                          {uri}
+                        </ExternalLink>
+                      </li>
+                    )}
+                  </For>
+                </ul>
+              </div>
+            </Show>
+          </div>
+        </div>
       </section>
     </Show>
   );

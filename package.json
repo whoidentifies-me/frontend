@@ -4,10 +4,11 @@
   "scripts": {
     "prebuild": "npm run api:generate",
     "prebuild:spa": "npm run api:generate",
-    "predev": "npm run api:generate",
-    "predev:spa": "npm run api:generate",
+    "predev": "npm run api:generate && msw init public/ --no-save",
+    "predev:spa": "npm run api:generate && msw init public/ --no-save",
     "dev": "vinxi dev",
     "dev:spa": "vinxi dev --config app.config.spa.ts",
+    "dev:mock": "VITE_MOCK=true vinxi dev --config app.config.spa.ts",
     "build": "vinxi build",
     "build:spa": "vinxi build --config app.config.spa.ts",
     "typecheck": "tsc --noEmit --skipLibCheck",
@@ -48,6 +49,7 @@
     "globals": "^16.4.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.3",
+    "msw": "^2.12.13",
     "orval": "^8.5.3",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
@@ -71,6 +73,11 @@
     ],
     "*.{md,json}": [
       "prettier --write"
+    ]
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
     ]
   }
 }

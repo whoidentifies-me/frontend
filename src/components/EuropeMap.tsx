@@ -296,7 +296,7 @@ export const EuropeMap: Component<EuropeMapProps> = (props) => {
           </Show>
           <Show when={(props.countriesPending ?? []).length > 0}>
             <span class="flex items-center gap-1.5">
-              <span class="inline-block w-3 h-3 rounded-sm bg-primary" />
+              <span class="inline-block w-3 h-3 rounded-sm bg-primary opacity-80" />
               {t.home.status.legend.pending()}: (
               {(props.countriesPending ?? [])
                 .map((c) => countryName(c))
@@ -312,7 +312,9 @@ export const EuropeMap: Component<EuropeMapProps> = (props) => {
             </span>
           </Show>
         </div>
-        <p class="text-xs opacity-60 mt-2">{t.home.status.mapAttribution()}</p>
+        <p class="text-xs text-base-content/80 mt-2">
+          {t.home.status.mapAttribution()}
+        </p>
       </figcaption>
     </figure>
   );

@@ -1,14 +1,15 @@
 import { A } from "@solidjs/router";
-import { Component, For, Show } from "solid-js";
+import { Component, JSX, Show } from "solid-js";
 import { useTranslate } from "~/i18n/dict";
 import { RelyingPartyIcon } from "./RelyingPartyIcon";
+import { InlineList } from "./ui/InlineList";
 
 export interface RelyingPartyCardProps {
   id: string;
   title: string;
   isPSB?: boolean;
   providerType?: string;
-  attributes: string[];
+  attributes: (string | (() => JSX.Element))[];
   description?: string;
   href: string;
   linkState?: Record<string, unknown>;
@@ -33,13 +34,7 @@ export const RelyingPartyCard: Component<RelyingPartyCardProps> = (props) => {
             <span id={props.id} class="wim-font-title line-clamp-1">
               {props.title}
             </span>
-            <Show when={props.attributes.length > 0}>
-              <p class="wim-attributes my-0 text-accent/80 line-clamp-1">
-                <For each={props.attributes}>
-                  {(item) => <span class="">{item}</span>}
-                </For>
-              </p>
-            </Show>
+            <InlineList items={props.attributes} />
           </div>
         </div>
 

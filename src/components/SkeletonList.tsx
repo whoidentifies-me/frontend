@@ -1,10 +1,12 @@
 import { Component, For } from "solid-js";
 
-export const SkeletonList: Component<{ count?: number }> = (props) => {
+export const SkeletonList: Component<{ count?: number; class?: string }> = (
+  props
+) => {
   const items = () => Array.from({ length: props.count ?? 5 });
 
   return (
-    <div class="space-y-4">
+    <div class={`space-y-4 ${props.class || ""}`}>
       <For each={items()}>
         {() => (
           <div class="wim-card wim-card-outline-accent flex sm:flex-row flex-col gap-2 items-center animate-pulse">

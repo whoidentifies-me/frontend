@@ -15,7 +15,7 @@ export const en = {
     title: "Who identifies me?",
     subtitle:
       "Discover how personal data flows through the EU's digital identity ecosystem",
-    logoAlt: `"Who Identifies Me" logo with a question mark formed from orange fingerprint patterns and dark gray text.`,
+    logoAlt: `Who Identifies Me logo`,
   },
   home: {
     explore: {
@@ -207,6 +207,8 @@ export const en = {
     public: "Public Sector",
     nonPublic: "Company",
     intermediary: "Intermediary",
+    isIntermediary: "Is Intermediary",
+    usesIntermediaries: "Uses Intermediaries:",
     providerTypes: {
       WRPRegistrar: "Relying Party Register",
       WalletProvider: "Wallet Provider",
@@ -255,7 +257,7 @@ export const en = {
       is_psb: "Public or Private Entity",
       is_intermediary: "Is Intermediary",
       uses_intermediary: "Uses Intermediaries",
-      entitlement: "Permissions",
+      entitlement: "Roles",
     },
     clear_all: "Clear all filters",
     placeholders: {
@@ -264,7 +266,7 @@ export const en = {
       purpose: "Select purpose...",
       claim_path: "Enter requested information URI...",
       country: "Select country...",
-      entitlement: "Enter permission URI...",
+      entitlement: "Enter role Name/URI...",
     },
     values: {
       is_psb: {
@@ -295,9 +297,11 @@ export const en = {
       email: "Email",
       phone: "Phone",
       support: "Support",
+      identifiers: "Identifiers",
+      postalAddress: "Postal Address",
     },
     entitlements: {
-      title: "Permissions",
+      title: "Roles",
       description: undefined,
     },
     intendedUses: {

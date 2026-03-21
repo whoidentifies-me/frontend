@@ -16,6 +16,9 @@ app.config.timestamp_*.js
 # Generated API client
 /src/api/generated
 
+# MSW service worker
+/public/mockServiceWorker.js
+
 # IDEs and editors
 /.idea
 .project

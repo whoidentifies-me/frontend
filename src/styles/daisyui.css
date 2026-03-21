@@ -37,3 +37,11 @@
   --size-selector: 0.25rem;
   --size-field: 0.25rem;
 }
+
+.divider {
+  height: 4px;
+}
+
+input::placeholder {
+  color: color-mix(in oklab, currentcolor 60%, transparent);
+}

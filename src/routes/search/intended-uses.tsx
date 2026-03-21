@@ -43,9 +43,11 @@ export default function SearchIntendedUses() {
 
   onMount(() => {
     if (location.state?.scrollToResults) {
-      document
-        .getElementById("results")
-        ?.scrollIntoView({ behavior: "smooth" });
+      requestAnimationFrame(() => {
+        document
+          .getElementById("results")
+          ?.scrollIntoView({ behavior: "smooth" });
+      });
     }
   });
 
@@ -65,7 +67,7 @@ export default function SearchIntendedUses() {
         <div classList={{ "opacity-60 pointer-events-none": isPending() }}>
           <h2>{t.searchResults.intendedUses()}</h2>
           <ErrorBoundary fallback={() => <ErrorCard />}>
-            <Suspense fallback={<SkeletonList />}>
+            <Suspense fallback={<SkeletonList count={20} />}>
               <InfiniteList
                 class="space-y-4"
                 isLoading={intendedUsesInfinite.loading()}

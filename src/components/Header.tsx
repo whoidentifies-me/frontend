@@ -18,7 +18,7 @@ export default function Header() {
             href={routes.home}
             class="flex flex-row items-center gap-4 justify-self-start"
           >
-            <img src={logo} alt="WhoIdentifies.me Logo" class="w-10" />
+            <img src={logo} alt="Who Identifies Me logo" class="w-10" />
           </A>
 
           <ul class="hidden md:flex gap-7 justify-self-center list-none">
@@ -41,6 +41,7 @@ export default function Header() {
             <div class="dropdown dropdown-end md:hidden">
               <div tabindex="0" role="button" class="btn btn-ghost">
                 <TbOutlineMenu2 class="h-5 w-5" />
+                <span class="sr-only">Open Nav Menu</span>
               </div>
               <ul
                 tabindex="0"

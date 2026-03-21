@@ -1,16 +1,18 @@
 import { LocalizedText, RelyingParty, ServiceDescription } from "~/api";
 import { CountryCode } from "~/i18n/en";
 import { defaultLocale, Translator } from "~/i18n/dict";
+import { JSX } from "solid-js";
+import { CountryFlag } from "~/components/CountryFlag";
 
 export function getRelyingPartyAttributes(
   data: RelyingParty | undefined,
   t: Translator
-): string[] {
+): (string | (() => JSX.Element))[] {
   if (!data) {
     return [];
   }
 
-  const attributes: string[] = [];
+  const attributes: (string | (() => JSX.Element))[] = [];
 
   // Use provider_type translation if available, otherwise fall back to is_psb
   const providerTypeLabel =
@@ -37,7 +39,12 @@ export function getRelyingPartyAttributes(
     data.legal_entity?.country;
 
   if (country) {
-    attributes.push(country);
+    attributes.push(() => (
+      <span>
+        {country}{" "}
+        <CountryFlag code={data.legal_entity?.country} class="ml-0.5" />
+      </span>
+    ));
   }
 
   return attributes;

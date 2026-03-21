@@ -58,17 +58,17 @@ const flags: Record<string, string> = {
 };
 
 interface CountryFlagProps {
-  code: string;
+  code?: string;
   class?: string;
 }
 
 export const CountryFlag: Component<CountryFlagProps> = (props) => {
-  const svg = () => flags[props.code];
+  const svg = () => (props.code ? flags[props.code] : undefined);
 
   return (
     <Show when={svg()}>
       <span
-        class={props.class ?? "inline-flex w-5 shrink-0"}
+        class={`inline-flex w-5 shrink-0 ring-1 ring-black/10 ${props.class || ""}`}
         innerHTML={svg()}
       />
     </Show>
