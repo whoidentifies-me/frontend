@@ -48,6 +48,15 @@ export const SearchAndFilter: Component<{
     }
   };
 
+  const handleSearchSubmit = (q?: string) => {
+    handleFiltersChange({ q });
+    requestAnimationFrame(() => {
+      document
+        .getElementById("results")
+        ?.scrollIntoView({ behavior: "smooth" });
+    });
+  };
+
   return (
     <search class="rounded-2xl md:p-6 sm:p-4 p-2 py-4  bg-white border-black/20 border">
       <form
@@ -60,7 +69,7 @@ export const SearchAndFilter: Component<{
           value={filters().q}
           category={params.searchCategory}
           onFilterClick={toggleFilterCollapsed}
-          onSearchSubmit={(q) => handleFiltersChange({ q })}
+          onSearchSubmit={handleSearchSubmit}
           aria-expanded={!filterCollapsed()}
           aria-controls="search-filters"
         ></SearchBar>
