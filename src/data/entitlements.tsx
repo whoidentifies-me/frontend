@@ -1,10 +1,10 @@
 import {
-  TbOutlineBuildingStore,
   TbOutlineUserCheck,
   TbOutlineUserPlus,
   TbOutlineUserShield,
   TbOutlineUserScan,
   TbOutlineRubberStamp,
+  TbOutlineBuildingBroadcastTower,
 } from "solid-icons/tb";
 import { JSX } from "solid-js";
 
@@ -17,7 +17,7 @@ export interface Entitlement {
 export const entitlements: Record<string, Entitlement> = {
   "https://uri.etsi.org/19475/Entitlement/Service_Provider": {
     name: "Service Provider",
-    icon: () => <TbOutlineBuildingStore />,
+    icon: () => <TbOutlineBuildingBroadcastTower />,
   },
   "https://uri.etsi.org/19475/Entitlement/QEAA_Provider": {
     name: "Issue trusted Attributes",
