@@ -80,8 +80,11 @@ export const SupervisoryAuthority: Component<{ data?: RelyingParty }> = (
                   <TbOutlineFlag class="text-lg text-primary" />
                   {t.relyingPartyDetails.supervisoryAuthority.country()}
                 </h3>
-                <p class="flex items-center gap-2">
-                  <CountryFlag code={authority()?.country} /> {country()}
+                <p class="">
+                  <span>
+                    <CountryFlag class="mr-0.5" code={authority()?.country} />{" "}
+                    {country()}
+                  </span>
                 </p>
               </div>
             </Show>

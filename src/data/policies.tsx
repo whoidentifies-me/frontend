@@ -35,5 +35,12 @@ export const policies: Record<string, Policy> = {
   },
 };
 
-export const getPolicy = (uri?: string): Policy | undefined =>
-  uri ? policies[uri] : undefined;
+const policyAliases: Record<string, string> = {
+  privacy: "http://data.europa.eu/eudi/policy/privacy-statement",
+  terms: "http://data.europa.eu/eudi/policy/terms-and-conditions",
+};
+
+export const getPolicy = (uri?: string): Policy | undefined => {
+  if (!uri) return undefined;
+  return policies[uri] ?? policies[policyAliases[uri]];
+};
