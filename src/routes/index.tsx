@@ -1,4 +1,5 @@
 import { SearchAndFilter } from "~/components/SearchAndFilter";
+import { About } from "~/sections/About";
 import { FAQ } from "~/sections/FAQ";
 import { Newsletter } from "~/sections/Newsletter";
 import { Explore } from "~/sections/Explore";
@@ -23,6 +24,8 @@ export default function Home() {
       <Status />
 
       <FAQ />
+
+      <About />
     </main>
   );
 }

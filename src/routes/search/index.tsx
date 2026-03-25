@@ -14,6 +14,8 @@ import { createInfiniteScroll } from "~/utils/createInfiniteScroll";
 import { uiFiltersToApiParams } from "~/utils/filter-api";
 import { useTranslate } from "~/i18n/dict";
 import { Hero } from "~/components/Hero";
+import { HelpLink } from "~/components/HelpLink";
+import { docsLinks } from "~/config/docs";
 
 export default function SearchRelyingParties() {
   const t = useTranslate();
@@ -46,9 +48,9 @@ export default function SearchRelyingParties() {
 
   const getTitle = () => {
     if (searchParams.q) {
-      return `Search Service Providers: ${searchParams.q}`;
+      return `Search Relying Parties: ${searchParams.q}`;
     }
-    return "Search Service Providers";
+    return "Search Relying Parties";
   };
 
   return (
@@ -65,7 +67,13 @@ export default function SearchRelyingParties() {
         {isPending() && <PendingOverlay />}
 
         <div classList={{ "opacity-60 pointer-events-none": isPending() }}>
-          <h2>{t.searchResults.relyingParties()}</h2>
+          <h2>
+            {t.searchResults.relyingParties()}
+            <HelpLink
+              href={docsLinks.relyingParty}
+              label="Learn more about relying parties"
+            />
+          </h2>
           <ErrorBoundary fallback={() => <ErrorCard />}>
             <Suspense fallback={<SkeletonList />}>
               <InfiniteList

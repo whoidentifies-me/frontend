@@ -2,6 +2,7 @@ import { ExternalLink } from "~/components/ExternalLink";
 import { JSX } from "solid-js";
 import { A } from "@solidjs/router";
 import { routes } from "~/config/routes";
+import { docsLinks } from "~/config/docs";
 
 export const en = {
   navigation: {
@@ -26,8 +27,8 @@ export const en = {
             People are increasingly asked to identify themselves online. We
             created this website to make it easy for everyone to see who is
             requesting which personal information and for what purpose. Every
-            company and public authority using the upcoming EU Identity Wallet
-            will be listed here.
+            company and public authority using the upcoming EU Digital Identity
+            Wallet will be listed here.
           </p>
           <p>
             This is currently a prototype. We plan to launch the full version by
@@ -45,7 +46,8 @@ export const en = {
           <ExternalLink href="https://epicenter.works/en">
             epicenter.works
           </ExternalLink>{" "}
-          about our work on digital identity and other important issues.
+          to stay informed about our work on digital identity and other
+          important digital rights issues.
         </>
       ),
     },
@@ -89,7 +91,7 @@ export const en = {
           <ExternalLink href="https://eidas.ec.europa.eu/efda/wallet/lists-of-trusted-entities/registrars-registers">
             Currently
           </ExternalLink>
-          , no EU member state has launched their EUDI Wallet ecosystem. We
+          , no EU member state has launched its EUDI Wallet ecosystem. We
           obtained a snapshot of the Austrian eID ecosystem through FOIA
           requests (
           <ExternalLink href="https://fragdenstaat.at/anfrage/id-austria-service-provider/">
@@ -105,19 +107,84 @@ export const en = {
         </>
       ),
     },
+    about: {
+      title: "About this project",
+      intro: () => (
+        <>
+          This project is run by the non-profit NGO{" "}
+          <ExternalLink href="http://epicenter.works">
+            epicenter.works
+          </ExternalLink>
+          . We've been working on the topic of Digital Identity since 2017 and
+          have provided critical feedback to the eIDAS reform since 2021. Help
+          us create oversight over the digital identity ecosystem by{" "}
+          <ExternalLink href="https://spenden.epicenter.works/">
+            donating to us
+          </ExternalLink>{" "}
+          or{" "}
+          <ExternalLink href="http://support.epicenter.works/">
+            becoming a supporting member
+          </ExternalLink>
+          .
+        </>
+      ),
+      collaborate: () => (
+        <>
+          If you would like to become a partner in this project or use it for
+          your own work, please{" "}
+          <a href="mailto:team@epicenter.works">reach out to us</a>. We organize
+          workshops with the community to help guide its development.{" "}
+          <A href={routes.sections.newsletter}>Join the newsletter</A> to stay
+          up to date.
+        </>
+      ),
+      thanks:
+        "We would like to thank the philanthropic organisations that funded the original development of this tool.",
+      logos: {
+        netidee: "Netidee.at",
+        codevelop: "Co-develop",
+        filecoin: "Filecoin Foundation",
+        idpi: "Initiative for Digital Public Interest",
+      },
+    },
     howItWorks: {
       title: "How does it work?",
       items: [
         {
           title: "What is this project?",
-          body: "Digital identity is set to become a central part of everyday life in Europe with the rollout of the European Digital Identity Wallet (EUDI Wallet) under the eIDAS Regulation. While this development promises easier cross-border access to public and private services, it also raises a crucial question: who is requesting our personal data, for what purpose, and on what scale? Whoidentifies.me addresses this transparency gap by making the eIDAS ecosystem visible and understandable for everyone. As an open-data platform, it reveals which companies and public authorities rely on digital identity systems, what types of data they request, and how that data is used across all EU Member States. By compiling fragmented information into a searchable, comparable database, Whoidentifies.me acts as an early warning system for digital fundamental rights. The platform empowers citizens, civil society, researchers, and policymakers to identify risks, prevent abuse, and shape a fair, rights-based digital identity future.",
+          body: (
+            <>
+              <ExternalLink href={docsLinks.digitalIdentity}>
+                Digital identity
+              </ExternalLink>{" "}
+              is set to become a central part of everyday life in Europe with
+              the rollout of the European Digital Identity Wallet (EUDI Wallet)
+              under the eIDAS Regulation. While this development promises easier
+              cross-border access to public and private services, it also raises
+              a crucial question: who is requesting our personal data, for what
+              purpose, and on what scale? Whoidentifies.me addresses this
+              transparency gap by making the eIDAS ecosystem visible and
+              understandable for everyone. As an open-data platform, it reveals
+              which companies and public authorities rely on digital identity
+              systems, what types of data they request, and how that data is
+              used across all EU Member States. By compiling fragmented
+              information into a searchable, comparable database,
+              Whoidentifies.me acts as an early warning system for digital
+              fundamental rights. The platform empowers citizens, civil society,
+              researchers, and policymakers to identify risks, prevent abuse,
+              and shape a fair, rights-based digital identity future.
+            </>
+          ),
         },
         {
           title: "How do you get the data?",
           body: (
             <>
               EU member states are legally required to register every private
-              company or public entity that wants to interact with the Wallet
+              company or public entity that wants to interact with the{" "}
+              <ExternalLink href={docsLinks.eudiWallet}>
+                EU Digital Identity Wallet
+              </ExternalLink>{" "}
               and ask information from it. They must also provide an API for
               this registry, which we are scraping and consolidating on EU
               level. Since relying parties can request data across borders, we
@@ -136,15 +203,17 @@ export const en = {
           title: "What can I do here?",
           body: (
             <>
-              You can explore the entire digital identity ecosystem in Europe.
-              We provide real-time access as well as historical data up to 10
-              years back. Watchdogs and interested users can receive alerts
-              about developments tailored to their interests.
+              With this prototype, we aim to make it easy for you to envision
+              how you will be able to explore the entire EU Digital Identity
+              Wallet ecosystem in Europe. After our pilot launch, we will
+              provide real-time access as well as historical data going back up
+              to 10 years. Watchdogs and interested users will be able to
+              receive alerts about developments tailored to their interests.
               <p />
               Our goal is to make it as easy as possible to identify potential
               cases of over-identification or excessive data requests.
-              Transparency helps expose bad actors and enables a fact driven
-              debate on the societal impacts of digital identity on our society.
+              Transparency helps expose bad actors and enables a fact-driven
+              debate on the societal impacts of digital identity.
             </>
           ),
         },
@@ -153,10 +222,14 @@ export const en = {
           body: (
             <>
               Our organisation has been working on digital identity since 2017.
-              You can find all our submissions in these years online. Until very
-              recently we did this work purely financed by individual small
-              donations. This particular project did get funding for a prototype
-              and pilot from several donors. We would like to thank{" "}
+              You can find all our{" "}
+              <ExternalLink href="https://epicenter.works/en/thema/eid-digital-public-infrastructures">
+                submissions
+              </ExternalLink>{" "}
+              from these years online. Until very recently we did this work
+              purely financed by individual small donations. This particular
+              project did get funding for a prototype and pilot from several
+              donors. We would like to thank{" "}
               <ExternalLink href="https://www.netidee.at/">
                 Netidee.at
               </ExternalLink>
@@ -178,29 +251,38 @@ export const en = {
         },
         {
           title:
-            "How can I find out which organisations may request my data via the Wallet?",
-          body: "The Wallet provides a dashboard with a complete transaction log. Every requested information has to be listed there, including requests that were rejected. You can view the requested and transmitted data, along with details about the relying party and the purpose of their request. This information can be cross-checked against the full registry available on this website.",
+            "How can I find out which organisations may request my data via the EU Digital Identity Wallet?",
+          body: "The EU Digital Identity Wallet provides a dashboard with a complete transaction log. Every requested information has to be listed there, including requests that were rejected. You can view the requested and transmitted data, along with details about the relying party and the purpose of their request. This information can be cross-checked against the full registry available on this website.",
         },
         {
           title:
             "What does it mean that Whoidentifies.me acts as an early warning system?",
-          body: "By providing a complete overview of the entire ecosystem, we can identify outliers and trends across borders and company types. Usually, a problem only comes to light once users have been affected and filed complaints with the relevant authorities, who then have to piece together what happened before initiating consequences or a public debate. We shortcut this process by enabling discussion as soon as a bad actor registers a potentially harmful use case.",
+          body: "By providing a comprehensive overview of the entire ecosystem, we can identify outliers and trends across borders and different types of organisations . Usually, a problem only comes to light once users have been affected and filed complaints with the relevant authorities. These authorities then have to piece together what happened before initiating consequences or a public debate. We shortcut this process by enabling discussion as soon as a bad actor registers a potentially harmful use case.",
         },
         {
           title:
             "How does the platform support organisations working with vulnerable groups?",
-          body: "Our aim is to be a helpful tool for the work of others. Organisations representing consumers, minorities, marginalised groups or disaffected people can create alerts tailored to their work focus areas, enabling many watchful eyes to spot problems in the eIDAS ecosystem early on.",
+          body: "Our aim is to be a helpful tool for the work of others. Organisations representing consumers, minorities, marginalised groups or affected communities can create alerts tailored to their work focus areas, enabling many watchful eyes to spot problems in the eIDAS ecosystem early on.",
         },
         {
           title: "How can NGOs, researchers, or citizens contribute feedback?",
-          body: "Please reach out to us and become part of the community. We are always looking for testers for new features, researchers diving deep into the data and new ideas. As a donation-funded NGO we have limited capacities and part of our team consists of volunteers, but we believe we are stronger together.",
+          body: (
+            <>
+              Please <a href="mailto:team@epicenter.works">reach out</a> to us
+              and become part of the community. We are always looking for
+              testers for new features, researchers exploring the data, and
+              fresh ideas. As a donation-funded NGO, our capacities are limited,
+              and part of our team consists of volunteers, but we believe we are
+              stronger together.
+            </>
+          ),
         },
       ] as { title: string; body: string | JSX.Element }[],
     },
   },
   searchResults: {
     all: "All",
-    relyingParties: "Service Providers",
+    relyingParties: "Relying Parties",
     intendedUses: "Use Cases",
   },
   relyingParties: {
@@ -250,7 +332,7 @@ export const en = {
   filters: {
     labels: {
       q: "Search",
-      trade_name: "Service Provider Name",
+      trade_name: "Relying Party Name",
       purpose: "Purpose",
       claim_path: "Requested Information",
       country: "Country",

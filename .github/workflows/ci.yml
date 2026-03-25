@@ -68,7 +68,7 @@ jobs:
     - name: Build SPA (Demo)
       run: npm run build:spa
       env:
-        VITE_API_URL: https://api.whoidentifies.me
+        VITE_API_URL: https://api.demo.whoidentifies.me
 
     - name: Deploy to Demo Environment
       if: github.ref == 'refs/heads/main'
