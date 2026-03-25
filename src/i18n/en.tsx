@@ -105,6 +105,46 @@ export const en = {
         </>
       ),
     },
+    about: {
+      title: "About this project",
+      intro: () => (
+        <>
+          This project is run by the non-profit NGO{" "}
+          <ExternalLink href="http://epicenter.works">
+            epicenter.works
+          </ExternalLink>
+          . We've been working on the topic of Digital Identity since 2017 and
+          have provided critical feedback to the eIDAS reform since 2021. Help
+          us create oversight over the digital identity ecosystem by{" "}
+          <ExternalLink href="https://spenden.epicenter.works/">
+            donating to us
+          </ExternalLink>{" "}
+          or{" "}
+          <ExternalLink href="http://support.epicenter.works/">
+            becoming a supporting member
+          </ExternalLink>
+          .
+        </>
+      ),
+      collaborate: () => (
+        <>
+          If you would like to become a partner in this project or use it for
+          your own work, please{" "}
+          <a href="mailto:team@epicenter.works">reach out to us</a>. We organize
+          workshops with the community to help guide its development.{" "}
+          <A href={routes.sections.newsletter}>Join the newsletter</A> to stay
+          up to date.
+        </>
+      ),
+      thanks:
+        "We would like to thank the philanthropic organisations that funded the original development of this tool.",
+      logos: {
+        netidee: "Netidee.at",
+        codevelop: "Co-develop",
+        filecoin: "Filecoin Foundation",
+        idpi: "Initiative for Digital Public Interest",
+      },
+    },
     howItWorks: {
       title: "How does it work?",
       items: [
