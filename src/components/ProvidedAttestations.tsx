@@ -1,6 +1,8 @@
 import { Component, createMemo, For } from "solid-js";
 import { RelyingPartyProvidedAttestationAPIResponse } from "~/api";
 import { ClaimItem } from "./ClaimItem";
+import { buildUrlWithFilters } from "~/utils/url";
+import { routes } from "~/config/routes";
 
 interface ProvidedAttestationsProps {
   attestations: RelyingPartyProvidedAttestationAPIResponse[] | null | undefined;
@@ -26,7 +28,15 @@ export const ProvidedAttestations: Component<ProvidedAttestationsProps> = (
   return (
     <ul class="mt-4 list-none  grid sm:grid-cols-2 grid-cols-1 gap-6">
       <For each={uniqueClaims()}>
-        {(claim) => <ClaimItem path={claim.path} />}
+        {(claim) => (
+          <ClaimItem
+            path={claim.path}
+            href={buildUrlWithFilters(routes.search.intendedUses, {
+              claim_path: claim.path,
+            })}
+            hrefState={{ scrollToResults: true }}
+          />
+        )}
       </For>
     </ul>
   );
