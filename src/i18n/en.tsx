@@ -290,7 +290,7 @@ export const en = {
   filters: {
     labels: {
       q: "Search",
-      trade_name: "Service Provider Name",
+      trade_name: "Relying Party Name",
       purpose: "Purpose",
       claim_path: "Requested Information",
       country: "Country",

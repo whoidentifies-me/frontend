@@ -10,6 +10,7 @@ import "@fontsource-variable/montserrat";
 import { I18nProvider } from "~/i18n/dict";
 import { Footer } from "./sections/Footer";
 import { FilterProvider } from "./providers/FilterProvider";
+import { CornerRibbon } from "~/components/CornerRibbon";
 
 export default function App() {
   return (
@@ -23,7 +24,8 @@ export default function App() {
         <Router
           root={(props) => (
             <FilterProvider>
-              <div class="min-h-screen grid grid-cols-1 grid-rows-[auto_1fr_auto]">
+              <div class="min-h-screen grid grid-cols-1 grid-rows-[auto_1fr_auto] pt-7 md:pt-0">
+                <CornerRibbon />
                 <Header />
                 <div>
                   <Suspense fallback={<LoadingSpinner />}>
