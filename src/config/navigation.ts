@@ -1,5 +1,6 @@
 import { useTranslate } from "~/i18n/dict";
 import { routes } from "~/config/routes";
+import { docsLinks } from "~/config/docs";
 
 export interface NavigationItem {
   href: string;
@@ -31,7 +32,7 @@ export const createNavigationItems = (): NavigationItem[] => {
       label: () => t.navigation.howItWorks(),
     },
     {
-      href: "https://github.com/whoidentifies-me/help/blob/main/README.md",
+      href: docsLinks.help,
       external: true,
       label: () => t.navigation.help(),
     },
