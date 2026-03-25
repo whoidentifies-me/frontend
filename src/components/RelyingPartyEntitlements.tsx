@@ -12,7 +12,10 @@ import {
 } from "solid-icons/tb";
 import { entitlements as entitlementMap } from "~/data/entitlements";
 import { getProviderType } from "~/data/providerTypes";
+import { docsLinks } from "~/config/docs";
 import { routes } from "~/config/routes";
+import { ExternalLink } from "./ExternalLink";
+import { HelpLink } from "./HelpLink";
 import { ProvidedAttestations } from "./ProvidedAttestations";
 
 export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
@@ -34,7 +37,10 @@ export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
         largerCol="last"
         firstContent={
           <>
-            <h2>{t.relyingPartyDetails.entitlements.title()}</h2>
+            <h2>
+              {t.relyingPartyDetails.entitlements.title()}
+              <HelpLink href={docsLinks.roles} label="Learn more about roles" />
+            </h2>
             <p>{t.relyingPartyDetails.entitlements.description()}</p>
           </>
         }
@@ -68,14 +74,12 @@ export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
                             </span>
                           }
                         >
-                          <div class="tooltip" data-tip={item}>
-                            <span
-                              class="font-semibold line-clamp-2 cursor-pointer"
-                              tabindex="0"
-                            >
-                              {mapped?.name}
-                            </span>
-                          </div>
+                          <ExternalLink
+                            href={mapped?.helpURL}
+                            class="font-semibold line-clamp-2"
+                          >
+                            {mapped?.name}
+                          </ExternalLink>
                         </Show>
                       </div>
                     </li>
@@ -86,7 +90,13 @@ export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
 
             <Show when={hasProviderType() || hasPsbInfo()}>
               <div class="divider my-4" />
-              <h3 class="text-sm">Type</h3>
+              <h3 class="text-sm">
+                Type
+                <HelpLink
+                  href={docsLinks.providerType}
+                  label="Learn more about provider types"
+                />
+              </h3>
             </Show>
             <div class="grid sm:grid-cols-2 grid-cols-1 gap-6">
               <Show when={hasProviderType()}>
@@ -97,7 +107,9 @@ export const RelyingPartyEntitlements: Component<{ data?: RelyingParty }> = (
                       <span class="text-primary text-3xl leading-0">
                         {pt.icon()}
                       </span>
-                      <span class="font-semibold">{pt.name}</span>
+                      <ExternalLink href={pt.helpURL} class="font-semibold">
+                        {pt.name}
+                      </ExternalLink>
                     </div>
                   );
                 })()}
