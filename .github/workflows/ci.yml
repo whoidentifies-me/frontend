@@ -48,8 +48,8 @@ jobs:
         path: .output/
         retention-days: 7
 
-    # Deploy SPA build (no SSR) to static file host as dev server
-    - name: Build SPA
+    # Deploy SPA builds (no SSR) to static file hosts
+    - name: Build SPA (Stage)
       run: npm run build:spa
       env:
         VITE_API_URL: https://api.stage.whoidentifies.me
@@ -64,6 +64,11 @@ jobs:
         SOURCE: .output/public/
         TARGET: ~/
         ARGS: -avz --delete
+
+    - name: Build SPA (Demo)
+      run: npm run build:spa
+      env:
+        VITE_API_URL: https://api.whoidentifies.me
 
     - name: Deploy to Demo Environment
       if: github.ref == 'refs/heads/main'
