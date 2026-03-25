@@ -240,7 +240,7 @@ export const en = {
   },
   searchResults: {
     all: "All",
-    relyingParties: "Service Providers",
+    relyingParties: "Relying Parties",
     intendedUses: "Use Cases",
   },
   relyingParties: {

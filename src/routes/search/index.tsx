@@ -46,9 +46,9 @@ export default function SearchRelyingParties() {
 
   const getTitle = () => {
     if (searchParams.q) {
-      return `Search Service Providers: ${searchParams.q}`;
+      return `Search Relying Parties: ${searchParams.q}`;
     }
-    return "Search Service Providers";
+    return "Search Relying Parties";
   };
 
   return (
