@@ -1,6 +1,23 @@
-# WIM Frontend
+<p align="center">
+  <img src="docs/img/logo-wim-white-bg.png" alt="whoidentifies.me" height="140">
+</p>
 
-SolidJS frontend for **[whoidentifies.me](https://whoidentifies.me)**, a project by [epicenter.works](https://epicenter.works) tracking uses of the European Digital Identity (EUDI) Wallet.
+<h3 align="center">whoidentifies.me &mdash; Frontend</h3>
+
+<p align="center">
+  Web interface for the transparency platform tracking which personal data is requested through the <a href="https://en.wikipedia.org/wiki/EUDI_Wallet">EUDI eIDAS Wallet</a>. 
+</p>
+
+<p align="center">
+  <a href="https://whoidentifies.me"><strong>Homepage</strong></a> &nbsp;&bull;&nbsp;
+  <a href="https://demo.whoidentifies.me"><strong>Live Demo</strong></a> &nbsp;&bull;&nbsp;
+  <a href="https://github.com/whoidentifies-me/help/blob/main/README.md"><strong>Help</strong></a> &nbsp;&bull;&nbsp;
+  <a href="https://github.com/whoidentifies-me/api"><strong>API</strong></a>
+</p>
+
+---
+
+This repository contains the SolidJS frontend for whoidentifies.me, a platform that creates transparency around the emerging European Digital Identity ecosystem.
 
 ## Tech Stack
 
@@ -61,3 +78,16 @@ Use `npm run dev:spa` to run in SPA mode (no SSR).
 | `npm run api:generate` | Generate API clients via Orval          |
 
 API clients in `src/api/generated/` are auto-generated from an OpenAPI spec. Run `api:fetch` to pull the latest spec, then `api:generate` to regenerate the clients. Generation also runs automatically before `dev` and `build`.
+
+---
+
+<p align="center">
+  <a href="https://epicenter.works">
+    <img src="docs/img/ew_logo_farbe_s.jpg" alt="epicenter.works" height="60">
+  </a>
+</p>
+
+<p align="center">
+  A project by the digital rights NGO <a href="https://epicenter.works"><strong>epicenter.works</strong></a>.<br>
+  Our main organization on GitHub: <a href="https://github.com/AKVorrat">AKVorrat</a>
+</p>
