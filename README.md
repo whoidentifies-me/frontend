@@ -5,10 +5,6 @@
 <h3 align="center">whoidentifies.me &mdash; Frontend</h3>
 
 <p align="center">
-  Web interface for the transparency platform tracking which personal data is requested through the <a href="https://en.wikipedia.org/wiki/EUDI_Wallet">EUDI eIDAS Wallet</a>. 
-</p>
-
-<p align="center">
   <a href="https://whoidentifies.me"><strong>Homepage</strong></a> &nbsp;&bull;&nbsp;
   <a href="https://demo.whoidentifies.me"><strong>Live Demo</strong></a> &nbsp;&bull;&nbsp;
   <a href="https://github.com/whoidentifies-me/help/blob/main/README.md"><strong>Help</strong></a> &nbsp;&bull;&nbsp;
