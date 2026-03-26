@@ -3,6 +3,7 @@ import { For } from "solid-js";
 import { TbOutlineMenu2 } from "solid-icons/tb";
 import { createNavigationItems } from "~/config/navigation";
 import { routes } from "~/config/routes";
+import { AnchorLink } from "~/components/AnchorLink";
 import logo from "../assets/img/logo-primary.png?w=48&quality=60&format=webp&imagetools";
 
 export default function Header() {
@@ -23,17 +24,22 @@ export default function Header() {
 
           <ul class="hidden md:flex gap-7 justify-self-center list-none">
             <For each={navigationItems}>
-              {(item) => (
-                <li class="">
-                  <A
-                    href={isHomePage() && item.anchor ? item.anchor : item.href}
-                    class="no-underline font-bold text-base-content hover:text-primary focus:text-primary transition-colors"
-                    target={item.external ? "_blank" : undefined}
-                  >
-                    {item.label()}
-                  </A>
-                </li>
-              )}
+              {(item) => {
+                const Link = item.anchor ? AnchorLink : A;
+                return (
+                  <li class="">
+                    <Link
+                      href={
+                        isHomePage() && item.anchor ? item.anchor : item.href
+                      }
+                      class="no-underline font-bold text-base-content hover:text-primary focus:text-primary transition-colors"
+                      target={item.external ? "_blank" : undefined}
+                    >
+                      {item.label()}
+                    </Link>
+                  </li>
+                );
+              }}
             </For>
           </ul>
 
@@ -48,18 +54,23 @@ export default function Header() {
                 class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
               >
                 <For each={navigationItems}>
-                  {(item) => (
-                    <li>
-                      <A
-                        href={
-                          isHomePage() && item.anchor ? item.anchor : item.href
-                        }
-                        class="no-underline font-bold text-base-content hover:text-primary focus:text-primary transition-colors"
-                      >
-                        {item.label()}
-                      </A>
-                    </li>
-                  )}
+                  {(item) => {
+                    const Link = item.anchor ? AnchorLink : A;
+                    return (
+                      <li>
+                        <Link
+                          href={
+                            isHomePage() && item.anchor
+                              ? item.anchor
+                              : item.href
+                          }
+                          class="no-underline font-bold text-base-content hover:text-primary focus:text-primary transition-colors"
+                        >
+                          {item.label()}
+                        </Link>
+                      </li>
+                    );
+                  }}
                 </For>
               </ul>
             </div>
