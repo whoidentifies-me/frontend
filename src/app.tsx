@@ -1,6 +1,6 @@
-import { Router } from "@solidjs/router";
+import { Router, useLocation } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
-import { Suspense, Show } from "solid-js";
+import { Suspense, Show, onMount, type ParentProps } from "solid-js";
 import Header from "~/components/Header";
 import { LoadingSpinner } from "~/components/LoadingSpinner";
 import "./app.css";
@@ -12,6 +12,30 @@ import { Footer } from "./sections/Footer";
 import { FilterProvider } from "./providers/FilterProvider";
 import { CornerRibbon } from "~/components/CornerRibbon";
 
+function RootLayout(props: ParentProps) {
+  const location = useLocation();
+
+  onMount(() => {
+    const hash = location.hash.slice(1);
+    if (hash) {
+      document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+    }
+  });
+
+  return (
+    <FilterProvider>
+      <div class="min-h-screen grid grid-cols-1 grid-rows-[auto_1fr_auto] pt-7 md:pt-0">
+        <CornerRibbon />
+        <Header />
+        <div>
+          <Suspense fallback={<LoadingSpinner />}>{props.children}</Suspense>
+        </div>
+        <Footer />
+      </div>
+    </FilterProvider>
+  );
+}
+
 export default function App() {
   return (
     <MetaProvider>
@@ -21,22 +45,7 @@ export default function App() {
       </Show>
 
       <I18nProvider initialLocale="en">
-        <Router
-          root={(props) => (
-            <FilterProvider>
-              <div class="min-h-screen grid grid-cols-1 grid-rows-[auto_1fr_auto] pt-7 md:pt-0">
-                <CornerRibbon />
-                <Header />
-                <div>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    {props.children}
-                  </Suspense>
-                </div>
-                <Footer />
-              </div>
-            </FilterProvider>
-          )}
-        >
+        <Router root={RootLayout}>
           <FileRoutes />
         </Router>
       </I18nProvider>
