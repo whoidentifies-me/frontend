@@ -16,16 +16,23 @@ export const Explore: Component = () => {
   const t = useTranslate();
   const exploreCount = exploreConfig.rpIds?.length ?? DEFAULT_EXPLORE_COUNT;
 
-  const exploreItems = createAsync<RelyingParty[]>(async () => {
-    if (exploreConfig.rpIds) {
-      return Promise.all(
-        exploreConfig.rpIds.map((id) => RelyingParties.getRelyingParty(id))
-      );
-    }
+  const fetchDefaultExploreItems = async () => {
     const result = await RelyingParties.listRelyingParties({
       limit: DEFAULT_EXPLORE_COUNT,
     });
     return result?.data ?? [];
+  };
+
+  const exploreItems = createAsync<RelyingParty[]>(async () => {
+    if (exploreConfig.rpIds) {
+      return Promise.all(
+        exploreConfig.rpIds.map((id) => RelyingParties.getRelyingParty(id))
+      ).catch(async (e) => {
+        console.error("failed to fetch relying party", e);
+        return fetchDefaultExploreItems();
+      });
+    }
+    return fetchDefaultExploreItems();
   });
 
   return (
