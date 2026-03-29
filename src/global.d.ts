@@ -13,6 +13,8 @@ interface ImportMetaEnv {
   readonly VITE_NEWSLETTER_GROUP_ID?: string;
   /** Matomo site ID — Matomo tracking is only enabled when this is set */
   readonly VITE_MATOMO_SITE_ID?: string;
+  /** Comma-separated relying party UUIDs to feature in the Explore section */
+  readonly VITE_EXPLORE_RP_IDS?: string;
 }
 
 interface ImportMeta {
