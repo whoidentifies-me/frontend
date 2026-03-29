@@ -1,19 +1,39 @@
 import { A, createAsync } from "@solidjs/router";
 import { Component, ErrorBoundary, For, Suspense } from "solid-js";
 import { RelyingParties } from "~/api";
+import type { RelyingParty } from "~/api";
 import { ErrorCard } from "~/components/ErrorCard";
 import { TwoColumnLayout } from "~/components/layout/TwoColumnLayout";
 import { RelyingPartyItem } from "~/components/RelyingPartyItem";
 import { SkeletonList } from "~/components/SkeletonList";
 import { useTranslate } from "~/i18n/dict";
 import { routes } from "~/config/routes";
+import { exploreConfig } from "~/config/explore";
+
+const DEFAULT_EXPLORE_COUNT = 3;
 
 export const Explore: Component = () => {
   const t = useTranslate();
+  const exploreCount = exploreConfig.rpIds?.length ?? DEFAULT_EXPLORE_COUNT;
 
-  const exploreItems = createAsync(() =>
-    RelyingParties.listRelyingParties({ limit: 3 })
-  );
+  const fetchDefaultExploreItems = async () => {
+    const result = await RelyingParties.listRelyingParties({
+      limit: DEFAULT_EXPLORE_COUNT,
+    });
+    return result?.data ?? [];
+  };
+
+  const exploreItems = createAsync<RelyingParty[]>(async () => {
+    if (exploreConfig.rpIds) {
+      return Promise.all(
+        exploreConfig.rpIds.map((id) => RelyingParties.getRelyingParty(id))
+      ).catch(async (e) => {
+        console.error("failed to fetch relying party", e);
+        return fetchDefaultExploreItems();
+      });
+    }
+    return fetchDefaultExploreItems();
+  });
 
   return (
     <section id="explore" class="wim-section">
@@ -29,8 +49,8 @@ export const Explore: Component = () => {
         lastColumnClass="flex flex-col gap-3 justify-center"
         lastContent={
           <ErrorBoundary fallback={() => <ErrorCard />}>
-            <Suspense fallback={<SkeletonList count={3} />}>
-              <For each={exploreItems()?.data || []}>
+            <Suspense fallback={<SkeletonList count={exploreCount} />}>
+              <For each={exploreItems() ?? []}>
                 {(item) => <RelyingPartyItem data={item}></RelyingPartyItem>}
               </For>
               <div class="flex flex-row justify-center">
