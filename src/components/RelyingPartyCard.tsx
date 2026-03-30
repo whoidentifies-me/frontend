@@ -23,7 +23,7 @@ export const RelyingPartyCard: Component<RelyingPartyCardProps> = (props) => {
       class="wim-card wim-card-outline-accent flex sm:flex-row flex-col gap-2 items-center"
       aria-labelledby={props.id}
     >
-      <div class="flex flex-col flex-grow min-w-0">
+      <div class="flex flex-col flex-grow min-w-0 self-stretch">
         <div class="flex flex-row items-center gap-2">
           <RelyingPartyIcon
             isPSB={props.isPSB}
@@ -43,7 +43,7 @@ export const RelyingPartyCard: Component<RelyingPartyCardProps> = (props) => {
         </Show>
       </div>
       <A
-        class="btn btn-primary btn-outline no-underline shrink-0"
+        class="btn btn-primary btn-outline no-underline shrink-0 self-auto"
         href={props.href}
         state={props.linkState}
       >
