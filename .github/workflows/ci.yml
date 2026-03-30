@@ -69,7 +69,7 @@ jobs:
       run: npm run build:spa
       env:
         VITE_API_URL: https://api.demo.whoidentifies.me
-        VITE_EXPLORE_RP_IDS: a85db96a-461b-4b43-aba8-80a059debeae,299b5ec8-23f4-445e-bdc4-ce6394d2d374,f24700d8-5974-4dee-a040-40a976bf7b88
+        VITE_EXPLORE_RP_IDS: 299b5ec8-23f4-445e-bdc4-ce6394d2d374,f24700d8-5974-4dee-a040-40a976bf7b88,a85db96a-461b-4b43-aba8-80a059debeae
 
     - name: Deploy to Demo Environment
       if: github.ref == 'refs/heads/main'
