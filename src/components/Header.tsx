@@ -4,7 +4,7 @@ import { TbOutlineMenu2 } from "solid-icons/tb";
 import { createNavigationItems } from "~/config/navigation";
 import { routes } from "~/config/routes";
 import { AnchorLink } from "~/components/AnchorLink";
-import logo from "../assets/img/logo-primary.png?w=48&quality=60&format=webp&imagetools";
+import logo from "../assets/img/logo-primary.png?format=webp&w=100&imagetools";
 
 export default function Header() {
   const location = useLocation();
