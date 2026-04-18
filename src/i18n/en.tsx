@@ -87,19 +87,23 @@ export const en = {
       ),
       description: () => (
         <>
-          This prototype uses test data, with the exception of Austria.{" "}
+          This prototype uses test data.{" "}
           <ExternalLink href="https://eidas.ec.europa.eu/efda/wallet/lists-of-trusted-entities/registrars-registers">
             Currently
           </ExternalLink>
           , no EU member state has launched its EUDI Wallet ecosystem. We
-          obtained a snapshot of the Austrian eID ecosystem through FOIA
-          requests (
+          obtained snapshots of the Austrian, German, and Italian eID ecosystems
+          through FOIA requests (
           <ExternalLink href="https://fragdenstaat.at/anfrage/id-austria-service-provider/">
             1
           </ExternalLink>
           ,&#32;
           <ExternalLink href="https://fragdenstaat.at/anfrage/id-austria-service-provider-privatwirtschaft/">
             2
+          </ExternalLink>
+          ,&#32;
+          <ExternalLink href="https://fragdenstaat.de/anfrage/online-ausweis-berechtigungszertifikate/">
+            3
           </ExternalLink>
           ). If you have further information, tips, leaks, or are interested in
           collaborating, we would be glad to{" "}
